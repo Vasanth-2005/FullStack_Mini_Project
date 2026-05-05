@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Profile - LifeCare Hospital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .profile-section {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 4rem;
+            padding: 6rem 5%;
+            min-height: 80vh;
+        }
+
+        .profile-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: var(--glass-shadow);
+            text-align: center;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .profile-card h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .specialty-badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+        .profile-details {
+            text-align: left;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .detail-row span:last-child {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .loading-state {
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            width: 100%;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <h2><span class="highlight">Life</span>Care</h2>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#doctors" class="highlight">Our Doctors</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="btn-outline" onclick="window.location.href='index.html#doctors'">Back to Directory</button>
+        </div>
+    </header>
+
+    <main class="profile-section" id="profile-container">
+        <div class="loading-state" id="loading">Loading Doctor Profile...</div>
+    </main>
+
+    <footer>
+        <div class="copyright">
+            <p>&copy; 2026 LifeCare Hospital. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const doctorId = urlParams.get('id');
+
+            if (!doctorId) {
+                document.getElementById('profile-container').innerHTML = '<h2 style="color:red; text-align:center;">Doctor ID missing from URL.</h2>';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/doctors/' + doctorId);
+                const container = document.getElementById('profile-container');
+
+                if (!response.ok) {
+                    container.innerHTML = '<h2 style="color:red; text-align:center;">Doctor not found or server error.</h2>';
+                    return;
+                }
+
+                const doctor = await response.json();
+                const initial = doctor.name.replace('Dr. ', '').charAt(0);
+
+                container.innerHTML = `
+                    <div class="profile-card">
+                        <div class="profile-avatar">${initial}</div>
+                        <h1>${doctor.name}</h1>
+                        <div class="specialty-badge">${doctor.specialty}</div>
+                        
+                        <p style="color: var(--text-muted); line-height: 1.6;">
+                            Dedicated to providing superior care and comprehensive medical attention to all patients.
+                        </p>
+
+                        <div class="profile-details">
+                            <div class="detail-row">
+                                <span>Experience</span>
+                                <span>${doctor.experience_years} Years+</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Contact Number</span>
+                                <span>${doctor.phone}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Doctor ID</span>
+                                <span>#${doctor.id}</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" style="width: 100%; margin-top: 2rem; padding: 1rem;" onclick="window.location.href='patient-dashboard.html'">Book Appointment Now</button>
+                    </div>
+                `;
+            } catch (err) {
+                console.error(err);
+                document.getElementById('profile-container').innerHTML = '<h2 style="color:red; text-align:center;">Failed to connect to the server.</h2>';
+            }
+        });
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

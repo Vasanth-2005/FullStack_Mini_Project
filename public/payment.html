@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment - LifeCare Hospital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .payment-body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at top right, rgba(34, 197, 94, 0.2), var(--bg-dark) 40%),
+                        radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.2), var(--bg-dark) 40%);
+        }
+
+        .payment-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .payment-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .bill-amount {
+            font-size: 3rem;
+            color: #4ade80;
+            font-weight: 800;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .success-panel {
+            display: none;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: #4ade80;
+            margin-bottom: 1rem;
+        }
+
+        .btn-download {
+            background: var(--text-main);
+            color: var(--bg-dark);
+            padding: 1rem 2rem;
+            font-weight: 800;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .btn-download:hover {
+            background: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body class="payment-body">
+    <div class="payment-container glass-card">
+        
+        <!-- Payment Input Panel -->
+        <div id="paymentPanel">
+            <div class="payment-header">
+                <h2>Secure Checkout</h2>
+                <p id="invoiceLabel">Invoice #INV-.....</p>
+                <div class="bill-amount" id="amtLabel">$-.--</div>
+            </div>
+            
+            <form id="paymentForm" class="payment-form auth-form">
+                <div class="form-group">
+                    <label>Cardholder Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Card Number</label>
+                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required>
+                </div>
+
+                <div class="form-group flex-group">
+                    <div class="half-width">
+                        <label>Expiry (MM/YY)</label>
+                        <input type="text" placeholder="12/26" maxlength="5" required>
+                    </div>
+                    <div class="half-width">
+                        <label>CVV</label>
+                        <input type="password" placeholder="123" maxlength="3" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem; background: #22c55e;">Process Payment securely</button>
+                <a href="patient-invoices.html" style="display:block; text-align:center; color: var(--text-muted); text-decoration: none; margin-top:0.5rem">Cancel & Go Back</a>
+            </form>
+        </div>
+
+        <!-- Success Panel Hidden Default -->
+        <div id="successPanel" class="success-panel">
+            <div class="success-icon">✅</div>
+            <h2>Payment Successful!</h2>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;" id="successDesc">Your account has been cleared for Invoice.</p>
+            
+            <!-- Dynamic Data URI driving the download without needing a server file script! -->
+            <a href="#" download="Receipt.txt" id="downloadBtn" class="btn-download">Download Payment Bill</a>
+            
+            <br>
+            <a href="patient-invoices.html" style="display:inline-block; margin-top: 1rem; color: var(--text-muted); text-decoration: underline;">Return to Invoices</a>
+        </div>
+
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const invoiceId = urlParams.get('id');
+        const amtParam = urlParams.get('amt');
+        
+        let visualId = 'INV-UNKNOWN';
+        if (invoiceId) {
+            visualId = 'INV-' + (10000 + parseInt(invoiceId));
+            document.getElementById('invoiceLabel').innerText = `Invoice #${visualId} · Medical Consultation`;
+        }
+        if (amtParam) {
+            document.getElementById('amtLabel').innerText = `$${amtParam}`;
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Stop page reload
+
+            // Aesthetic network delay simulation to mimic banking Gateway 
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Processing...';
+            submitBtn.style.opacity = '0.7';
+
+            if (invoiceId) {
+                try {
+                    // Contact hospital database backend simultaneously while holding delay
+                    const res = await fetch(`/api/invoices/${invoiceId}/pay`, { method: 'POST' });
+                    if (!res.ok) {
+                        alert("Database synchronization failed.");
+                    }
+                } catch(err) { console.error('Error routing backend API', err); }
+            }
+
+            setTimeout(() => {
+                // Hide payment panel, reveal success naturally
+                document.getElementById('paymentPanel').style.display = 'none';
+                document.getElementById('successPanel').style.display = 'block';
+                
+                document.getElementById('successDesc').innerHTML = `Your account has been dynamically cleared for Invoice <b>#${visualId}</b>. Your associated Appointment has natively shifted into Completed Status.`;
+
+                // Update receipt dynamically
+                const receiptText = `LifeCare Hospital - Payment Receipt\n=========================\nInvoice: #${visualId}\nDate: ${new Date().toLocaleDateString()}\nDescription: Medical Consultation\nAmount Paid: $${amtParam || '150.00'}\nStatus: PAID IN FULL\n\nThank you for trusting LifeCare!`;
+                document.getElementById('downloadBtn').href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(receiptText);
+                document.getElementById('downloadBtn').download = `LifeCare_Receipt_${visualId}.txt`;
+            }, 1500);
+        });
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

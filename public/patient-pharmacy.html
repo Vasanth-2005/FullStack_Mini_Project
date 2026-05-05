@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Pharmacy - LifeCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
+        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+        .main-content { flex: 1; padding: 2rem 5%; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        
+        .pharmacy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .med-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .med-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .med-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .med-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .med-price {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .cart-panel {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2><span class="highlight">Life</span>Care</h2>
+            <a href="patient-dashboard.html">Dashboard</a>
+            <a href="#" onclick="alert('Please use the main Dashboard to book.')">Book Appointment</a>
+            <a href="patient-records.html">My Records</a>
+            <a href="patient-prescriptions.html">Prescriptions</a>
+            <a href="patient-pharmacy.html" class="active">Pharmacy</a>
+            <a href="patient-invoices.html">Invoices</a>
+            <div style="flex: 1;"></div>
+            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">?? Emergency SOS</a>`n            <a href="#" onclick="logout()">Logout</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Online Pharmacy</h1>
+                <div class="user-profile">
+                    <div class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1rem; margin: 0;">P</div>
+                </div>
+            </div>
+
+            <div class="cart-panel" id="cartPanel" style="display: none;">
+                <div>
+                    <h3 style="color: var(--text-main);">Your Cart</h3>
+                    <p style="color: var(--text-muted);" id="cartDetails">0 items</p>
+                </div>
+                <div style="text-align: right;">
+                    <h2 style="color: var(--primary); margin-bottom: 0.5rem;" id="cartTotal">$0.00</h2>
+                    <button class="btn-primary" onclick="checkout()">Checkout & Bill to Invoice</button>
+                </div>
+            </div>
+
+            <div class="pharmacy-grid">
+                <!-- Paracetamol -->
+                <div class="med-card">
+                    <div class="med-icon">💊</div>
+                    <div class="med-name">Paracetamol 500mg</div>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Fever & Pain Relief</p>
+                    <div class="med-price">$12.00</div>
+                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Paracetamol 500mg', 12)">Add to Cart</button>
+                </div>
+
+                <!-- Amoxicillin -->
+                <div class="med-card">
+                    <div class="med-icon">💊</div>
+                    <div class="med-name">Amoxicillin 250mg</div>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Bacterial Infections</p>
+                    <div class="med-price">$25.00</div>
+                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Amoxicillin 250mg', 25)">Add to Cart</button>
+                </div>
+
+                <!-- Cough Syrup -->
+                <div class="med-card">
+                    <div class="med-icon">🧪</div>
+                    <div class="med-name">Tussex Cough Syrup</div>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Dry Cough Relief</p>
+                    <div class="med-price">$18.50</div>
+                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Tussex Cough Syrup', 18.5)">Add to Cart</button>
+                </div>
+
+                <!-- First Aid Kit -->
+                <div class="med-card">
+                    <div class="med-icon">🚑</div>
+                    <div class="med-name">Premium First Aid Kit</div>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Bandages, Antiseptic, Tape</p>
+                    <div class="med-price">$45.00</div>
+                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Premium First Aid Kit', 45)">Add to Cart</button>
+                </div>
+                
+                <!-- Vitamin C -->
+                <div class="med-card">
+                    <div class="med-icon">🍋</div>
+                    <div class="med-name">Vitamin C 1000mg</div>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Immunity Booster</p>
+                    <div class="med-price">$15.00</div>
+                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Vitamin C 1000mg', 15)">Add to Cart</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData || !userData.id) {
+            alert('Please login.');
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        let cart = [];
+        let total = 0;
+
+        function addToCart(name, price) {
+            cart.push({name, price});
+            total += price;
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const panel = document.getElementById('cartPanel');
+            if (cart.length > 0) {
+                panel.style.display = 'flex';
+                document.getElementById('cartDetails').innerText = cart.length + ' items selected';
+                document.getElementById('cartTotal').innerText = '$' + total.toFixed(2);
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        async function checkout() {
+            if (cart.length === 0) return;
+            
+            const itemsList = cart.map(i => i.name).join(', ');
+            
+            try {
+                const res = await fetch('/api/pharmacy/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: userData.id,
+                        items: itemsList,
+                        amount: total
+                    })
+                });
+
+                if (res.ok) {
+                    alert('Order placed successfully! A bill has been added to your Invoices tab for payment.');
+                    cart = [];
+                    total = 0;
+                    updateCartUI();
+                    window.location.href = 'patient-invoices.html';
+                } else {
+                    alert('Failed to place order.');
+                }
+            } catch(e) {
+                console.error(e);
+                alert('Server connection error.');
+            }
+        }
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - LifeCare Hospital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="auth-body">
+    <div class="auth-container glass-card" style="border-top: 4px solid var(--secondary);">
+        <div class="auth-header">
+            <h2 style="color: var(--secondary);">🔒 Admin Portal</h2>
+            <p>Secure login for hospital administrators only.</p>
+        </div>
+        
+        <form id="adminLoginForm" class="auth-form">
+            <div class="form-group">
+                <label for="username">Administrator ID</label>
+                <input type="text" id="username" name="username" placeholder="Enter admin username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Secure Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter admin password" required>
+            </div>
+            
+            <div id="loginError" class="error-msg" style="display: none;"></div>
+            
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem; background-color: var(--secondary); border-color: var(--secondary);">Verify Credentials</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p><a href="login.html" class="highlight">Go to Patient Login</a></p>
+            <p><a href="index.html" class="text-muted">Back to Home</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorMsg = document.getElementById('loginError');
+            errorMsg.style.display = 'none';
+
+            const username = e.target.username.value;
+            const password = e.target.password.value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.user.role === 'admin') {
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        alert('Administrator Verified! Accessing Secure Dashboard...');
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        errorMsg.textContent = 'SECURITY ALERT: You are not authorized as an Administrator!';
+                        errorMsg.style.display = 'block';
+                    }
+                } else {
+                    errorMsg.textContent = data.message || 'Login failed';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                errorMsg.textContent = 'Server error. Please try again.';
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

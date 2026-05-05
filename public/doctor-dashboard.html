@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - LifeCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
+        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .main-content { flex: 1; padding: 2rem 5%; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        
+        .appt-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .prescribe-box {
+            display: none;
+            margin-top: 1rem;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .prescribe-box textarea {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 1rem;
+            border-radius: 8px;
+            min-height: 100px;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+
+        .badge {
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-pending { background: rgba(234, 179, 8, 0.2); color: #eab308; }
+        .badge-confirmed { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-completed { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2><span class="highlight">Life</span>Care</h2>
+            <a href="#" class="active" id="navAppointments">My Appointments</a>
+            <a href="#" id="navOT">OT Schedule</a>
+            <div style="flex: 1;"></div>
+            <a href="#" onclick="logout()">Logout</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Doctor Portal</h1>
+                <div class="user-profile">
+                    <div class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1rem; margin: 0; background: #10b981;">D</div>
+                </div>
+            </div>
+
+            <div id="appointmentsContainer">
+                <p style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading your schedule...</p>
+            </div>
+
+            <div id="otContainer" style="display: none;">
+                <div class="appt-card" style="flex-direction: column; align-items: stretch; border-left: 4px solid #ef4444;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
+                        <h3 style="color: #ef4444;">CRITICAL: Open Heart Surgery</h3>
+                        <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">OT-Room 1</span>
+                    </div>
+                    <p style="color: var(--text-main); margin-bottom: 0.5rem;"><strong>Patient:</strong> Marcus Johnson (M)</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;"><strong>Time:</strong> Today, 14:00 - 18:00</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;"><strong>Anesthesiologist:</strong> Dr. Sarah Connor</p>
+                    <div style="margin-top: 1.5rem;">
+                        <button class="btn-outline" style="border-color: #ef4444; color: #ef4444;">Request Blood Pack (O-)</button>
+                    </div>
+                </div>
+
+                <div class="appt-card" style="flex-direction: column; align-items: stretch; border-left: 4px solid #3b82f6;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
+                        <h3 style="color: #3b82f6;">Appendectomy</h3>
+                        <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">OT-Room 4</span>
+                    </div>
+                    <p style="color: var(--text-main); margin-bottom: 0.5rem;"><strong>Patient:</strong> Lily Evans (F)</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;"><strong>Time:</strong> Tomorrow, 09:00 - 11:30</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;"><strong>Anesthesiologist:</strong> Dr. Michael Chang</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData || userData.role !== 'doctor') {
+            alert('Unauthorized access. Doctor login required.');
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('navAppointments').addEventListener('click', () => {
+            document.getElementById('navAppointments').classList.add('active');
+            document.getElementById('navOT').classList.remove('active');
+            document.getElementById('appointmentsContainer').style.display = 'block';
+            document.getElementById('otContainer').style.display = 'none';
+        });
+
+        document.getElementById('navOT').addEventListener('click', () => {
+            document.getElementById('navOT').classList.add('active');
+            document.getElementById('navAppointments').classList.remove('active');
+            document.getElementById('otContainer').style.display = 'block';
+            document.getElementById('appointmentsContainer').style.display = 'none';
+        });
+
+        async function loadAppointments() {
+            try {
+                const res = await fetch('/api/doctor/appointments/' + userData.id);
+                if (res.ok) {
+                    const appointments = await res.json();
+                    const container = document.getElementById('appointmentsContainer');
+                    container.innerHTML = '';
+
+                    if (appointments.length === 0) {
+                        container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 3rem;">You have no scheduled appointments at this time.</p>';
+                        return;
+                    }
+
+                    appointments.forEach(appt => {
+                        let badgeClass = 'badge-pending';
+                        if (appt.status === 'Confirmed') badgeClass = 'badge-confirmed';
+                        if (appt.status === 'Completed') badgeClass = 'badge-completed';
+
+                        const card = document.createElement('div');
+                        card.className = 'appt-card';
+                        card.style.flexDirection = 'column';
+                        card.style.alignItems = 'stretch';
+                        
+                        let actionHtml = '';
+                        if (appt.status === 'Pending') {
+                            actionHtml = `
+                                <button class="btn-primary" style="background: #10b981; margin-top: 1rem;" onclick="togglePrescribeBox(${appt.id})">Consult & Write Prescription</button>
+                                <div id="prescBox-${appt.id}" class="prescribe-box">
+                                    <h4 style="margin-bottom: 0.5rem; color: #10b981;">Medical Prescription Notes</h4>
+                                    <textarea id="prescText-${appt.id}" placeholder="e.g. Amoxicillin 500mg, twice a day for 7 days. Rest recommended."></textarea>
+                                    <button class="btn-primary" style="background: #10b981; width: 100%;" onclick="submitPrescription(${appt.id})">Approve & Issue Prescription</button>
+                                </div>
+                            `;
+                        } else {
+                            actionHtml = `
+                                <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; border-radius: 4px;">
+                                    <p style="color: #10b981; font-weight: 600;">Prescription Issued & Invoice Sent</p>
+                                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Patient must now pay the invoice to complete the cycle.</p>
+                                </div>
+                            `;
+                        }
+
+                        card.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">Patient: ${appt.patient_name} (${appt.gender})</h3>
+                                    <p style="color: var(--text-muted); font-size: 0.9rem;">
+                                        Date: <strong style="color: var(--primary)">${appt.appointment_date}</strong> at <strong style="color: var(--primary)">${appt.appointment_time}</strong>
+                                    </p>
+                                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem;">
+                                        Presenting Condition: ${appt.reason || 'Standard Checkup'}
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="badge ${badgeClass}">${appt.status}</span>
+                                </div>
+                            </div>
+                            ${actionHtml}
+                        `;
+                        container.appendChild(card);
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('appointmentsContainer').innerHTML = '<p style="color: red; text-align: center;">Error loading appointments. Is the backend running?</p>';
+            }
+        }
+
+        function togglePrescribeBox(id) {
+            const box = document.getElementById('prescBox-' + id);
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        }
+
+        async function submitPrescription(apptId) {
+            const text = document.getElementById('prescText-' + apptId).value;
+            if (!text.trim()) {
+                alert('Please enter prescription details before issuing.');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/doctor/prescribe/' + apptId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prescriptionText: text })
+                });
+
+                if (res.ok) {
+                    alert('Prescription successfully securely issued and Appointment confirmed! Invoice automatically generated for patient.');
+                    loadAppointments();
+                } else {
+                    alert('Failed to issue prescription.');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Server error.');
+            }
+        }
+
+        loadAppointments();
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

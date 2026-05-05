@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeCare Hospital Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo" style="display: flex; align-items: center; gap: 12px;">
+            <img src="images/logo.png" alt="LifeCare Logo" style="height: 44px; width: 44px; border-radius: 10px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); object-fit: cover;">
+            <h2><span class="highlight">Life</span>Care</h2>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#doctors">Our Doctors</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="btn-outline" onclick="window.location.href='login.html'">Login</button>
+            <button class="btn-primary" id="bookBtn">Book Appointment</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero-section">
+            <div class="hero-content">
+                <h1>Modern Healthcare <br/>For Your Family</h1>
+                <p>Providing cutting-edge medical services with state-of-the-art facilities and experienced professionals. Your health is our top priority.</p>
+                <div class="hero-actions">
+                    <button class="btn-primary big-btn" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">Explore Services</button>
+                    <button class="btn-secondary big-btn" onclick="window.location.href='emergency.html'">Emergency Contact</button>
+                </div>
+            </div>
+            <div class="hero-graphics">
+                <div class="glass-card stat-card top-right">
+                    <h3>24/7</h3>
+                    <p>Emergency Services</p>
+                </div>
+                <div class="glass-card stat-card bottom-left">
+                    <h3>50+</h3>
+                    <p>Specialist Doctors</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services-section">
+            <div class="section-title">
+                <h2>Our Premium <span class="highlight">Services</span></h2>
+                <p>Comprehensive care for all your medical needs</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card" onclick="window.location.href='service.html?dept=cardiology'" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="icon">❤️</div>
+                    <h3>Cardiology</h3>
+                    <p>Advanced heart care with modern diagnostic tools.</p>
+                </div>
+                <div class="service-card" onclick="window.location.href='service.html?dept=neurology'" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="icon">🧠</div>
+                    <h3>Neurology</h3>
+                    <p>Expert care for brain and nervous system disorders.</p>
+                </div>
+                <div class="service-card" onclick="window.location.href='service.html?dept=orthopedics'" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="icon">🦴</div>
+                    <h3>Orthopedics</h3>
+                    <p>Comprehensive bone, joint, and muscle care.</p>
+                </div>
+                <div class="service-card" onclick="window.location.href='service.html?dept=pediatrics'" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="icon">👶</div>
+                    <h3>Pediatrics</h3>
+                    <p>Compassionate medical care for infants and children.</p>
+                </div>
+                <div class="service-card" onclick="window.location.href='service.html?dept=dermatology'" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="icon">✨</div>
+                    <h3>Dermatology</h3>
+                    <p>Expert diagnosis and advanced treatments for skin details.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="staff-roles" class="services-section" style="background: rgba(15, 23, 42, 0.6); padding-top: 4rem; padding-bottom: 4rem; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div class="section-title">
+                <h2>How Our <span class="highlight">Staff Works</span></h2>
+                <p>Understanding the collaborative medical roles within LifeCare</p>
+            </div>
+            <!-- Standardizing Grid Flow seamlessly into the existing Architecture -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 0 5%;">
+                <div class="service-card glass-card" style="transition: transform 0.3s; cursor: pointer;" onclick="showRoleModal('doctor')" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="icon" style="font-size: 3rem; margin-bottom: 1rem;">👨‍⚕️</div>
+                    <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.5rem;">Specialist Doctors <span style="font-size: 0.9rem; float: right; opacity: 0.5;">ℹ️</span></h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Our Senior Specialists are the architects of your recovery. They conduct deep medical diagnosis, perform complex surgeries, prescribe therapy plans, and lead the overarching collaborative medical journey.</p>
+                </div>
+                
+                <div class="service-card glass-card" style="transition: transform 0.3s; cursor: pointer;" onclick="showRoleModal('nurse')" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="icon" style="font-size: 3rem; margin-bottom: 1rem;">👩‍⚕️</div>
+                    <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.5rem;">Registered Nurses <span style="font-size: 0.9rem; float: right; opacity: 0.5;">ℹ️</span></h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Our Nursing staff is the heart of 24/7 inpatient care. They continuously monitor critical patient vitals, administer scheduled intravenous medications, assist doctors during surgical procedures, and provide bedside hospital support.</p>
+                </div>
+                
+                <div class="service-card glass-card" style="transition: transform 0.3s; cursor: pointer;" onclick="showRoleModal('compounder')" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div class="icon" style="font-size: 3rem; margin-bottom: 1rem;">💊</div>
+                    <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.5rem;">Clinical Compounders <span style="font-size: 0.9rem; float: right; opacity: 0.5;">ℹ️</span></h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Our expert Compounders safely prepare structurally customized medications. They actively manage complex prescription interactions, strictly enforce precise therapeutic dosages, and rigorously maintain the overarching integrity of the pharmacy.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="doctors" class="doctors-section">
+             <div class="section-title">
+                <h2>Meet Our <span class="highlight">Specialists</span></h2>
+                <p>Highly qualified professionals dedicated to your health</p>
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn-primary" onclick="checkAdminAccess()">+ Add New Doctor (Admin)</button>
+                </div>
+            </div>
+            <div class="doctors-wrapper" id="doctors-container">
+                <!-- Doctors will be loaded here dynamically via JS -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content" style="position:relative; z-index: 10;">
+            <div class="brand">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem;">
+                    <img src="images/logo.png" alt="LifeCare Footer Logo" style="height: 38px; width: 38px; border-radius: 8px; object-fit: cover; opacity: 0.9;">
+                    <h2><span class="highlight">Life</span>Care</h2>
+                </div>
+                <p>Leading the way in medical excellence.</p>
+            </div>
+            <div class="footer-links">
+                <p>Follow Us</p>
+                <div class="socials">
+                    <a href="https://twitter.com/LifeCareSystems" target="_blank" style="color: var(--text-muted); text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">Twitter</a>
+                    <a href="https://linkedin.com/company/lifecarehospital" target="_blank" style="color: var(--text-muted); text-decoration: none; transition: 0.3s; margin-left: 1rem;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">LinkedIn</a>
+                    <a href="https://instagram.com/LifeCareMedical" target="_blank" style="color: var(--text-muted); text-decoration: none; transition: 0.3s; margin-left: 1rem;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">Instagram</a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright" style="position:relative; z-index: 10;">
+            <p>&copy; 2026 LifeCare Hospital. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Role Expansion Overlay Modal -->
+    <div id="roleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding: 2rem;">
+        <div class="glass-card" style="max-width: 600px; width: 100%; padding: 3rem; position: relative; border-top: 4px solid var(--primary);" onclick="event.stopPropagation()">
+            <div id="roleIcon" style="font-size: 4rem; margin-bottom: 1rem; text-align: center;">👨‍⚕️</div>
+            <h2 id="roleTitle" style="text-align: center; color: var(--text-main); margin-bottom: 1.5rem;">Role Title</h2>
+            <div id="roleBody" style="color: var(--text-muted); line-height: 1.8; font-size: 1.1rem;">
+                Detailed Description Loading...
+            </div>
+            <button class="btn-primary" style="width: 100%; margin-top: 2rem;" onclick="document.getElementById('roleModal').style.display='none'">Close Summary</button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        function showRoleModal(type) {
+            const modal = document.getElementById('roleModal');
+            const title = document.getElementById('roleTitle');
+            const body = document.getElementById('roleBody');
+            const icon = document.getElementById('roleIcon');
+            
+            if (type === 'doctor') {
+                icon.innerText = '👨‍⚕️';
+                title.innerHTML = 'Specialist <span class="highlight">Doctors</span>';
+                body.innerHTML = `
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li style="margin-bottom: 0.8rem;"><b>Advanced Diagnostics:</b> Utilizing MRI, CT, and pathological data to diagnose rare conditions.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Surgical Excellence:</b> Leading cutting-edge minimally invasive and major operational surgical suites.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Therapeutic Leadership:</b> Formulating multi-disciplinary long-term patient recovery programs.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Emergency Control:</b> Serving as the ultimate decision-makers in high-stress trauma response protocols.</li>
+                    </ul>
+                    <p>Doctors serve as the primary directors of the hospital. They assume full liability for patient outcomes and legally authorize all medical prescriptions.</p>
+                `;
+            } else if (type === 'nurse') {
+                icon.innerText = '👩‍⚕️';
+                title.innerHTML = 'Registered <span class="highlight">Nurses</span>';
+                body.innerHTML = `
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li style="margin-bottom: 0.8rem;"><b>24/7 Vital Monitoring:</b> Continuously actively logging heart rate, blood pressure, and oxygen saturation inside ICU units.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Intravenous Admin:</b> Precision delivery of IV drip medications explicitly ordered by the specialists.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Surgical Assistance:</b> Setting up fully sterile operating environments and assisting surgeons natively during complex procedures.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Post-Op Therapy:</b> Cleaning surgical wounds, enforcing critical mobility routines, and serving as the direct bedside advocate for patient recovery comfort.</li>
+                    </ul>
+                `;
+            } else if (type === 'compounder') {
+                icon.innerText = '💊';
+                title.innerHTML = 'Clinical <span class="highlight">Compounders</span>';
+                body.innerHTML = `
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li style="margin-bottom: 0.8rem;"><b>Custom Formulation:</b> Structurally diluting and physically combining liquid chemotherapy and antibiotic intravenous bags tailored to specific patient weights.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Toxicity Management:</b> Evaluating complex interactions between simultaneously prescribed drugs to actively intercept lethal interactions.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Inventory Control:</b> Securing Grade-A controlled substance vault access and dispensing narcotics precisely alongside automated hospital dispenser systems.</li>
+                    </ul>
+                    <p>In cases where commercially sourced medication pills do not biologically fit a patient's exact metabolic need, Compounders mathematically manufacture personalized dosages in our sterile cleanrooms.</p>
+                    <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.5rem;">Clinical Compounders <span style="font-size: 0.9rem; float: right; opacity: 0.5;">ℹ️</span></h3>
+                    <p style="color: var(--text-muted); line-height: 1.6;">Our expert Compounders safely prepare structurally customized medications. They actively manage complex prescription interactions, strictly enforce precise therapeutic dosages, and rigorously maintain the overarching integrity of the pharmacy.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="doctors" class="doctors-section">
+             <div class="section-title">
+                <h2>Meet Our <span class="highlight">Specialists</span></h2>
+                <p>Highly qualified professionals dedicated to your health</p>
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn-primary" onclick="checkAdminAccess()">+ Add New Doctor (Admin)</button>
+                </div>
+            </div>
+            <div class="doctors-wrapper" id="doctors-container">
+                <!-- Doctors will be loaded here dynamically via JS -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content" style="position:relative; z-index: 10;">
+            <div class="brand">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem;">
+                    <img src="images/logo.png" alt="LifeCare Footer Logo" style="height: 38px; width: 38px; border-radius: 8px; object-fit: cover; opacity: 0.9;">
+                    <h2><span class="highlight">Life</span>Care</h2>
+                </div>
+                <p>Leading the way in medical excellence.</p>
+            </div>
+            <div class="footer-links">
+                <p>Follow Us</p>
+                <div class="socials">
+                    <a href="https://twitter.com/LifeCareSystems" target="_blank" style="color: var(--text-muted); text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">Twitter</a>
+                    <a href="https://linkedin.com/company/lifecarehospital" target="_blank" style="color: var(--text-muted); text-decoration: none; transition: 0.3s; margin-left: 1rem;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">LinkedIn</a>
+                    <a href="https://instagram.com/LifeCareMedical" target="_blank" style="color: var(--text-muted); text-decoration: none; transition: 0.3s; margin-left: 1rem;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">Instagram</a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright" style="position:relative; z-index: 10;">
+            <p>&copy; 2026 LifeCare Hospital. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Role Expansion Overlay Modal -->
+    <div id="roleModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding: 2rem;">
+        <div class="glass-card" style="max-width: 600px; width: 100%; padding: 3rem; position: relative; border-top: 4px solid var(--primary);" onclick="event.stopPropagation()">
+            <div id="roleIcon" style="font-size: 4rem; margin-bottom: 1rem; text-align: center;">👨‍⚕️</div>
+            <h2 id="roleTitle" style="text-align: center; color: var(--text-main); margin-bottom: 1.5rem;">Role Title</h2>
+            <div id="roleBody" style="color: var(--text-muted); line-height: 1.8; font-size: 1.1rem;">
+                Detailed Description Loading...
+            </div>
+            <button class="btn-primary" style="width: 100%; margin-top: 2rem;" onclick="document.getElementById('roleModal').style.display='none'">Close Summary</button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        function showRoleModal(type) {
+            const modal = document.getElementById('roleModal');
+            const title = document.getElementById('roleTitle');
+            const body = document.getElementById('roleBody');
+            const icon = document.getElementById('roleIcon');
+            
+            if (type === 'doctor') {
+                icon.innerText = '👨‍⚕️';
+                title.innerHTML = 'Specialist <span class="highlight">Doctors</span>';
+                body.innerHTML = `
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li style="margin-bottom: 0.8rem;"><b>Advanced Diagnostics:</b> Utilizing MRI, CT, and pathological data to diagnose rare conditions.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Surgical Excellence:</b> Leading cutting-edge minimally invasive and major operational surgical suites.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Therapeutic Leadership:</b> Formulating multi-disciplinary long-term patient recovery programs.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Emergency Control:</b> Serving as the ultimate decision-makers in high-stress trauma response protocols.</li>
+                    </ul>
+                    <p>Doctors serve as the primary directors of the hospital. They assume full liability for patient outcomes and legally authorize all medical prescriptions.</p>
+                `;
+            } else if (type === 'nurse') {
+                icon.innerText = '👩‍⚕️';
+                title.innerHTML = 'Registered <span class="highlight">Nurses</span>';
+                body.innerHTML = `
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li style="margin-bottom: 0.8rem;"><b>24/7 Vital Monitoring:</b> Continuously actively logging heart rate, blood pressure, and oxygen saturation inside ICU units.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Intravenous Admin:</b> Precision delivery of IV drip medications explicitly ordered by the specialists.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Surgical Assistance:</b> Setting up fully sterile operating environments and assisting surgeons natively during complex procedures.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Post-Op Therapy:</b> Cleaning surgical wounds, enforcing critical mobility routines, and serving as the direct bedside advocate for patient recovery comfort.</li>
+                    </ul>
+                `;
+            } else if (type === 'compounder') {
+                icon.innerText = '💊';
+                title.innerHTML = 'Clinical <span class="highlight">Compounders</span>';
+                body.innerHTML = `
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li style="margin-bottom: 0.8rem;"><b>Custom Formulation:</b> Structurally diluting and physically combining liquid chemotherapy and antibiotic intravenous bags tailored to specific patient weights.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Toxicity Management:</b> Evaluating complex interactions between simultaneously prescribed drugs to actively intercept lethal interactions.</li>
+                        <li style="margin-bottom: 0.8rem;"><b>Inventory Control:</b> Securing Grade-A controlled substance vault access and dispensing narcotics precisely alongside automated hospital dispenser systems.</li>
+                    </ul>
+                    <p>In cases where commercially sourced medication pills do not biologically fit a patient's exact metabolic need, Compounders mathematically manufacture personalized dosages in our sterile cleanrooms.</p>
+                `;
+            }
+            modal.style.display = 'flex';
+        }
+
+        function checkAdminAccess() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user || user.role !== 'admin') {
+                alert('You must be securely logged in as an Administrator to manage doctors.');
+                window.location.href = 'admin-login.html';
+            } else {
+                window.location.href = 'admin-dashboard.html';
+            }
+        }
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

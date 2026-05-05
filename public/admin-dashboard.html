@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - LifeCare Hospital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: rgba(15, 23, 42, 0.95);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .sidebar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+            display: block;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(236, 72, 153, 0.1);
+            color: var(--secondary);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem 5%;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .form-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .form-section h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2><span class="highlight">Admin</span>Portal</h2>
+            <a href="#" class="active" id="navAddDoctor">Add New Doctor</a>
+            <a href="#" id="navManageDoctors">Manage Doctors</a>
+            <a href="#" id="navManagePatients">Manage Patients</a>
+            <a href="#" id="navBloodBank">Blood Bank (Inventory)</a>
+            <a href="#" id="navSettings">System Settings</a>
+            <div style="flex: 1;"></div>
+            <a href="#" onclick="logout()">Logout</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 id="welcomeUser">Welcome, Administrator</h1>
+                <div class="user-profile">
+                    <div class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1rem; margin: 0; background: var(--secondary)">A</div>
+                </div>
+            </div>
+
+            <!-- Add Doctor Form -->
+            <div class="form-section">
+                <h3>Register a Specialist</h3>
+                <form id="addDoctorForm" class="auth-form">
+                    <div class="form-group flex-group">
+                        <div class="half-width">
+                            <label>Doctor Full Name</label>
+                            <input type="text" id="docName" placeholder="Dr. John Doe" required>
+                        </div>
+                        <div class="half-width">
+                            <label>Specialty Department</label>
+                            <select id="docSpecialty" required>
+                                <option value="">Select Specialty</option>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                                <option value="General Checkup">General Checkup</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group flex-group">
+                        <div class="half-width">
+                            <label>Years of Experience</label>
+                            <input type="number" id="docExperience" placeholder="e.g. 10" required>
+                        </div>
+                        <div class="half-width">
+                            <label>Contact Phone</label>
+                            <input type="tel" id="docPhone" placeholder="+1 234 567 8900" required>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--border-color); margin: 1.5rem 0;"></div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Setup Login Credentials for Doctor Portal:</p>
+
+                    <div class="form-group flex-group">
+                        <div class="half-width">
+                            <label>Username</label>
+                            <input type="text" id="docUsername" placeholder="dr_johndoe" required>
+                        </div>
+                        <div class="half-width">
+                            <label>Password</label>
+                            <input type="password" id="docPassword" placeholder="Temporay password" required>
+                        </div>
+                    </div>
+
+                    <div id="addError" class="error-msg" style="display: none; margin-top: 1rem;"></div>
+                    
+                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1.5rem; background: var(--secondary)">Add Doctor to System</button>
+                </form>
+            </div>
+
+            <!-- Manage Doctors Section -->
+            <div id="manageDoctorsSection" style="display: none;">
+                <div class="form-section" style="max-width: 100%;">
+                    <h3>Active Hospital Specialists</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
+                                    <th style="padding: 1rem;">Doctor Name</th>
+                                    <th style="padding: 1rem;">Specialty</th>
+                                    <th style="padding: 1rem;">Experience</th>
+                                    <th style="padding: 1rem;">Phone</th>
+                                    <th style="padding: 1rem;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="doctorsListTable">
+                                <tr><td colspan="5" style="text-align: center; padding: 1rem; color: var(--text-muted);">Loading system doctors...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Patients Section -->
+            <div id="managePatientsSection" style="display: none;">
+                <div class="form-section" style="max-width: 100%;">
+                    <h3>Registered Patients</h3>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
+                                    <th style="padding: 1rem;">Patient ID</th>
+                                    <th style="padding: 1rem;">Full Name</th>
+                                    <th style="padding: 1rem;">DOB / Gender</th>
+                                    <th style="padding: 1rem;">Username</th>
+                                    <th style="padding: 1rem;">Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientsListTable">
+                                <tr><td colspan="5" style="text-align: center; padding: 1rem; color: var(--text-muted);">Loading system patients...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Settings Section -->
+            <div id="manageSettingsSection" style="display: none;">
+                <div class="form-section" style="max-width: 600px; margin: 0 auto;">
+                    <h3>Hospital System Configuration</h3>
+                    <div style="margin-top: 1.5rem; background: rgba(15, 23, 42, 0.5); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                            <div>
+                                <h4 style="color: var(--text-main); margin-bottom: 0.2rem;">Accept New Registrations</h4>
+                                <p style="color: var(--text-muted); font-size: 0.85rem;">Allow new patients to create accounts.</p>
+                            </div>
+                            <span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: 600;">Enabled</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                            <div>
+                                <h4 style="color: var(--text-main); margin-bottom: 0.2rem;">Automated Backup Protocol</h4>
+                                <p style="color: var(--text-muted); font-size: 0.85rem;">MySQL Database sync every 24 hours.</p>
+                            </div>
+                            <span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: 600;">Active</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="color: var(--text-main); margin-bottom: 0.2rem;">System Maintenance Mode</h4>
+                                <p style="color: var(--text-muted); font-size: 0.85rem;">Temporarily take the portals offline.</p>
+                            </div>
+                            <button class="btn-outline" style="border-color: #ef4444; color: #ef4444; padding: 0.4rem 0.8rem;" onclick="alert('Maintenance action restricted by root Admin policy.')">Turn On</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blood Bank Section -->
+            <div id="manageBloodBankSection" style="display: none;">
+                <div class="form-section" style="max-width: 100%;">
+                    <h3>Central Blood Bank Inventory</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Monitor real-time plasma and blood unit levels across all hospital wards.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <!-- Blood Cards -->
+                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">A+</h2>
+                            <p style="color: var(--text-main); font-weight: 600;">145 Units</p>
+                            <span style="color: #10b981; font-size: 0.8rem; background: rgba(16, 185, 129, 0.2); padding: 2px 8px; border-radius: 12px;">Healthy</span>
+                        </div>
+                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">A-</h2>
+                            <p style="color: var(--text-main); font-weight: 600;">12 Units</p>
+                            <span style="color: #facc15; font-size: 0.8rem; background: rgba(234, 179, 8, 0.2); padding: 2px 8px; border-radius: 12px;">Low Stock</span>
+                        </div>
+                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">B+</h2>
+                            <p style="color: var(--text-main); font-weight: 600;">98 Units</p>
+                            <span style="color: #10b981; font-size: 0.8rem; background: rgba(16, 185, 129, 0.2); padding: 2px 8px; border-radius: 12px;">Healthy</span>
+                        </div>
+                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid #ef4444; text-align: center; box-shadow: 0 0 15px rgba(239,68,68,0.2);">
+                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">O-</h2>
+                            <p style="color: var(--text-main); font-weight: 600;">2 Units</p>
+                            <span style="color: #ef4444; font-size: 0.8rem; background: rgba(239, 68, 68, 0.2); padding: 2px 8px; border-radius: 12px;">CRITICAL</span>
+                        </div>
+                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">AB+</h2>
+                            <p style="color: var(--text-main); font-weight: 600;">45 Units</p>
+                            <span style="color: #10b981; font-size: 0.8rem; background: rgba(16, 185, 129, 0.2); padding: 2px 8px; border-radius: 12px;">Healthy</span>
+                        </div>
+                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
+                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">AB-</h2>
+                            <p style="color: var(--text-main); font-weight: 600;">18 Units</p>
+                            <span style="color: #facc15; font-size: 0.8rem; background: rgba(234, 179, 8, 0.2); padding: 2px 8px; border-radius: 12px;">Low Stock</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Restrict to admins visually
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData || userData.role !== 'admin') {
+            alert("Unauthorized. Admin login required to access this secure portal.");
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('addDoctorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorMsg = document.getElementById('addError');
+            errorMsg.style.display = 'none';
+
+            const payload = {
+                fullName: document.getElementById('docName').value,
+                specialty: document.getElementById('docSpecialty').value,
+                experience: document.getElementById('docExperience').value,
+                phone: document.getElementById('docPhone').value,
+                username: document.getElementById('docUsername').value,
+                password: document.getElementById('docPassword').value
+            };
+
+            try {
+                const response = await fetch('/api/admin/add-doctor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Doctor successfully registered and added to the public directory!');
+                    document.getElementById('addDoctorForm').reset();
+                    loadAdminDoctors(); // Refresh the list
+                } else {
+                    errorMsg.textContent = data.message || 'Failed to add doctor.';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                errorMsg.textContent = 'Server error. Please try again.';
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        // Toggle Views
+        const addSection = document.querySelector('.form-section');
+        const manageSection = document.getElementById('manageDoctorsSection');
+        const managePatientsSection = document.getElementById('managePatientsSection');
+        const manageSettingsSection = document.getElementById('manageSettingsSection');
+        const manageBloodBankSection = document.getElementById('manageBloodBankSection');
+        
+        function clearActiveNavs() {
+            document.getElementById('navAddDoctor').classList.remove('active');
+            document.getElementById('navManageDoctors').classList.remove('active');
+            document.getElementById('navManagePatients').classList.remove('active');
+            document.getElementById('navBloodBank').classList.remove('active');
+            document.getElementById('navSettings').classList.remove('active');
+            
+            addSection.style.display = 'none';
+            manageSection.style.display = 'none';
+            managePatientsSection.style.display = 'none';
+            manageBloodBankSection.style.display = 'none';
+            manageSettingsSection.style.display = 'none';
+        }
+
+        document.getElementById('navAddDoctor').addEventListener('click', () => {
+            clearActiveNavs();
+            document.getElementById('navAddDoctor').classList.add('active');
+            addSection.style.display = 'block';
+        });
+
+        document.getElementById('navManageDoctors').addEventListener('click', () => {
+            clearActiveNavs();
+            document.getElementById('navManageDoctors').classList.add('active');
+            manageSection.style.display = 'block';
+            loadAdminDoctors();
+        });
+
+        document.getElementById('navManagePatients').addEventListener('click', () => {
+            clearActiveNavs();
+            document.getElementById('navManagePatients').classList.add('active');
+            managePatientsSection.style.display = 'block';
+            loadAdminPatients();
+        });
+
+        document.getElementById('navSettings').addEventListener('click', () => {
+            clearActiveNavs();
+            document.getElementById('navSettings').classList.add('active');
+            manageSettingsSection.style.display = 'block';
+        });
+
+        document.getElementById('navBloodBank').addEventListener('click', () => {
+            clearActiveNavs();
+            document.getElementById('navBloodBank').classList.add('active');
+            manageBloodBankSection.style.display = 'block';
+        });
+
+        async function loadAdminDoctors() {
+            try {
+                const res = await fetch('/api/doctors');
+                if (res.ok) {
+                    const doctors = await res.json();
+                    const tbody = document.getElementById('doctorsListTable');
+                    tbody.innerHTML = '';
+                    
+                    if (doctors.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1rem; color: var(--text-muted);">No doctors found in the database.</td></tr>';
+                        return;
+                    }
+
+                    doctors.forEach(doc => {
+                        tbody.innerHTML += `
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 1rem; color: var(--text-main);">${doc.name}</td>
+                                <td style="padding: 1rem; color: var(--text-muted);">${doc.specialty}</td>
+                                <td style="padding: 1rem; color: var(--text-muted);">${doc.experience_years || 0} Yrs</td>
+                                <td style="padding: 1rem; color: var(--text-muted);">${doc.phone || 'N/A'}</td>
+                                <td style="padding: 1rem;">
+                                    <button onclick="deleteDoctor(${doc.id})" style="padding: 0.4rem 0.8rem; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; border-radius: 6px; cursor: pointer;">Remove Data</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function deleteDoctor(id) {
+            if (!confirm('CRITICAL WARNING: Are you sure you want to permanently delete this doctor? This will also remove their user account and associated login credentials.')) return;
+            
+            try {
+                const res = await fetch('/api/admin/doctors/' + id, { method: 'DELETE' });
+                if (res.ok) {
+                    alert('Doctor securely removed from the database.');
+                    loadAdminDoctors();
+                } else {
+                    alert('Failed to delete doctor.');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Server error while deleting.');
+            }
+        }
+        async function loadAdminPatients() {
+            try {
+                const res = await fetch('/api/admin/patients');
+                if (res.ok) {
+                    const patients = await res.json();
+                    const tbody = document.getElementById('patientsListTable');
+                    tbody.innerHTML = '';
+                    
+                    if (patients.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1rem; color: var(--text-muted);">No patients registered yet.</td></tr>';
+                        return;
+                    }
+
+                    patients.forEach(pat => {
+                        const dobStr = pat.dob ? new Date(pat.dob).toLocaleDateString() : 'N/A';
+                        tbody.innerHTML += `
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 1rem; color: var(--primary);">#${pat.id}</td>
+                                <td style="padding: 1rem; color: var(--text-main); font-weight: 600;">${pat.full_name}</td>
+                                <td style="padding: 1rem; color: var(--text-muted);">${dobStr} / ${pat.gender}</td>
+                                <td style="padding: 1rem; color: var(--text-muted);">${pat.username}</td>
+                                <td style="padding: 1rem; color: var(--text-muted);">${pat.phone || 'N/A'}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - LifeCare Hospital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: rgba(15, 23, 42, 0.95);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .sidebar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+            display: block;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem 5%;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .dash-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .dash-card h3 {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-confirmed { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .status-pending { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2><span class="highlight">Life</span>Care</h2>
+            <a href="patient-dashboard.html" class="active">Dashboard</a>
+            <a href="#" onclick="showBookingModal()">Book Appointment</a>
+            <a href="patient-records.html">My Records</a>
+            <a href="patient-prescriptions.html">Prescriptions</a>
+            <a href="patient-pharmacy.html">Pharmacy</a>`n            <a href="patient-invoices.html">Invoices</a>
+            <div style="flex: 1;"></div>
+            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">?? Emergency SOS</a>`n            <a href="#" onclick="logout()">Logout</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 id="welcomeUser">Welcome, Patient!</h1>
+                <div class="user-profile" style="cursor: pointer;" onclick="showProfileModal()" title="View Profile">
+                    <div id="userAvatar" class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1.2rem; margin: 0; background-color: var(--primary); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">P</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Widgets -->
+            <div class="cards-grid">
+                <div class="dash-card glass-card">
+                    <h3 id="countUpcoming">-</h3>
+                    <p>Upcoming Appointments</p>
+                </div>
+                <div class="dash-card glass-card">
+                    <h3 id="countPast">-</h3>
+                    <p>Past Visits</p>
+                </div>
+                <div class="dash-card glass-card">
+                    <h3 id="countPending">1</h3>
+                    <p>Pending Bills</p>
+                </div>
+            </div>
+
+            <!-- Recent Appointments Table -->
+            <div class="table-container">
+                <h2>Recent Appointments</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsList">
+                        <tr><td colspan="5" style="text-align:center;">Loading appointments...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Booking Modal (Hidden by default) -->
+    <div id="bookingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+        <div class="auth-container glass-card" style="margin: auto;" onclick="event.stopPropagation()">
+            <div class="auth-header">
+                <h2>Book Appointment</h2>
+                <p>Schedule a visit with our specialists.</p>
+            </div>
+            <form class="auth-form" onsubmit="submitBooking(event)">
+                <div class="form-group">
+                    <label>Department</label>
+                    <select id="bookDept" onchange="filterDoctors()" required>
+                        <option value="">Select Department first...</option>
+                        <option value="General Checkup">General Checkup</option>
+                        <option value="Cardiology">Cardiology</option>
+                        <option value="Neurology">Neurology</option>
+                        <option value="Orthopedics">Orthopedics</option>
+                        <option value="Pediatrics">Pediatrics</option>
+                        <option value="Dermatology">Dermatology</option>
+                        <option value="Oncology">Oncology</option>
+                        <option value="Psychiatry">Psychiatry</option>
+                        <option value="Ophthalmology">Ophthalmology</option>
+                        <option value="Gynecology">Gynecology</option>
+                        <option value="Urology">Urology</option>
+                        <option value="Gastroenterology">Gastroenterology</option>
+                        <option value="ENT">ENT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Specialist Doctor</label>
+                    <select id="bookDoctor" required disabled>
+                        <option value="">Please select a Department first...</option>
+                    </select>
+                </div>
+                <div class="form-group flex-group">
+                    <div class="half-width">
+                        <label>Date</label>
+                        <input type="date" id="bookDate" required>
+                    </div>
+                    <div class="half-width">
+                        <label>Time</label>
+                        <input type="time" id="bookTime" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Reason for Visit</label>
+                    <input type="text" id="bookReason" placeholder="Brief description" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Confirm Booking</button>
+                <button type="button" class="btn-outline" style="width: 100%; margin-top: 0.5rem;" onclick="hideBookingModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dynamic Profile Modal (Hidden by default) -->
+    <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+        <div class="auth-container glass-card" style="margin: auto;" onclick="event.stopPropagation()">
+            <div class="auth-header">
+                <h2>Patient Profile</h2>
+                <p>Your securely registered medical identity.</p>
+            </div>
+            <div id="profileBody" style="color: var(--text-main); margin-top: 1.5rem; line-height: 2; font-size: 1.05rem;">
+                <p style="text-align: center; color: var(--text-muted);">Decrypting backend database...</p>
+            </div>
+            <button type="button" class="btn-primary" style="width: 100%; margin-top: 2rem;" onclick="hideProfileModal()">Close Window</button>
+        </div>
+    </div>
+
+    <script>
+        // Check local storage for user
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (userData) {
+            document.getElementById('welcomeUser').innerText = 'Welcome, ' + (userData.username || 'Patient');
+            // Dynamically set Avatar Initial correctly from DB payload username
+            document.getElementById('userAvatar').innerText = (userData.username || 'P').charAt(0).toUpperCase();
+        } else {
+            // Optional: redirect to login if not logged in
+            // window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        async function showProfileModal() {
+            document.getElementById('profileModal').style.display = 'flex';
+            const pBody = document.getElementById('profileBody');
+            if(userData && userData.id) {
+                try {
+                    const res = await fetch('/api/patient/profile/' + userData.id);
+                    if(res.ok) {
+                        const profile = await res.json();
+                        const dobStr = profile.dob ? new Date(profile.dob).toLocaleDateString() : 'N/A';
+                        pBody.innerHTML = `
+                            <div style="background: rgba(30, 41, 59, 0.5); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <p><b>Full Name:</b> <span style="color: var(--primary); float: right;">${profile.full_name || 'N/A'}</span></p>
+                                <p><b>Account:</b> <span style="float: right;">${profile.username}</span></p>
+                                <p><b>Gender:</b> <span style="float: right;">${profile.gender || 'N/A'}</span></p>
+                                <p><b>Birth Date:</b> <span style="float: right;">${dobStr}</span></p>
+                                <p><b>Phone:</b> <span style="float: right;">${profile.phone || 'N/A'}</span></p>
+                            </div>
+                        `;
+                    } else {
+                        pBody.innerHTML = '<p style="color: #ef4444; text-align: center;">Error retrieving database profile natively.</p>';
+                    }
+                } catch(e) { console.error('Error fetching profile', e); }
+            }
+        }
+
+        function hideProfileModal() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        function showBookingModal() {
+            document.getElementById('bookingModal').style.display = 'flex';
+        }
+
+        function hideBookingModal() {
+            document.getElementById('bookingModal').style.display = 'none';
+        }
+
+        async function loadDashboard() {
+            if (!userData) return;
+            try {
+                const response = await fetch('/api/patient-stats/' + userData.id);
+                if(response.ok) {
+                    const data = await response.json();
+                    document.getElementById('countUpcoming').innerText = data.upcoming;
+                    document.getElementById('countPast').innerText = data.past;
+                    document.getElementById('countPending').innerText = data.pendingBills;
+                    
+                    const tbody = document.getElementById('appointmentsList');
+                    tbody.innerHTML = '';
+                    if(data.appointments.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No recent appointments found.</td></tr>';
+                    } else {
+                        data.appointments.forEach(app => {
+                            const dateStr = new Date(app.date).toISOString().split('T')[0];
+                            let badgeClass = 'status-pending';
+                            let actionBtn = '';
+                            
+                            if (app.status === 'Completed') {
+                                badgeClass = 'status-confirmed'; // we can reuse CSS
+                            } else if (app.status === 'Confirmed') {
+                                badgeClass = 'status-confirmed';
+                            } else {
+                                // Add a beautiful action button for Portfolio presentation!
+                                actionBtn = `<button class="btn-outline" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; margin-left: 10px; border-color: #22c55e; color: #4ade80;" onclick="markCompleted(${app.id})">✔️ Complete</button>`;
+                            }
+                            
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>${dateStr}</td>
+                                    <td>${app.time}</td>
+                                    <td>${app.doctor}</td>
+                                    <td>${app.dept}</td>
+                                    <td>
+                                        <span class="status-badge ${badgeClass}">${app.status}</span>
+                                        ${actionBtn}
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    }
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        window.allDoctors = []; // Store globally for client-side rapid filtering
+        
+        async function loadDoctorsDropdown() {
+            try {
+                const res = await fetch('/api/doctors');
+                if (res.ok) {
+                    window.allDoctors = await res.json();
+                    
+                    // Do not populate yet, wait for Department selection
+                    const select = document.getElementById('bookDoctor');
+                    select.innerHTML = '<option value="">Please select a Department first...</option>';
+                    select.disabled = true;
+                }
+            } catch(err) {
+                console.error(err);
+            }
+        }
+
+        function filterDoctors() {
+            const dept = document.getElementById('bookDept').value;
+            const select = document.getElementById('bookDoctor');
+            
+            // Clear current specialists
+            select.innerHTML = '<option value="">Select a Specialist...</option>';
+            
+            if (!dept) {
+                select.disabled = true;
+                return;
+            }
+            
+            // Enable dropdown
+            select.disabled = false;
+            
+            // Dynamically filter global doctors precisely matching the selected clinical Department
+            const filtered = window.allDoctors.filter(doc => doc.specialty === dept);
+            
+            if (filtered.length === 0) {
+                select.innerHTML = '<option value="">No specialists currently available for this department.</option>';
+                select.disabled = true;
+                return;
+            }
+
+            filtered.forEach(doc => {
+                const opt = document.createElement('option');
+                opt.value = doc.id;
+                opt.textContent = `Dr. ${doc.name.replace('Dr. ', '')} (${doc.experience_years} Yrs Exp)`;
+                select.appendChild(opt);
+            });
+        }
+        
+        // Execute on load
+        loadDashboard();
+        loadDoctorsDropdown();
+
+        // Deep linking natively: Automatically open booking modal if routed with param securely!
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('action') === 'book') {
+                showBookingModal();
+                // Strip the param out of the URL without refreshing to keep it clean
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+        
+        // Temporally restrict the Calendar to only allow bookings today or in the future
+        const timezoneOffset = new Date().getTimezoneOffset() * 60000;
+        const localISOTime = (new Date(Date.now() - timezoneOffset)).toISOString().split('T')[0];
+        document.getElementById('bookDate').setAttribute('min', localISOTime);
+
+        async function markCompleted(appointmentId) {
+            try {
+                const res = await fetch(`/api/appointments/${appointmentId}/complete`, { method: 'POST' });
+                if(res.ok) {
+                    loadDashboard(); // Instant refresh after completion
+                } else {
+                    alert('Failed to update status.');
+                }
+            } catch(e) { console.error('Error completing', e); }
+        }
+
+        async function submitBooking(e) {
+            e.preventDefault();
+            
+            if (!userData || !userData.id) {
+                alert("You need to log in to securely book an appointment.");
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Processing...';
+
+            const payload = {
+                userId: userData.id,
+                doctorId: document.getElementById('bookDoctor').value,
+                date: document.getElementById('bookDate').value,
+                time: document.getElementById('bookTime').value,
+                reason: document.getElementById('bookReason').value
+            };
+
+            try {
+                const response = await fetch('/api/book-appointment', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                
+                if(response.ok) {
+                    alert("Appointment Booked successfully!");
+                    hideBookingModal();
+                    loadDashboard(); // Refresh stats immediately 
+                } else {
+                    const errorResponse = await response.json();
+                    alert("Error: " + errorResponse.message);
+                    
+                    // If their local cache is outdated compared to the database
+                    if(errorResponse.message === 'Patient profile not found.') {
+                       localStorage.removeItem('user');
+                       window.location.href = 'login.html';
+                    }
+                }
+            } catch(err) {
+                console.error(err);
+                alert("Server error connecting to backend.");
+            } finally {
+                submitBtn.textContent = 'Confirm Booking';
+            }
+        }
+    </script>
+    <script src="js/bg-slider.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr("#bookDate", {
+            altInput: true,
+            altFormat: "d-m-y",  // Display exactly as DD-MM-YY visually
+            dateFormat: "Y-m-d", // Submit to backend securely as YYYY-MM-DD
+            minDate: "1970-01-01",
+            maxDate: "2050-12-31"
+        });
+    </script>
+</body>
+</html>
