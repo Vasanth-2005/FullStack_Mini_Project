@@ -64,7 +64,8 @@
         <aside class="sidebar">
             <h2><span class="highlight">Life</span>Care</h2>
             <a href="#" class="active" id="navAppointments">My Appointments</a>
-            <a href="#" id="navOT">OT Schedule</a>
+            <a href="#" id="navOT">Operation Theater</a>
+            <a href="#" id="navChat">Live Patient Chat</a>
             <div style="flex: 1;"></div>
             <a href="#" onclick="logout()">Logout</a>
         </aside>
@@ -106,6 +107,31 @@
                     <p style="color: var(--text-muted); font-size: 0.9rem;"><strong>Anesthesiologist:</strong> Dr. Michael Chang</p>
                 </div>
             </div>
+
+            <!-- Chat Container -->
+            <div id="chatContainer" style="display: none; height: 100%; flex-direction: column;">
+                <h3>Active Patient Consultations</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Select a patient ID below to join their Live Telemedicine room.</p>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <input type="number" id="chatPatientId" placeholder="Enter Patient ID (e.g. 1)" style="padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.5); color: white;">
+                    <button class="btn-primary" onclick="openDoctorChat()">Join Room</button>
+                </div>
+
+                <div id="doctorChatRoom" style="display: none; flex: 1; margin-top: 2rem; background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; max-height: 500px;">
+                    <div style="padding: 1rem; background: rgba(15, 23, 42, 0.8); border-bottom: 1px solid var(--border-color);">
+                        <h4 style="color: #10b981;" id="chatRoomHeader">Room Connected</h4>
+                    </div>
+                    <div id="doctorChatMessages" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Messages go here -->
+                    </div>
+                    <div style="padding: 1rem; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; background: rgba(15, 23, 42, 0.5);">
+                        <input type="text" id="doctorChatInput" placeholder="Type medical advice..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white;" onkeypress="if(event.key === 'Enter') sendDoctorMsg()">
+                        <button class="btn-primary" onclick="sendDoctorMsg()">Send</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -124,14 +150,27 @@
         document.getElementById('navAppointments').addEventListener('click', () => {
             document.getElementById('navAppointments').classList.add('active');
             document.getElementById('navOT').classList.remove('active');
+            document.getElementById('navChat').classList.remove('active');
             document.getElementById('appointmentsContainer').style.display = 'block';
             document.getElementById('otContainer').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'none';
         });
 
         document.getElementById('navOT').addEventListener('click', () => {
             document.getElementById('navOT').classList.add('active');
             document.getElementById('navAppointments').classList.remove('active');
+            document.getElementById('navChat').classList.remove('active');
             document.getElementById('otContainer').style.display = 'block';
+            document.getElementById('appointmentsContainer').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'none';
+        });
+
+        document.getElementById('navChat').addEventListener('click', () => {
+            document.getElementById('navChat').classList.add('active');
+            document.getElementById('navAppointments').classList.remove('active');
+            document.getElementById('navOT').classList.remove('active');
+            document.getElementById('chatContainer').style.display = 'flex';
+            document.getElementById('otContainer').style.display = 'none';
             document.getElementById('appointmentsContainer').style.display = 'none';
         });
 
@@ -150,7 +189,6 @@
 
                     appointments.forEach(appt => {
                         let badgeClass = 'badge-pending';
-                        if (appt.status === 'Confirmed') badgeClass = 'badge-confirmed';
                         if (appt.status === 'Completed') badgeClass = 'badge-completed';
 
                         const card = document.createElement('div');
@@ -159,7 +197,7 @@
                         card.style.alignItems = 'stretch';
                         
                         let actionHtml = '';
-                        if (appt.status === 'Pending') {
+                        if (!appt.prescription_text && appt.status !== 'Completed') {
                             actionHtml = `
                                 <button class="btn-primary" style="background: #10b981; margin-top: 1rem;" onclick="togglePrescribeBox(${appt.id})">Consult & Write Prescription</button>
                                 <div id="prescBox-${appt.id}" class="prescribe-box">
@@ -223,15 +261,84 @@
                 });
 
                 if (res.ok) {
-                    alert('Prescription successfully securely issued and Appointment confirmed! Invoice automatically generated for patient.');
+                    alert('Prescription successfully securely issued! Invoice automatically generated for patient. Awaiting Patient Payment to complete.');
                     loadAppointments();
                 } else {
                     alert('Failed to issue prescription.');
                 }
-            } catch (e) {
-                console.error(e);
-                alert('Server error.');
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred.');
             }
+        }
+
+        let activeChatPid = null;
+        let chatInterval = null;
+
+        function openDoctorChat() {
+            const pid = document.getElementById('chatPatientId').value;
+            if(!pid) return;
+            activeChatPid = pid;
+            document.getElementById('doctorChatRoom').style.display = 'flex';
+            document.getElementById('chatRoomHeader').innerText = 'Room Connected: Patient ID ' + pid;
+            
+            if(chatInterval) clearInterval(chatInterval);
+            chatInterval = setInterval(loadDoctorChat, 2000);
+            loadDoctorChat();
+        }
+
+        async function loadDoctorChat() {
+            if(!activeChatPid) return;
+            try {
+                const res = await fetch('/api/chat/' + activeChatPid);
+                if (res.ok) {
+                    const messages = await res.json();
+                    const box = document.getElementById('doctorChatMessages');
+                    box.innerHTML = '';
+                    
+                    if (messages.length === 0) {
+                        box.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No messages yet. Waiting for patient...</p>';
+                    } else {
+                        messages.forEach(m => {
+                            const msgDiv = document.createElement('div');
+                            msgDiv.style.maxWidth = '85%';
+                            msgDiv.style.padding = '0.8rem 1rem';
+                            msgDiv.style.borderRadius = '12px';
+                            msgDiv.style.marginBottom = '0.5rem';
+                            
+                            if (m.sender === 'doctor') {
+                                msgDiv.style.background = 'var(--primary)';
+                                msgDiv.style.color = 'white';
+                                msgDiv.style.alignSelf = 'flex-end';
+                                msgDiv.style.borderBottomRightRadius = '2px';
+                            } else {
+                                msgDiv.style.background = 'rgba(59, 130, 246, 0.2)';
+                                msgDiv.style.color = 'var(--text-main)';
+                                msgDiv.style.alignSelf = 'flex-start';
+                                msgDiv.style.borderBottomLeftRadius = '2px';
+                            }
+                            msgDiv.innerText = m.text;
+                            box.appendChild(msgDiv);
+                        });
+                    }
+                    box.scrollTop = box.scrollHeight;
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function sendDoctorMsg() {
+            if(!activeChatPid) return;
+            const input = document.getElementById('doctorChatInput');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            input.value = '';
+            await fetch('/api/chat/' + activeChatPid, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sender: 'doctor', text: text })
+            });
+            loadDoctorChat();
         }
 
         loadAppointments();

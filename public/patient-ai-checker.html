@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Symptom Checker - LifeCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
+        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+        .sidebar a.sos-link { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
+        .sidebar a.sos-link:hover { background: #ef4444; color: white; }
+        
+        .main-content { flex: 1; padding: 2rem 5%; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        
+        .ai-container {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--primary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+        }
+
+        .ai-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .ai-header span {
+            font-size: 3rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .symptom-input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .symptom-input-group input {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+        .symptom-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .ai-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 0 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ai-btn:hover {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .ai-result {
+            display: none;
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 4px solid var(--primary);
+            padding: 2rem;
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--primary);
+        }
+
+        .loader-bars {
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+            position: relative;
+        }
+
+        .loader-bars span {
+            display: block;
+            position: absolute;
+            bottom: 0;
+            width: 9px;
+            height: 10px;
+            background: var(--primary);
+            animation: equalizer 1.5s infinite ease-in-out;
+        }
+
+        .loader-bars span:nth-child(2) { left: 15px; animation-delay: 0.2s; }
+        .loader-bars span:nth-child(3) { left: 30px; animation-delay: 0.4s; }
+        .loader-bars span:nth-child(4) { left: 45px; animation-delay: 0.6s; }
+
+        @keyframes equalizer {
+            0% { height: 10px; }
+            50% { height: 30px; }
+            100% { height: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2><span class="highlight">Life</span>Care</h2>
+            <a href="patient-dashboard.html">Dashboard</a>
+            <a href="patient-ai-checker.html" class="active">AI Symptom Checker</a>
+            <a href="#" onclick="alert('Please use Dashboard to book.')">Book Appointment</a>
+            <a href="patient-telemedicine.html">Live Telemedicine</a>
+            <a href="patient-records.html">My Records</a>
+            <a href="patient-lab-reports.html">Lab Reports</a>
+            <a href="patient-prescriptions.html">Prescriptions</a>
+            <a href="patient-pharmacy.html">Pharmacy</a>
+            <a href="patient-invoices.html">Invoices</a>
+            <div style="flex: 1;"></div>
+            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">🚑 Emergency SOS</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Health Diagnostics Assistant</h1>
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar" style="background: var(--primary)">P</div>
+                </div>
+            </div>
+
+            <div class="ai-container">
+                <div class="ai-header">
+                    <span>🤖</span>
+                    <h2 style="color: var(--text-main); margin-top: 1rem;">LifeCare Medical AI</h2>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Describe your symptoms below to receive an instant preliminary diagnostic assessment powered by our Medical AI Engine.</p>
+                </div>
+
+                <div class="symptom-input-group">
+                    <input type="text" id="symptomsInput" placeholder="e.g. I have a severe headache, slight fever, and body ache..." onkeypress="if(event.key === 'Enter') analyzeSymptoms()">
+                    <button class="ai-btn" onclick="analyzeSymptoms()">Analyze</button>
+                </div>
+
+                <div class="loader" id="aiLoader">
+                    <div class="loader-bars">
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--text-muted);">Running neural diagnostics against medical database...</p>
+                </div>
+
+                <div class="ai-result" id="aiResult">
+                    <h3 style="color: #10b981; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>✓</span> Analysis Complete
+                    </h3>
+                    <p style="color: var(--text-main); font-size: 1.1rem; line-height: 1.6;" id="diagnosisText"></p>
+                    
+                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Disclaimer: This is an AI prediction. Please consult a licensed doctor.</p>
+                        <button class="btn-outline" onclick="window.location.href='patient-dashboard.html'">Book Doctor Now</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData || !userData.id) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('userAvatar').innerText = userData.name.charAt(0).toUpperCase();
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        function analyzeSymptoms() {
+            const input = document.getElementById('symptomsInput').value.trim();
+            if (!input) {
+                alert("Please describe your symptoms first.");
+                return;
+            }
+
+            document.getElementById('aiResult').style.display = 'none';
+            document.getElementById('aiLoader').style.display = 'block';
+
+            // Simulate AI processing delay
+            setTimeout(() => {
+                document.getElementById('aiLoader').style.display = 'none';
+                
+                const lower = input.toLowerCase();
+                let diagnosis = "";
+
+                if (lower.includes('headache') || lower.includes('fever') || lower.includes('ache')) {
+                    diagnosis = "Based on your symptoms, there is a **78% probability** of a Viral Infection or Influenza. Rest and hydration are heavily recommended. Over-the-counter paracetamol may alleviate the fever.";
+                } else if (lower.includes('cough') || lower.includes('throat') || lower.includes('breath')) {
+                    diagnosis = "These symptoms strongly correlate with an Upper Respiratory Tract Infection (URTI) or Bronchitis. A thorough auscultation by a Pulmonologist is advised if shortness of breath persists.";
+                } else if (lower.includes('stomach') || lower.includes('pain') || lower.includes('nausea')) {
+                    diagnosis = "Your description matches symptoms of Acute Gastroenteritis or potential acid reflux. Please avoid spicy foods and consider consulting a General Physician for antacids.";
+                } else {
+                    diagnosis = "Your symptoms require a more nuanced clinical evaluation. Please book an appointment with our General Physicians for a proper checkup and tailored medical advice.";
+                }
+
+                document.getElementById('diagnosisText').innerHTML = diagnosis.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--primary)">$1</strong>');
+                document.getElementById('aiResult').style.display = 'block';
+            }, 2500);
+        }
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

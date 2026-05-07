@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -185,17 +185,17 @@
                 <div class="form-group flex-group">
                     <div class="half-width">
                         <label>Your Name</label>
-                        <input type="text" placeholder="John Doe" required>
+                        <input type="text" id="contactName" placeholder="John Doe" required>
                     </div>
                     <div class="half-width">
                         <label>Email Address</label>
-                        <input type="email" placeholder="john@example.com" required>
+                        <input type="email" id="contactEmail" placeholder="john@example.com" required>
                     </div>
                 </div>
 
                 <div class="form-group" style="margin-top: 0.5rem;">
                     <label>Subject Topic</label>
-                    <select required>
+                    <select id="contactSubject" required>
                         <option value="">Select Topic</option>
                         <option value="appointment">Appointment Query</option>
                         <option value="billing">Billing & Insurance</option>
@@ -206,7 +206,7 @@
 
                 <div class="form-group" style="margin-top: 0.5rem;">
                     <label>Message details</label>
-                    <textarea placeholder="Type your message here..." required></textarea>
+                    <textarea id="contactMessage" placeholder="Type your message here..." required></textarea>
                 </div>
 
                 <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Send Message
@@ -236,10 +236,31 @@
     </footer>
 
     <script>
-        document.getElementById('contactForm').addEventListener('submit', (e) => {
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert('Thank you for reaching out to LifeCare Hospital! Our representatives will get back to you within 24 hours.');
-            e.target.reset();
+            
+            const payload = {
+                name: document.getElementById('contactName').value,
+                email: document.getElementById('contactEmail').value,
+                subject: document.getElementById('contactSubject').value,
+                message: document.getElementById('contactMessage').value
+            };
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if(response.ok) {
+                    alert('Thank you for reaching out to LifeCare Hospital! Our representatives will get back to you within 24 hours.');
+                    e.target.reset();
+                } else {
+                    alert('Failed to send message. Please try again later.');
+                }
+            } catch(err) {
+                alert('Server error.');
+            }
         });
     </script>
     <script src="js/bg-slider.js"></script>

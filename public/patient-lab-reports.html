@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Reports - LifeCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
+        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+        .sidebar a.sos-link { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
+        .sidebar a.sos-link:hover { background: #ef4444; color: white; }
+        
+        .main-content { flex: 1; padding: 2rem 5%; }
+        
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        
+        .lab-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .lab-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .lab-icon {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1.5rem;
+        }
+
+        .lab-details { flex: 1; }
+        
+        .status-badge {
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-ready { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-processing { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+
+        .download-btn {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2><span class="highlight">Life</span>Care</h2>
+            <a href="patient-dashboard.html">Dashboard</a>
+            <a href="patient-ai-checker.html">AI Symptom Checker</a>
+            <a href="#" onclick="alert('Please use Dashboard to book.')">Book Appointment</a>
+            <a href="patient-telemedicine.html">Live Telemedicine</a>
+            <a href="patient-records.html">My Records</a>
+            <a href="patient-lab-reports.html" class="active">Lab Reports</a>
+            <a href="patient-prescriptions.html">Prescriptions</a>
+            <a href="patient-pharmacy.html">Pharmacy</a>
+            <a href="patient-invoices.html">Invoices</a>
+            <div style="flex: 1;"></div>
+            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">🚑 Emergency SOS</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Diagnostic Lab Reports</h1>
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar" style="background: var(--primary)">P</div>
+                </div>
+            </div>
+
+            <div id="reportsContainer">
+                <!-- Static Lab Reports for Demonstration -->
+                <div class="lab-card">
+                    <div class="lab-icon">🩸</div>
+                    <div class="lab-details">
+                        <h3 style="color: var(--text-main); margin-bottom: 0.3rem;">Complete Blood Count (CBC)</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Ordered by: Dr. Sarah Connor | Date: 2026-04-20</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="status-badge status-ready" style="display: block; margin-bottom: 0.8rem;">Result Ready</span>
+                        <button class="download-btn" onclick="downloadSimulatedPDF('CBC_Report')">📥 Download PDF</button>
+                    </div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-icon">🩻</div>
+                    <div class="lab-details">
+                        <h3 style="color: var(--text-main); margin-bottom: 0.3rem;">Chest X-Ray (PA View)</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Ordered by: Dr. Michael Chang | Date: 2026-04-18</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="status-badge status-ready" style="display: block; margin-bottom: 0.8rem;">Result Ready</span>
+                        <button class="download-btn" onclick="downloadSimulatedPDF('XRAY_Report')">📥 Download PDF</button>
+                    </div>
+                </div>
+
+                <div class="lab-card">
+                    <div class="lab-icon">🧬</div>
+                    <div class="lab-details">
+                        <h3 style="color: var(--text-main); margin-bottom: 0.3rem;">Lipid Profile & Glucose Fasting</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Ordered by: Dr. Alice Smith | Date: 2026-05-01</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="status-badge status-processing" style="display: block; margin-bottom: 0.8rem;">Processing</span>
+                        <button class="download-btn" style="opacity: 0.5; cursor: not-allowed;" disabled>⏳ Pending</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData || !userData.id) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('userAvatar').innerText = userData.name.charAt(0).toUpperCase();
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        function downloadSimulatedPDF(reportName) {
+            // Generate a simple blob to simulate a PDF file download
+            const textContent = `LifeCare Hospital Diagnostic Laboratory\n\nPatient ID: ${userData.id}\nPatient Name: ${userData.name}\n\n[CONFIDENTIAL MEDICAL REPORT - ${reportName}]\n\nAll parameters are within normal reference ranges.\nPlease consult your primary physician for detailed clinical correlation.`;
+            
+            const blob = new Blob([textContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `${userData.name.replace(/\s+/g, '_')}_${reportName}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

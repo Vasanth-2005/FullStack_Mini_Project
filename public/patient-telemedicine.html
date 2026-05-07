@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemedicine - LifeCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .dashboard-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
+        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+        .sidebar a.sos-link { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
+        .sidebar a.sos-link:hover { background: #ef4444; color: white; }
+        
+        .main-content { flex: 1; padding: 2rem 5%; display: flex; flex-direction: column; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        
+        .video-container {
+            display: flex;
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        .main-video {
+            flex: 3;
+            background: #000;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .main-video img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+
+        .doctor-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+
+        .self-video {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 200px;
+            height: 150px;
+            background: #1e293b;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .self-video span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .btn-mute { background: rgba(255, 255, 255, 0.1); color: white; }
+        .btn-mute:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn-end { background: #ef4444; color: white; }
+        .btn-end:hover { background: #dc2626; transform: scale(1.1); }
+
+        .chat-sidebar {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .msg-doctor {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--text-main);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .msg-patient {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 8px;
+        }
+
+        .chat-input button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2><span class="highlight">Life</span>Care</h2>
+            <a href="patient-dashboard.html">Dashboard</a>
+            <a href="patient-ai-checker.html">AI Symptom Checker</a>
+            <a href="#" onclick="alert('Please use Dashboard to book.')">Book Appointment</a>
+            <a href="patient-telemedicine.html" class="active">Live Telemedicine</a>
+            <a href="patient-records.html">My Records</a>
+            <a href="patient-lab-reports.html">Lab Reports</a>
+            <a href="patient-prescriptions.html">Prescriptions</a>
+            <a href="patient-pharmacy.html">Pharmacy</a>
+            <a href="patient-invoices.html">Invoices</a>
+            <div style="flex: 1;"></div>
+            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">🚑 Emergency SOS</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <div>
+                    <h1 style="color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="display: inline-block; width: 12px; height: 12px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; animation: pulse 2s infinite;"></span>
+                        Live Consultation Room
+                    </h1>
+                    <p style="color: var(--text-muted); margin-top: 0.3rem;">End-to-End Encrypted Session</p>
+                </div>
+            </div>
+
+            <div class="video-container">
+                <!-- Video Area -->
+                <div class="main-video">
+                    <!-- Simulated Video Feed -->
+                    <div style="text-align: center; color: var(--text-muted);">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">👨‍⚕️</div>
+                        <h2 style="color: var(--text-main); margin-bottom: 0.5rem;">Connecting to Dr. Smith...</h2>
+                        <p>Establishing secure WebRTC connection...</p>
+                    </div>
+
+                    <div class="doctor-overlay">
+                        <h4 style="color: white; margin-bottom: 0.2rem;">Dr. Sarah Smith</h4>
+                        <p style="color: #10b981; font-size: 0.8rem;">Cardiologist</p>
+                    </div>
+
+                    <div class="self-video">
+                        <span>📷 Camera Off</span>
+                    </div>
+
+                    <div class="controls">
+                        <button class="control-btn btn-mute">🎤</button>
+                        <button class="control-btn btn-mute">📷</button>
+                        <button class="control-btn btn-mute">⚙️</button>
+                        <button class="control-btn btn-end" onclick="window.location.href='patient-dashboard.html'">📞</button>
+                    </div>
+                </div>
+
+                <!-- Chat Area -->
+                <div class="chat-sidebar">
+                    <div class="chat-header">
+                        <h3 style="color: var(--text-main); font-size: 1.1rem;">Session Chat</h3>
+                        <p style="color: #10b981; font-size: 0.8rem; margin-top: 0.2rem;">Doctor is online</p>
+                    </div>
+                    <div class="chat-messages" id="chatBox">
+                        <div class="message msg-doctor">
+                            Hello! I am reviewing your recent Lab Reports now. How are you feeling today?
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMsg()">
+                        <button onclick="sendMsg()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData || !userData.id) {
+            window.location.href = 'login.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        async function sendMsg() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            input.value = '';
+            
+            await fetch('/api/chat/' + userData.id, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sender: 'patient', text: text })
+            });
+            
+            loadChat();
+        }
+
+        async function loadChat() {
+            try {
+                const res = await fetch('/api/chat/' + userData.id);
+                if (res.ok) {
+                    const messages = await res.json();
+                    const box = document.getElementById('chatBox');
+                    box.innerHTML = ''; // clear
+                    
+                    if (messages.length === 0) {
+                        box.innerHTML = '<div class="message msg-doctor">Hello! I am reviewing your recent Lab Reports now. How are you feeling today?</div>';
+                    } else {
+                        messages.forEach(m => {
+                            const msgDiv = document.createElement('div');
+                            msgDiv.className = m.sender === 'patient' ? 'message msg-patient' : 'message msg-doctor';
+                            msgDiv.innerText = m.text;
+                            box.appendChild(msgDiv);
+                        });
+                    }
+                    box.scrollTop = box.scrollHeight;
+                }
+            } catch (e) {
+                console.error('Chat error', e);
+            }
+        }
+
+        setInterval(loadChat, 2000);
+        loadChat();
+    </script>
+    <script src="js/bg-slider.js"></script>
+</body>
+</html>

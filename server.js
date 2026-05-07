@@ -242,7 +242,7 @@ app.post('/api/book-appointment', async (req, res) => {
 
         const [result] = await db.query(`
             INSERT INTO Appointments (patient_id, doctor_id, appointment_date, appointment_time, reason, status, prescription_text)
-            VALUES (?, ?, ?, ?, ?, 'Confirmed', ?)
+            VALUES (?, ?, ?, ?, ?, 'Pending', ?)
         `, [patientId, doctorId, date, time, reason, presc]);
 
         const appointmentId = result.insertId;
@@ -372,7 +372,7 @@ app.get('/api/doctor/appointments/:userId', async (req, res) => {
         const doctorId = doctorRows[0].id;
 
         const [appointments] = await db.query(`
-            SELECT a.id, DATE_FORMAT(a.appointment_date, '%Y-%m-%d') as appointment_date, a.appointment_time, a.status, a.reason, p.full_name as patient_name, p.gender
+            SELECT a.id, DATE_FORMAT(a.appointment_date, '%Y-%m-%d') as appointment_date, a.appointment_time, a.status, a.reason, a.prescription_text, p.full_name as patient_name, p.gender
             FROM Appointments a
             JOIN Patients p ON a.patient_id = p.id
             WHERE a.doctor_id = ?
@@ -393,7 +393,7 @@ app.post('/api/doctor/prescribe/:appointmentId', async (req, res) => {
         const apptId = req.params.appointmentId;
 
         await db.query(
-            'UPDATE Appointments SET prescription_text = ?, status = "Confirmed" WHERE id = ?',
+            'UPDATE Appointments SET prescription_text = ? WHERE id = ?',
             [prescriptionText, apptId]
         );
 
@@ -411,6 +411,80 @@ app.post('/api/doctor/prescribe/:appointmentId', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to submit prescription.' });
+    }
+});
+
+// ==========================================
+// TELEMEDICINE CHAT APIs
+// ==========================================
+const activeChats = {}; // { patientId: [{sender, text}] }
+
+app.get('/api/chat/:patientId', (req, res) => {
+    const pid = req.params.patientId;
+    if (!activeChats[pid]) activeChats[pid] = [];
+    res.json(activeChats[pid]);
+});
+
+app.post('/api/chat/:patientId', (req, res) => {
+    const pid = req.params.patientId;
+    const { sender, text } = req.body;
+    if (!activeChats[pid]) activeChats[pid] = [];
+    activeChats[pid].push({ sender, text });
+    res.json({ success: true });
+});
+
+// ==========================================
+// SUPPORT TICKETS (CONTACT FORM) API
+// ==========================================
+app.post('/api/contact', async (req, res) => {
+    try {
+        const { name, email, subject, message } = req.body;
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS SupportQueries (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(100),
+                email VARCHAR(100),
+                subject VARCHAR(50),
+                message TEXT,
+                status ENUM('Open', 'Resolved') DEFAULT 'Open',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        await db.query('INSERT INTO SupportQueries (name, email, subject, message) VALUES (?, ?, ?, ?)', [name, email, subject, message]);
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to submit query.' });
+    }
+});
+
+app.get('/api/admin/queries', async (req, res) => {
+    try {
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS SupportQueries (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(100),
+                email VARCHAR(100),
+                subject VARCHAR(50),
+                message TEXT,
+                status ENUM('Open', 'Resolved') DEFAULT 'Open',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        const [queries] = await db.query('SELECT * FROM SupportQueries ORDER BY created_at DESC');
+        res.json(queries);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch queries.' });
+    }
+});
+
+app.post('/api/admin/queries/:id/resolve', async (req, res) => {
+    try {
+        await db.query('UPDATE SupportQueries SET status = "Resolved" WHERE id = ?', [req.params.id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to resolve query.' });
     }
 });
 

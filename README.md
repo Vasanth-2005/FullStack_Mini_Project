@@ -1,41 +1,44 @@
 # LifeCare Hospital Management System 🏥
 ![LifeCare Presentation](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge) ![Tech Stack](https://img.shields.io/badge/Tech_Stack-Node.js_|_Express_|_MySQL-blue?style=for-the-badge)
 
-A comprehensive, full-stack Hospital Management portal designed to streamline medical workflows between Administrators, Doctors, and Patients. Built with a robust **Node.js/Express** backend and a heavily normalized **MySQL** database, featuring a dynamic, glassmorphism-inspired UI.
+A comprehensive, full-stack Hospital Management enterprise portal designed to seamlessly integrate workflows between Administrators, Doctors, and Patients. Built with a robust **Node.js/Express** backend and a normalized **MySQL** database, featuring an advanced, glassmorphism-inspired interface.
 
-## 🌟 Key Features
+## 🌟 Advanced System Features
 
-### 1. Advanced 3-Tier Role System
-- **Master Administrators:** Dedicated secure portal to seamlessly manage the hospital roster. Ability to add, register, and completely wipe specialist Doctors from the system directly via UI.
-- **Specialist Doctors:** Private dashboard that pulls patient schedules. Doctors can review symptoms and electronically write and issue PDF-verifiable Medical Prescriptions.
-- **Patients:** Intuitive portal to securely book appointments based on department, pay outstanding invoices, and digitally download medical history records and active prescriptions.
+### 1. The Patient Ecosystem
+- **AI Symptom Checker:** Features an animated neural-diagnostic UI that evaluates a user's natural language symptoms and predicts illnesses (e.g. "headache" -> Viral Infection) before recommending an appointment.
+- **Bi-Directional Telemedicine Chat:** A simulated WebRTC video room featuring a real-time, API-polled live chat system directly connecting Patients to Doctors.
+- **Pharmacy & Lab Portal:** Patients can browse an e-commerce style medical pharmacy to order prescriptions and natively download simulated PDF text copies of their Diagnostic Lab Reports.
+- **Emergency SOS Radar:** Instant access to dispatch emergency ambulances to localized regions.
 
-### 2. Automated Diagnostic Workflows
-- **Smart Prescriptions:** If a doctor is unavailable, the backend AI intelligently evaluates the patient's booked symptoms (e.g. fever, heart, ortho) and auto-generates preliminary medical scripts saved directly to the database.
-- **Automated Billing Pipeline:** Generating a prescription seamlessly forces an Appointment to "Confirmed" status and dynamically issues an Unpaid Invoice directly to the patient's billing tab.
+### 2. The Specialist Doctor Portal
+- **Real-Time Patient Consultations:** Doctors can launch a Live Chat Room using the patient's ID to provide instantaneous medical feedback.
+- **Operation Theater (OT) Scheduler:** Comprehensive overview of surgical schedules, assigned anesthesiologists, and theater statuses.
+- **Automated Diagnostic Issuing:** Doctors can electronically issue medical prescriptions which instantly updates the Patient's UI and forces an unpaid invoice to the billing module.
 
-### 3. Professional Frontend Architecture
-- **Glassmorphism Design:** Deeply stylized modern UI with CSS variables, custom micro-animations, and dynamic sliders.
-- **HTML-to-PDF Engine:** Patients can download fully stylized, hospital-stamped diagnostic reports and medical prescriptions in raw PDF/TXT format directly from their browser.
-- **Secure Date Restrictions:** Implemented `Flatpickr` for highly localized, unbreakable Date of Birth (1970-2050) and Booking restrictions (DD-MM-YYYY natively translated to MySQL YYYY-MM-DD).
+### 3. The Executive Admin Dashboard
+- **Global Analytics:** A high-level financial and metric overview featuring a custom-built CSS revenue growth chart.
+- **Supply Chain Management:** Contains full CRUD-style dashboards for the **Central Pharmacy Inventory** and **Blood Bank Reserves**, featuring automated low-stock warnings.
+- **Bed & Ward Occupancy Tracker:** Real-time animated progress bars visualizing capacity limits across the ICU, Maternity, and General Wards.
+- **Support Ticketing Helpdesk:** A fully functional inbox capturing queries from the public landing page's contact form, allowing admins to "Resolve" tickets natively in the database.
+- **System Configuration & Security:** Panels to manually trigger "AWS RDS Database Purges" and mock 2FA authentications.
 
 ## 💻 Tech Stack
-- **Frontend:** Vanilla JS, HTML5, CSS3 (No bulky frameworks, completely custom engineered).
-- **Backend:** Node.js, Express.js.
-- **Database:** MySQL relational database.
-- **Security:** `bcryptjs` for heavy password hashing and secure tokenized local storage.
-- **Libraries:** `html2pdf.js` (Document Generation), `Flatpickr` (Date Management).
+- **Frontend Architecture:** Vanilla JS, HTML5, CSS3. Heavily relies on modern Flexbox/Grid, Glassmorphism aesthetics, and CSS Micro-animations.
+- **Backend Infrastructure:** Node.js, Express.js REST APIs.
+- **Database Layer:** MySQL relational database (Users, Patients, Doctors, Appointments, Invoices, SupportQueries).
+- **Security:** `bcryptjs` for heavy password hashing and localized session tokens.
 
 ## 🚀 Installation & Setup (Local)
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/LifeCare-Hospital.git
-   cd LifeCare-Hospital
+   git clone https://github.com/Vasanth-2005/FullStack_Mini_Project.git
+   cd Hospital_FullStack
    ```
 
 2. **Configure Database:**
-   - Ensure MySQL is running on your machine.
+   - Ensure MySQL is running on your local machine.
    - Run the provided `database/schema.sql` file in your MySQL environment to natively build the `hospital_db` and seed the master Admin account.
 
 3. **Environment Variables:**
@@ -55,6 +58,6 @@ A comprehensive, full-stack Hospital Management portal designed to streamline me
    ```
    Open `http://localhost:3000` in your web browser.
 
-## 🔐 Default Credentials
+## 🔐 Default Sandbox Credentials
 - **Admin Portal:** `lifecare_admin` / `AdminPassword123`
 - *Doctors and Patients can be freely registered via the Admin Dashboard and Public Register portals respectively.*
