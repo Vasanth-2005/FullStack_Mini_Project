@@ -510,13 +510,12 @@ app.post('/api/admin/settings', (req, res) => {
     res.json({ success: true, settings: globalSettings });
 });
 
-const fs = require('fs');
-const path = require('path');
+const filesystem = require('fs');
 app.post('/api/admin/backup', (req, res) => {
     try {
         const backupName = `backup_${Date.now()}.sql`;
         const backupPath = path.join(__dirname, 'database', backupName);
-        fs.writeFileSync(backupPath, '-- MySQL Auto-Generated Backup Dump\n-- System: LifeCare Hospital\n-- Date: ' + new Date().toISOString() + '\n\n-- Database structure and data goes here...');
+        filesystem.writeFileSync(backupPath, '-- MySQL Auto-Generated Backup Dump\n-- System: LifeCare Hospital\n-- Date: ' + new Date().toISOString() + '\n\n-- Database structure and data goes here...');
         res.json({ success: true, message: `Backup created securely at database/${backupName}` });
     } catch (err) {
         console.error(err);
