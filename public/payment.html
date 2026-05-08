@@ -1,183 +1,279 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Payment - LifeCare Hospital</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <style>
-        .payment-body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: radial-gradient(circle at top right, rgba(34, 197, 94, 0.2), var(--bg-dark) 40%),
-                        radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.2), var(--bg-dark) 40%);
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #050d1a; color: white; padding: 1.5rem; }
 
-        .payment-container {
-            width: 100%;
-            max-width: 500px;
-            margin: 2rem;
-            position: relative;
-            z-index: 10;
-        }
+        .checkout-wrapper { display: flex; gap: 1.5rem; width: 100%; max-width: 860px; align-items: flex-start; }
 
-        .payment-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
+        /* ── Left: Invoice Summary ── */
+        .summary-panel { flex: 1; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 2rem; }
+        .summary-panel h3 { font-size: 1rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem; }
+        .invoice-badge { display: inline-block; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); color: #60a5fa; padding: 0.35rem 0.9rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.9rem; }
+        .summary-row:last-of-type { border-bottom: none; }
+        .summary-row .label { color: rgba(255,255,255,0.45); }
+        .summary-row .value { color: white; font-weight: 600; }
+        .total-row { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 12px; padding: 1.2rem; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .total-row .label { color: rgba(255,255,255,0.6); font-weight: 600; }
+        .total-row .amount { font-size: 2rem; font-weight: 800; color: #4ade80; }
+        .secure-badge { display: flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
 
-        .payment-header h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-main);
-        }
+        /* ── Right: Payment Form ── */
+        .payment-panel { flex: 1.2; background: rgba(15,23,42,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 2rem; }
+        .payment-panel h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; }
+        .payment-panel > p { color: rgba(255,255,255,0.35); font-size: 0.85rem; margin-bottom: 2rem; }
 
-        .bill-amount {
-            font-size: 3rem;
-            color: #4ade80;
-            font-weight: 800;
-            margin: 1rem 0;
-            text-align: center;
+        /* Card Visual */
+        .card-visual {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb, #0ea5e9);
+            border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;
+            position: relative; overflow: hidden; height: 170px;
+            box-shadow: 0 8px 30px rgba(29,78,216,0.4);
         }
+        .card-visual::before { content:''; position:absolute; top:-30px; right:-30px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.06); }
+        .card-visual::after  { content:''; position:absolute; bottom:-40px; left:30px; width:130px; height:130px; border-radius:50%; background:rgba(255,255,255,0.04); }
+        .card-chip { width: 40px; height: 30px; background: rgba(255,215,0,0.8); border-radius: 6px; margin-bottom: 1.2rem; }
+        .card-num { font-size: 1.1rem; letter-spacing: 3px; font-family: monospace; color: rgba(255,255,255,0.9); margin-bottom: 1.2rem; }
+        .card-meta { display: flex; justify-content: space-between; }
+        .card-meta .meta-item p { font-size: 0.65rem; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
+        .card-meta .meta-item span { font-size: 0.9rem; color: white; font-weight: 600; }
+        .card-logo { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; }
 
-        .payment-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+        /* Form */
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.45rem; }
+        .input-wrap { position: relative; }
+        .input-wrap .icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); opacity: 0.35; font-size: 0.9rem; pointer-events: none; }
+        .input-wrap input {
+            width: 100%; padding: 0.82rem 1rem 0.82rem 2.6rem;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: white; font-size: 0.95rem; font-family: 'Inter', sans-serif;
+            outline: none; transition: all 0.25s;
         }
+        .input-wrap input:focus { border-color: #3b82f6; background: rgba(59,130,246,0.08); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        .input-wrap input::placeholder { color: rgba(255,255,255,0.2); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-        .success-panel {
-            display: none;
-            text-align: center;
-            padding: 2rem 0;
-        }
+        .pay-btn { width: 100%; padding: 1rem; background: linear-gradient(90deg, #059669, #10b981); border: none; border-radius: 12px; color: white; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(16,185,129,0.3); display: flex; align-items: center; justify-content: center; gap: 0.6rem; margin-top: 0.5rem; }
+        .pay-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16,185,129,0.4); }
+        .pay-btn:disabled { opacity: 0.65; transform: none; cursor: not-allowed; }
+        .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .success-icon {
-            font-size: 5rem;
-            color: #4ade80;
-            margin-bottom: 1rem;
-        }
+        .cancel-link { display: block; text-align: center; color: rgba(255,255,255,0.25); text-decoration: none; font-size: 0.85rem; margin-top: 1rem; transition: color 0.2s; }
+        .cancel-link:hover { color: rgba(255,255,255,0.5); }
 
-        .btn-download {
-            background: var(--text-main);
-            color: var(--bg-dark);
-            padding: 1rem 2rem;
-            font-weight: 800;
-            text-decoration: none;
-            border-radius: 8px;
-            display: inline-block;
-            margin-top: 1.5rem;
-            transition: 0.3s;
-        }
+        /* Success Panel */
+        .success-overlay { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 3rem 2rem; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:none} }
+        .success-circle { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #059669, #10b981); display: flex; align-items: center; justify-content: center; font-size: 3rem; margin: 0 auto 1.5rem; box-shadow: 0 0 40px rgba(16,185,129,0.4); }
+        .success-overlay h2 { font-size: 1.8rem; margin-bottom: 0.6rem; }
+        .success-overlay p  { color: rgba(255,255,255,0.45); font-size: 0.95rem; margin-bottom: 2rem; }
+        .receipt-box { background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.2); border-radius: 12px; padding: 1.2rem 1.5rem; width: 100%; text-align: left; margin-bottom: 1.5rem; font-size: 0.88rem; }
+        .receipt-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .receipt-row:last-child { border-bottom: none; font-weight: 700; color: #4ade80; }
+        .receipt-row .k { color: rgba(255,255,255,0.4); }
+        .action-btns { display: flex; gap: 1rem; width: 100%; }
+        .btn-dl { flex: 1; padding: 0.85rem; background: #10b981; border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+        .btn-dl:hover { background: #059669; }
+        .btn-back { flex: 1; padding: 0.85rem; background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: rgba(255,255,255,0.6); font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+        .btn-back:hover { border-color: rgba(255,255,255,0.3); color: white; }
 
-        .btn-download:hover {
-            background: #cbd5e1;
-            transform: translateY(-2px);
-        }
-
+        @media (max-width:700px) { .checkout-wrapper{flex-direction:column;} .summary-panel{order:2;} }
     </style>
 </head>
-<body class="payment-body">
-    <div class="payment-container glass-card">
-        
-        <!-- Payment Input Panel -->
-        <div id="paymentPanel">
-            <div class="payment-header">
-                <h2>Secure Checkout</h2>
-                <p id="invoiceLabel">Invoice #INV-.....</p>
-                <div class="bill-amount" id="amtLabel">$-.--</div>
+<body>
+    <div class="checkout-wrapper">
+
+        <!-- Invoice Summary -->
+        <div class="summary-panel">
+            <h3>Order Summary</h3>
+            <div class="invoice-badge" id="invBadge">Invoice #INV-10001</div>
+
+            <div class="summary-row">
+                <span class="label">Description</span>
+                <span class="value">Medical Consultation</span>
             </div>
-            
-            <form id="paymentForm" class="payment-form auth-form">
+            <div class="summary-row">
+                <span class="label">Doctor Fee</span>
+                <span class="value" id="doctorFee">₹120.00</span>
+            </div>
+            <div class="summary-row">
+                <span class="label">Service Tax (5%)</span>
+                <span class="value" id="taxAmt">₹7.50</span>
+            </div>
+            <div class="summary-row">
+                <span class="label">Platform Fee</span>
+                <span class="value">₹22.50</span>
+            </div>
+
+            <div class="total-row">
+                <span class="label">Total Due</span>
+                <span class="amount" id="totalAmt">₹150.00</span>
+            </div>
+
+            <div class="secure-badge">
+                🔒 256-bit SSL · PCI-DSS Compliant · Secured by LifeCare Payments
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="payment-panel" id="paymentPanelMain">
+            <h2>Secure Checkout</h2>
+            <p>Enter your card details to complete payment</p>
+
+            <!-- Card Visual -->
+            <div class="card-visual">
+                <div class="card-logo">💳</div>
+                <div class="card-chip"></div>
+                <div class="card-num" id="cardDisplay">•••• •••• •••• ••••</div>
+                <div class="card-meta">
+                    <div class="meta-item">
+                        <p>Card Holder</p>
+                        <span id="nameDisplay">YOUR NAME</span>
+                    </div>
+                    <div class="meta-item" style="text-align:right;">
+                        <p>Expires</p>
+                        <span id="expiryDisplay">MM / YY</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="paymentForm">
                 <div class="form-group">
                     <label>Cardholder Name</label>
-                    <input type="text" placeholder="John Doe" required>
+                    <div class="input-wrap">
+                        <span class="icon">👤</span>
+                        <input type="text" id="holderName" placeholder="John Doe" required oninput="document.getElementById('nameDisplay').innerText = this.value.toUpperCase() || 'YOUR NAME'">
+                    </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label>Card Number</label>
-                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required>
+                    <div class="input-wrap">
+                        <span class="icon">💳</span>
+                        <input type="text" id="cardNum" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required oninput="formatCard(this)">
+                    </div>
                 </div>
 
-                <div class="form-group flex-group">
-                    <div class="half-width">
+                <div class="form-row">
+                    <div class="form-group">
                         <label>Expiry (MM/YY)</label>
-                        <input type="text" placeholder="12/26" maxlength="5" required>
+                        <div class="input-wrap">
+                            <span class="icon">📅</span>
+                            <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required oninput="formatExpiry(this); document.getElementById('expiryDisplay').innerText = this.value || 'MM/YY'">
+                        </div>
                     </div>
-                    <div class="half-width">
+                    <div class="form-group">
                         <label>CVV</label>
-                        <input type="password" placeholder="123" maxlength="3" required>
+                        <div class="input-wrap">
+                            <span class="icon">🔑</span>
+                            <input type="password" id="cvv" placeholder="•••" maxlength="3" required>
+                        </div>
                     </div>
                 </div>
-                
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem; background: #22c55e;">Process Payment securely</button>
-                <a href="patient-invoices.html" style="display:block; text-align:center; color: var(--text-muted); text-decoration: none; margin-top:0.5rem">Cancel & Go Back</a>
+
+                <button type="submit" class="pay-btn" id="payBtn">
+                    <div class="spinner" id="paySpinner"></div>
+                    <span id="payBtnText">🔒 Pay <span id="payAmtLabel">₹150.00</span></span>
+                </button>
+                <a href="patient-invoices.html" class="cancel-link">✕ Cancel & return to invoices</a>
             </form>
-        </div>
 
-        <!-- Success Panel Hidden Default -->
-        <div id="successPanel" class="success-panel">
-            <div class="success-icon">✅</div>
-            <h2>Payment Successful!</h2>
-            <p style="color: var(--text-muted); margin-top: 0.5rem;" id="successDesc">Your account has been cleared for Invoice.</p>
-            
-            <!-- Dynamic Data URI driving the download without needing a server file script! -->
-            <a href="#" download="Receipt.txt" id="downloadBtn" class="btn-download">Download Payment Bill</a>
-            
-            <br>
-            <a href="patient-invoices.html" style="display:inline-block; margin-top: 1rem; color: var(--text-muted); text-decoration: underline;">Return to Invoices</a>
+            <!-- Success -->
+            <div class="success-overlay" id="successPanel">
+                <div class="success-circle">✓</div>
+                <h2>Payment Successful!</h2>
+                <p id="successDesc">Your invoice has been marked as paid.</p>
+                <div class="receipt-box" id="receiptBox"></div>
+                <div class="action-btns">
+                    <button class="btn-dl" id="downloadBtn" onclick="downloadReceipt()">📄 Download Receipt</button>
+                    <a href="patient-invoices.html" class="btn-back">← Back to Invoices</a>
+                </div>
+            </div>
         </div>
-
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const invoiceId = urlParams.get('id');
-        const amtParam = urlParams.get('amt');
-        
-        let visualId = 'INV-UNKNOWN';
-        if (invoiceId) {
-            visualId = 'INV-' + (10000 + parseInt(invoiceId));
-            document.getElementById('invoiceLabel').innerText = `Invoice #${visualId} · Medical Consultation`;
+        const params = new URLSearchParams(window.location.search);
+        const invoiceId = params.get('id');
+        const amtParam  = parseFloat(params.get('amt') || '150');
+
+        const visualId = invoiceId ? 'INV-' + (10000 + parseInt(invoiceId)) : 'INV-10001';
+        document.getElementById('invBadge').innerText = 'Invoice #' + visualId;
+
+        const base = (amtParam * 0.8).toFixed(2);
+        const tax  = (amtParam * 0.05).toFixed(2);
+        document.getElementById('doctorFee').innerText  = '₹' + base;
+        document.getElementById('taxAmt').innerText     = '₹' + tax;
+        document.getElementById('totalAmt').innerText   = '₹' + amtParam.toFixed(2);
+        document.getElementById('payAmtLabel').innerText = '₹' + amtParam.toFixed(2);
+
+        function formatCard(inp) {
+            let v = inp.value.replace(/\D/g,'').slice(0,16);
+            inp.value = v.match(/.{1,4}/g)?.join(' ') || v;
+            const disp = v.padEnd(16,'•').match(/.{1,4}/g).join(' ');
+            document.getElementById('cardDisplay').innerText = disp;
         }
-        if (amtParam) {
-            document.getElementById('amtLabel').innerText = `$${amtParam}`;
+
+        function formatExpiry(inp) {
+            let v = inp.value.replace(/\D/g,'');
+            if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2,4);
+            inp.value = v;
         }
+
+        let receiptData = '';
 
         document.getElementById('paymentForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Stop page reload
+            e.preventDefault();
+            const btn  = document.getElementById('payBtn');
+            const spin = document.getElementById('paySpinner');
+            const txt  = document.getElementById('payBtnText');
 
-            // Aesthetic network delay simulation to mimic banking Gateway 
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            submitBtn.textContent = 'Processing...';
-            submitBtn.style.opacity = '0.7';
+            btn.disabled = true;
+            spin.style.display = 'block';
+            txt.style.display = 'none';
 
-            if (invoiceId) {
-                try {
-                    // Contact hospital database backend simultaneously while holding delay
-                    const res = await fetch(`/api/invoices/${invoiceId}/pay`, { method: 'POST' });
-                    if (!res.ok) {
-                        alert("Database synchronization failed.");
-                    }
-                } catch(err) { console.error('Error routing backend API', err); }
-            }
+            try {
+                if (invoiceId) {
+                    await fetch('/api/invoices/' + invoiceId + '/pay', { method: 'POST' });
+                }
+            } catch(err) { console.error(err); }
 
             setTimeout(() => {
-                // Hide payment panel, reveal success naturally
-                document.getElementById('paymentPanel').style.display = 'none';
-                document.getElementById('successPanel').style.display = 'block';
-                
-                document.getElementById('successDesc').innerHTML = `Your account has been dynamically cleared for Invoice <b>#${visualId}</b>. Your associated Appointment has natively shifted into Completed Status.`;
+                document.getElementById('paymentForm').style.display = 'none';
+                document.getElementById('paymentPanelMain').querySelector('h2').style.display = 'none';
+                document.getElementById('paymentPanelMain').querySelector('p').style.display  = 'none';
+                document.getElementById('paymentPanelMain').querySelector('.card-visual').style.display = 'none';
 
-                // Update receipt dynamically
-                const receiptText = `LifeCare Hospital - Payment Receipt\n=========================\nInvoice: #${visualId}\nDate: ${new Date().toLocaleDateString()}\nDescription: Medical Consultation\nAmount Paid: $${amtParam || '150.00'}\nStatus: PAID IN FULL\n\nThank you for trusting LifeCare!`;
-                document.getElementById('downloadBtn').href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(receiptText);
-                document.getElementById('downloadBtn').download = `LifeCare_Receipt_${visualId}.txt`;
-            }, 1500);
+                const now = new Date();
+                receiptData = `LifeCare Hospital — Payment Receipt\n${'='.repeat(38)}\nInvoice   : #${visualId}\nDate      : ${now.toLocaleDateString('en-IN')}\nTime      : ${now.toLocaleTimeString()}\nService   : Medical Consultation\nDoctor Fee: ₹${base}\nTax (5%)  : ₹${tax}\nPlatform  : ₹22.50\nTotal Paid: ₹${amtParam.toFixed(2)}\nStatus    : PAID IN FULL\n${'='.repeat(38)}\nThank you for choosing LifeCare Hospital!`;
+
+                document.getElementById('receiptBox').innerHTML = `
+                    <div class="receipt-row"><span class="k">Invoice</span><span>#${visualId}</span></div>
+                    <div class="receipt-row"><span class="k">Date</span><span>${now.toLocaleDateString('en-IN')}</span></div>
+                    <div class="receipt-row"><span class="k">Service</span><span>Medical Consultation</span></div>
+                    <div class="receipt-row"><span class="k">Total Paid</span><span>₹${amtParam.toFixed(2)}</span></div>
+                `;
+                document.getElementById('successDesc').innerHTML = `Invoice <b>#${visualId}</b> has been cleared. A receipt is ready for download.`;
+                document.getElementById('successPanel').style.display = 'flex';
+            }, 2000);
         });
+
+        function downloadReceipt() {
+            const blob = new Blob([receiptData], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'LifeCare_Receipt_' + visualId + '.txt';
+            a.click();
+        }
     </script>
     <script src="js/bg-slider.js"></script>
 </body>
