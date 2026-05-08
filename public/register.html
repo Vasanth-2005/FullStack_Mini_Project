@@ -4,74 +4,326 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - LifeCare Hospital</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="description" content="Create your LifeCare Hospital patient account to manage appointments and medical records.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; background: #050d1a; color: white; }
+
+        .left-panel {
+            flex: 1; background: linear-gradient(145deg, #0a1628, #0d2040, #071020);
+            display: flex; flex-direction: column; justify-content: center; padding: 4rem;
+            position: relative; overflow: hidden;
+        }
+        .left-panel::before { content:''; position:absolute; top:-80px; right:-80px; width:320px; height:320px; background:radial-gradient(circle,rgba(6,182,212,0.1) 0%,transparent 70%); border-radius:50%; }
+        .left-panel::after  { content:''; position:absolute; bottom:-60px; left:-60px; width:240px; height:240px; background:radial-gradient(circle,rgba(59,130,246,0.08) 0%,transparent 70%); border-radius:50%; }
+
+        .brand { margin-bottom: 2.5rem; z-index:1; position:relative; }
+        .brand h1 { font-size: 2rem; font-weight: 800; }
+        .brand h1 span { color: #3b82f6; }
+        .brand p { color: rgba(255,255,255,0.4); font-size: 0.85rem; margin-top:0.3rem; }
+
+        .panel-hero { z-index:1; position:relative; }
+        .panel-hero h2 { font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom:1rem; }
+        .panel-hero h2 span { background: linear-gradient(90deg,#3b82f6,#06b6d4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .panel-hero p { color: rgba(255,255,255,0.45); line-height:1.7; font-size:0.9rem; max-width:360px; }
+
+        .steps { margin-top:2rem; display:flex; flex-direction:column; gap:1.2rem; }
+        .step { display:flex; align-items:center; gap:1rem; }
+        .step-num { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#1d4ed8,#3b82f6); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; flex-shrink:0; }
+        .step p { color:rgba(255,255,255,0.55); font-size:0.88rem; }
+        .step strong { color:white; display:block; font-size:0.92rem; margin-bottom:0.1rem; }
+
+        /* Right */
+        .right-panel { width:520px; display:flex; align-items:center; justify-content:center; padding:2rem 2.5rem; background:rgba(10,18,38,0.75); border-left:1px solid rgba(255,255,255,0.06); backdrop-filter:blur(20px); overflow-y:auto; }
+        .form-wrapper { width:100%; max-width:400px; padding:1rem 0; }
+        .form-header { margin-bottom:2rem; }
+        .form-header h2 { font-size:1.7rem; font-weight:700; margin-bottom:0.4rem; }
+        .form-header p { color:rgba(255,255,255,0.4); font-size:0.88rem; }
+
+        /* Progress */
+        .progress-bar { display:flex; gap:0.5rem; margin-bottom:2rem; }
+        .prog-step { flex:1; height:4px; border-radius:2px; background:rgba(255,255,255,0.1); transition:background 0.3s; }
+        .prog-step.done { background:#3b82f6; }
+
+        /* Form */
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .form-group { margin-bottom:1.1rem; }
+        .form-group label { display:block; font-size:0.78rem; font-weight:600; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.45rem; }
+        .input-wrap { position:relative; }
+        .input-wrap .input-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); font-size:0.95rem; opacity:0.4; pointer-events:none; }
+        .input-wrap input,
+        .input-wrap select {
+            width:100%; padding:0.82rem 1rem 0.82rem 2.7rem;
+            background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+            border-radius:10px; color:white; font-size:0.9rem; font-family:'Inter',sans-serif;
+            outline:none; transition:all 0.25s; -webkit-appearance:none;
+        }
+        .input-wrap input:focus,
+        .input-wrap select:focus { border-color:#3b82f6; background:rgba(59,130,246,0.08); box-shadow:0 0 0 3px rgba(59,130,246,0.12); }
+        .input-wrap input::placeholder { color:rgba(255,255,255,0.22); }
+        .input-wrap select option { background:#0f172a; }
+
+        /* Password strength */
+        .pwd-strength { margin-top:0.5rem; }
+        .strength-bar { height:3px; border-radius:2px; background:rgba(255,255,255,0.08); overflow:hidden; }
+        .strength-fill { height:100%; width:0%; border-radius:2px; transition:all 0.3s; }
+        .strength-label { font-size:0.73rem; color:rgba(255,255,255,0.35); margin-top:0.3rem; }
+
+        .error-banner { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:0.75rem 1rem; font-size:0.85rem; color:#f87171; display:none; margin-bottom:1rem; }
+        .success-banner { background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:0.75rem 1rem; font-size:0.85rem; color:#34d399; display:none; margin-bottom:1rem; }
+
+        .submit-btn { width:100%; padding:0.92rem; background:linear-gradient(90deg,#1d4ed8,#3b82f6); border:none; border-radius:10px; color:white; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.3s; box-shadow:0 4px 20px rgba(59,130,246,0.3); display:flex; align-items:center; justify-content:center; gap:0.6rem; margin-top:0.5rem; }
+        .submit-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(59,130,246,0.4); }
+        .submit-btn:disabled { opacity:0.65; transform:none; cursor:not-allowed; }
+        .spinner { width:17px; height:17px; border:2px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .auth-footer-links { text-align:center; margin-top:1.5rem; }
+        .auth-footer-links p { color:rgba(255,255,255,0.3); font-size:0.85rem; margin-bottom:0.3rem; }
+        .auth-footer-links a { color:#60a5fa; text-decoration:none; font-weight:600; }
+        .auth-footer-links a:hover { text-decoration:underline; }
+
+        /* Terms checkbox */
+        .checkbox-group { display:flex; align-items:flex-start; gap:0.7rem; margin-bottom:1rem; }
+        .checkbox-group input[type=checkbox] { margin-top:3px; accent-color:#3b82f6; flex-shrink:0; }
+        .checkbox-group label { color:rgba(255,255,255,0.4); font-size:0.83rem; line-height:1.5; }
+        .checkbox-group a { color:#60a5fa; }
+
+        .orb { position:fixed; border-radius:50%; filter:blur(80px); pointer-events:none; z-index:0; }
+        .orb-1 { width:280px; height:280px; background:rgba(59,130,246,0.07); top:5%; left:15%; animation:orbFloat 9s ease-in-out infinite; }
+        .orb-2 { width:200px; height:200px; background:rgba(6,182,212,0.05); bottom:15%; right:25%; animation:orbFloat 13s ease-in-out infinite reverse; }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-25px)} }
+
+        @media (max-width:900px) { .left-panel{display:none;} .right-panel{width:100%;border-left:none;} }
+    </style>
 </head>
-<body class="auth-body">
-    <div class="auth-container glass-card" style="max-width: 500px;">
-        <div class="auth-header">
-            <h2><span class="highlight">Life</span>Care Register</h2>
-            <p>Create an account to manage your medical history and appointments.</p>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <div class="brand">
+            <h1><span>Life</span>Care Hospital</h1>
+            <p>Your Trusted Healthcare Partner</p>
         </div>
-        
-        <form id="registerForm" class="auth-form">
-            <div class="form-group">
-                <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
-            </div>
-
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Choose a username" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Create a password" required>
-            </div>
-
-            <div class="form-group flex-group">
-                <div class="half-width">
-                    <label for="dob">Date of Birth</label>
-                    <input type="date" id="dob" name="dob" required>
+        <div class="panel-hero">
+            <h2>Join <span>LifeCare</span><br>in 60 Seconds.</h2>
+            <p>Create your patient account and get immediate access to our full suite of healthcare services.</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div><strong>Create Your Account</strong><p>Secure credentials, stored with bcrypt hashing</p></div>
                 </div>
-                <div class="half-width">
-                    <label for="gender">Gender</label>
-                    <select id="gender" name="gender" required>
-                        <option value="">Select</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div><strong>Build Your Medical Profile</strong><p>Date of birth, gender, phone — all in one place</p></div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div><strong>Book Your First Appointment</strong><p>Choose from 10+ specialist departments</p></div>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" required>
-            </div>
-            
-            <div id="registerError" class="error-msg" style="display: none;"></div>
-            
-            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Create Account</button>
-        </form>
-        
-        <div class="auth-footer">
-            <p>Already have an account? <a href="login.html" class="highlight">Login Here</a></p>
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h2>Create Account</h2>
+                <p>Fill in your details to register as a patient</p>
+            </div>
+
+            <!-- Progress indicator -->
+            <div class="progress-bar" id="progressBar">
+                <div class="prog-step done" id="p1"></div>
+                <div class="prog-step" id="p2"></div>
+                <div class="prog-step" id="p3"></div>
+            </div>
+
+            <div class="error-banner" id="registerError"></div>
+            <div class="success-banner" id="registerSuccess"></div>
+
+            <form id="registerForm" autocomplete="on">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="firstName" placeholder="John" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="lastName" placeholder="Doe" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">@</span>
+                        <input type="text" id="username" placeholder="Choose a unique username" required autocomplete="username" oninput="updateProgress()">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" id="password" placeholder="Create a strong password" required autocomplete="new-password" oninput="checkPasswordStrength(this.value)">
+                    </div>
+                    <div class="pwd-strength">
+                        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                        <div class="strength-label" id="strengthLabel">Enter a password</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">📅</span>
+                            <input type="date" id="dob" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">⚧️</span>
+                            <select id="gender" required>
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other / Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">📞</span>
+                        <input type="tel" id="phone" placeholder="+91 98765 43210" required oninput="updateProgress()">
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="agreeTerms" required>
+                    <label for="agreeTerms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. My data is stored securely and never shared.</label>
+                </div>
+
+                <button type="submit" class="submit-btn" id="registerBtn">
+                    <div class="spinner" id="regSpinner"></div>
+                    <span id="registerBtnText">Create My Account</span>
+                </button>
+            </form>
+
+            <div class="auth-footer-links">
+                <p>Already have an account? <a href="login.html">Sign In</a></p>
+                <p><a href="index.html">← Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkPasswordStrength(val) {
+            const fill = document.getElementById('strengthFill');
+            const label = document.getElementById('strengthLabel');
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            const levels = [
+                { pct:'0%',   color:'transparent',  text:'Enter a password' },
+                { pct:'25%',  color:'#ef4444',       text:'Weak' },
+                { pct:'50%',  color:'#f59e0b',       text:'Fair' },
+                { pct:'75%',  color:'#3b82f6',       text:'Good' },
+                { pct:'100%', color:'#10b981',       text:'Strong ✓' },
+            ];
+            const lvl = levels[score];
+            fill.style.width = lvl.pct;
+            fill.style.background = lvl.color;
+            label.innerText = lvl.text;
+            label.style.color = lvl.color === 'transparent' ? 'rgba(255,255,255,0.35)' : lvl.color;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const u = document.getElementById('username').value.length > 2;
+            const p = document.getElementById('phone').value.length > 6;
+            document.getElementById('p2').classList.toggle('done', u);
+            document.getElementById('p3').classList.toggle('done', u && p);
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errEl = document.getElementById('registerError');
+            const sucEl = document.getElementById('registerSuccess');
+            const btn   = document.getElementById('registerBtn');
+            const spin  = document.getElementById('regSpinner');
+            const txt   = document.getElementById('registerBtnText');
+
+            errEl.style.display = 'none';
+            sucEl.style.display = 'none';
+            btn.disabled = true;
+            spin.style.display = 'block';
+            txt.innerText = 'Creating Account...';
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName  = document.getElementById('lastName').value.trim();
+            const fullName  = firstName + ' ' + lastName;
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value,
+                        fullName,
+                        dob:    document.getElementById('dob').value,
+                        gender: document.getElementById('gender').value,
+                        phone:  document.getElementById('phone').value
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    sucEl.innerText = '✓ Account created! Redirecting to login...';
+                    sucEl.style.display = 'block';
+                    setTimeout(() => window.location.href = 'login.html', 1800);
+                } else {
+                    errEl.innerText = data.message || 'Registration failed. Please try again.';
+                    errEl.style.display = 'block';
+                    btn.disabled = false;
+                    spin.style.display = 'none';
+                    txt.innerText = 'Create My Account';
+                }
+            } catch(err) {
+                errEl.innerText = 'Cannot connect to server. Please ensure the backend is running.';
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                spin.style.display = 'none';
+                txt.innerText = 'Create My Account';
+            }
+        });
+    </script>
     <script src="js/bg-slider.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         flatpickr("#dob", {
-            altInput: true,
-            altFormat: "d-m-y",  // Display exactly as DD-MM-YY visually
-            dateFormat: "Y-m-d", // Submit to backend securely as YYYY-MM-DD
-            minDate: "1970-01-01",
-            maxDate: "2050-12-31"
+            altInput: true, altFormat: "d M Y",
+            dateFormat: "Y-m-d", maxDate: "today"
         });
     </script>
 </body>

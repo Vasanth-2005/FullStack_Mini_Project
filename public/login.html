@@ -1,42 +1,302 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - LifeCare Hospital</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="description" content="Log in to LifeCare Hospital patient portal to manage your appointments, records, and health.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #050d1a;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* ── Left Panel ── */
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(145deg, #0a1628 0%, #0d2040 50%, #071020 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: -100px; left: -100px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; right: -80px;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .brand { margin-bottom: 3rem; position: relative; z-index: 1; }
+        .brand h1 { font-size: 2rem; font-weight: 800; }
+        .brand h1 span { color: #3b82f6; }
+        .brand p { color: rgba(255,255,255,0.45); font-size: 0.85rem; margin-top: 0.3rem; }
+
+        .panel-hero { position: relative; z-index: 1; }
+        .panel-hero h2 { font-size: 2.4rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.2rem; }
+        .panel-hero h2 span { background: linear-gradient(90deg, #3b82f6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .panel-hero p { color: rgba(255,255,255,0.5); line-height: 1.7; font-size: 0.95rem; max-width: 380px; }
+
+        .feature-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
+        .feature-item { display: flex; align-items: center; gap: 1rem; }
+        .feature-icon { width: 42px; height: 42px; border-radius: 10px; background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+        .feature-item p { color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+        .feature-item strong { color: white; display: block; font-size: 0.95rem; margin-bottom: 0.1rem; }
+
+        /* ── Right Panel ── */
+        .right-panel {
+            width: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2.5rem;
+            background: rgba(10, 18, 38, 0.7);
+            border-left: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(20px);
+            position: relative;
+        }
+
+        .form-wrapper { width: 100%; max-width: 380px; }
+
+        .form-header { margin-bottom: 2.5rem; }
+        .form-header h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .form-header p { color: rgba(255,255,255,0.45); font-size: 0.9rem; }
+
+        .role-tabs { display: flex; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 4px; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.08); }
+        .role-tab { flex: 1; padding: 0.6rem; text-align: center; border-radius: 7px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: rgba(255,255,255,0.45); transition: all 0.25s; border: none; background: transparent; }
+        .role-tab.active { background: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.35); }
+
+        .form-group { margin-bottom: 1.3rem; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .input-wrap { position: relative; }
+        .input-wrap .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 1rem; opacity: 0.4; pointer-events: none; }
+        .input-wrap input {
+            width: 100%; padding: 0.85rem 1rem 0.85rem 2.8rem;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: white;
+            font-size: 0.95rem; font-family: 'Inter', sans-serif;
+            outline: none; transition: all 0.25s;
+        }
+        .input-wrap input:focus { border-color: #3b82f6; background: rgba(59,130,246,0.08); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+        .input-wrap input::placeholder { color: rgba(255,255,255,0.25); }
+        .eye-toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; opacity: 0.4; transition: opacity 0.2s; font-size: 1rem; }
+        .eye-toggle:hover { opacity: 0.8; }
+
+        .forgot-link { text-align: right; margin-top: 0.4rem; }
+        .forgot-link a { color: #3b82f6; font-size: 0.82rem; text-decoration: none; }
+        .forgot-link a:hover { text-decoration: underline; }
+
+        .error-banner { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.88rem; color: #f87171; display: none; margin-bottom: 1rem; }
+
+        .submit-btn {
+            width: 100%; padding: 0.95rem;
+            background: linear-gradient(90deg, #1d4ed8, #3b82f6);
+            border: none; border-radius: 10px;
+            color: white; font-size: 1rem; font-weight: 700;
+            cursor: pointer; margin-top: 0.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(59,130,246,0.35);
+            display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+        }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59,130,246,0.45); }
+        .submit-btn:disabled { opacity: 0.7; transform: none; cursor: not-allowed; }
+
+        .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; }
+        .divider hr { flex: 1; border: none; border-top: 1px solid rgba(255,255,255,0.08); }
+        .divider span { color: rgba(255,255,255,0.25); font-size: 0.8rem; }
+
+        .auth-footer-links { text-align: center; margin-top: 1.5rem; }
+        .auth-footer-links p { color: rgba(255,255,255,0.35); font-size: 0.88rem; margin-bottom: 0.4rem; }
+        .auth-footer-links a { color: #60a5fa; text-decoration: none; font-weight: 600; }
+        .auth-footer-links a:hover { text-decoration: underline; }
+
+        /* Animated BG Orbs */
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+        .orb-1 { width: 300px; height: 300px; background: rgba(59,130,246,0.08); top: 10%; left: 20%; animation: orbFloat 8s ease-in-out infinite; }
+        .orb-2 { width: 200px; height: 200px; background: rgba(6,182,212,0.06); bottom: 20%; right: 30%; animation: orbFloat 12s ease-in-out infinite reverse; }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-30px)} }
+
+        @media (max-width: 900px) {
+            .left-panel { display: none; }
+            .right-panel { width: 100%; border-left: none; }
+        }
+    </style>
 </head>
-<body class="auth-body">
-    <div class="auth-container glass-card">
-        <div class="auth-header">
-            <h2><span class="highlight">Life</span>Care Login</h2>
-            <p>Welcome back! Please login to your account.</p>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <div class="brand">
+            <h1><span>Life</span>Care Hospital</h1>
+            <p>Your Trusted Healthcare Partner</p>
         </div>
-        
-        <form id="loginForm" class="auth-form">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        <div class="panel-hero">
+            <h2>Your Health,<br><span>Our Priority.</span></h2>
+            <p>Access your complete medical history, book specialist appointments, and consult with doctors — all from one secure portal.</p>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <div class="feature-icon">📅</div>
+                    <div>
+                        <strong>Smart Appointments</strong>
+                        <p>Book, reschedule & track specialist visits</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📹</div>
+                    <div>
+                        <strong>Live Telemedicine</strong>
+                        <p>Encrypted video consults from your home</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <div>
+                        <strong>Secure Records</strong>
+                        <p>AES-256 encrypted medical records & reports</p>
+                    </div>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            </div>
-            
-            <div id="loginError" class="error-msg" style="display: none;"></div>
-            
-            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Login</button>
-        </form>
-        
-        <div class="auth-footer">
-            <p>Don't have an account? <a href="register.html" class="highlight">Register Here</a></p>
-            <p><a href="index.html" class="text-muted">Back to Home</a></p>
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h2>Welcome Back</h2>
+                <p>Sign in to access your health portal</p>
+            </div>
+
+            <!-- Role Tabs -->
+            <div class="role-tabs" id="roleTabs">
+                <button class="role-tab active" onclick="setRole('patient', this)">🧑‍🤒 Patient</button>
+                <button class="role-tab" onclick="setRole('doctor', this)">👨‍⚕️ Doctor</button>
+                <button class="role-tab" onclick="window.location.href='admin-login.html'">🛡️ Admin</button>
+            </div>
+
+            <div class="error-banner" id="loginError"></div>
+
+            <form id="loginForm" autocomplete="on">
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+                        <span class="eye-toggle" id="eyeToggle" onclick="toggleEye()">👁️</span>
+                    </div>
+                    <div class="forgot-link"><a href="#">Forgot password?</a></div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="loginBtn">
+                    <div class="spinner" id="loginSpinner"></div>
+                    <span id="loginBtnText">Sign In</span>
+                </button>
+            </form>
+
+            <div class="divider"><hr><span>OR</span><hr></div>
+
+            <div class="auth-footer-links">
+                <p>Don't have an account? <a href="register.html">Create Account</a></p>
+                <p><a href="index.html">← Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedRole = 'patient';
+
+        function setRole(role, el) {
+            selectedRole = role;
+            document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function toggleEye() {
+            const pwd = document.getElementById('password');
+            const eye = document.getElementById('eyeToggle');
+            if (pwd.type === 'password') { pwd.type = 'text'; eye.innerText = '🙈'; }
+            else { pwd.type = 'password'; eye.innerText = '👁️'; }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errBanner = document.getElementById('loginError');
+            const btn = document.getElementById('loginBtn');
+            const spinner = document.getElementById('loginSpinner');
+            const btnText = document.getElementById('loginBtnText');
+
+            errBanner.style.display = 'none';
+            btn.disabled = true;
+            spinner.style.display = 'block';
+            btnText.innerText = 'Signing in...';
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    const role = data.user.role;
+                    if (role === 'admin') window.location.href = 'admin-dashboard.html';
+                    else if (role === 'doctor') window.location.href = 'doctor-dashboard.html';
+                    else window.location.href = 'patient-dashboard.html';
+                } else {
+                    errBanner.innerText = data.message || 'Login failed. Please try again.';
+                    errBanner.style.display = 'block';
+                    btn.disabled = false;
+                    spinner.style.display = 'none';
+                    btnText.innerText = 'Sign In';
+                }
+            } catch (err) {
+                errBanner.innerText = 'Cannot connect to server. Please ensure the backend is running.';
+                errBanner.style.display = 'block';
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.innerText = 'Sign In';
+            }
+        });
+    </script>
     <script src="js/bg-slider.js"></script>
 </body>
 </html>
