@@ -78,6 +78,36 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// Forgot Password: Check if username exists
+app.post('/api/auth/check-user', async (req, res) => {
+    try {
+        const { username } = req.body;
+        if (!username) return res.status(400).json({ found: false });
+        const [users] = await db.query('SELECT id FROM Users WHERE username = ?', [username]);
+        res.json({ found: users.length > 0 });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ found: false });
+    }
+});
+
+// Forgot Password: Reset with new hashed password
+app.post('/api/auth/reset-password', async (req, res) => {
+    try {
+        const { username, newPassword } = req.body;
+        if (!username || !newPassword) return res.status(400).json({ message: 'Missing fields.' });
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(newPassword, salt);
+        const [result] = await db.query('UPDATE Users SET password_hash = ? WHERE username = ?', [hashed, username]);
+        if (result.affectedRows === 0) return res.status(404).json({ message: 'User not found.' });
+        res.json({ message: 'Password reset successfully.' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error resetting password.' });
+    }
+});
+
+
 app.post('/api/register', async (req, res) => {
     try {
         const { username, password, fullName, dob, gender, phone, role } = req.body;

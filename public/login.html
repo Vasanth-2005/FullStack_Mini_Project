@@ -219,7 +219,7 @@
                         <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
                         <span class="eye-toggle" id="eyeToggle" onclick="toggleEye()">👁️</span>
                     </div>
-                    <div class="forgot-link"><a href="#">Forgot password?</a></div>
+                    <div class="forgot-link"><a href="#" onclick="openForgotModal(); return false;">Forgot password?</a></div>
                 </div>
 
                 <button type="submit" class="submit-btn" id="loginBtn">
@@ -236,6 +236,73 @@
             </div>
         </div>
     </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(6px);">
+        <div style="background:linear-gradient(135deg,rgba(10,18,38,0.98),rgba(20,35,65,0.98)); border:1px solid rgba(59,130,246,0.35); border-radius:20px; padding:2.5rem; width:100%; max-width:420px; margin:1rem; box-shadow:0 0 40px rgba(59,130,246,0.15); animation:forgotIn 0.3s ease;" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <div>
+                    <h2 style="font-size:1.4rem; font-weight:700; margin:0;">Reset Password</h2>
+                    <p style="color:rgba(255,255,255,0.4); font-size:0.85rem; margin:0.3rem 0 0;">Enter your username to receive reset instructions</p>
+                </div>
+                <button onclick="closeForgotModal()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.6); width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;">&#x2715;</button>
+            </div>
+
+            <!-- Step 1: Enter Username -->
+            <div id="fpStep1">
+                <div style="margin-bottom:1.2rem;">
+                    <label style="display:block; font-size:0.75rem; font-weight:600; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.45rem;">Your Username</label>
+                    <div style="position:relative;">
+                        <span style="position:absolute; left:13px; top:50%; transform:translateY(-50%); opacity:0.4; font-size:0.95rem;">&#128100;</span>
+                        <input type="text" id="fpUsername" placeholder="Enter your registered username" style="width:100%; padding:0.82rem 1rem 0.82rem 2.7rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; color:white; font-size:0.95rem; font-family:Inter,sans-serif; outline:none; box-sizing:border-box;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+                    </div>
+                </div>
+                <div id="fpError" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:0.7rem 1rem; font-size:0.85rem; color:#f87171; display:none; margin-bottom:1rem;"></div>
+                <button onclick="submitForgotPassword()" id="fpBtn" style="width:100%; padding:0.9rem; background:linear-gradient(90deg,#1d4ed8,#3b82f6); border:none; border-radius:10px; color:white; font-size:1rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+                    <div id="fpSpinner" style="width:16px; height:16px; border:2px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; display:none;"></div>
+                    <span id="fpBtnText">Send Reset Instructions</span>
+                </button>
+            </div>
+
+            <!-- Step 2: New Password (after username verified) -->
+            <div id="fpStep2" style="display:none;">
+                <div style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.25); border-radius:10px; padding:1rem; margin-bottom:1.5rem; font-size:0.88rem; color:rgba(255,255,255,0.7); display:flex; gap:0.7rem; align-items:flex-start;">
+                    <span style="font-size:1.2rem;">&#128274;</span>
+                    <span>Account found! Enter your new password below to reset access.</span>
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-size:0.75rem; font-weight:600; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.45rem;">New Password</label>
+                    <div style="position:relative;">
+                        <span style="position:absolute; left:13px; top:50%; transform:translateY(-50%); opacity:0.4;">&#128273;</span>
+                        <input type="password" id="fpNewPwd" placeholder="Enter a strong new password" style="width:100%; padding:0.82rem 1rem 0.82rem 2.7rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; color:white; font-size:0.95rem; font-family:Inter,sans-serif; outline:none; box-sizing:border-box;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+                    </div>
+                </div>
+                <div style="margin-bottom:1.2rem;">
+                    <label style="display:block; font-size:0.75rem; font-weight:600; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.45rem;">Confirm Password</label>
+                    <div style="position:relative;">
+                        <span style="position:absolute; left:13px; top:50%; transform:translateY(-50%); opacity:0.4;">&#128273;</span>
+                        <input type="password" id="fpConfirmPwd" placeholder="Repeat your new password" style="width:100%; padding:0.82rem 1rem 0.82rem 2.7rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; color:white; font-size:0.95rem; font-family:Inter,sans-serif; outline:none; box-sizing:border-box;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+                    </div>
+                </div>
+                <div id="fpStep2Error" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:0.7rem 1rem; font-size:0.85rem; color:#f87171; display:none; margin-bottom:1rem;"></div>
+                <button onclick="submitNewPassword()" id="fpResetBtn" style="width:100%; padding:0.9rem; background:linear-gradient(90deg,#059669,#10b981); border:none; border-radius:10px; color:white; font-size:1rem; font-weight:700; cursor:pointer;">
+                    Reset My Password
+                </button>
+            </div>
+
+            <!-- Step 3: Success -->
+            <div id="fpStep3" style="display:none; text-align:center; padding:1rem 0;">
+                <div style="width:70px; height:70px; border-radius:50%; background:linear-gradient(135deg,#059669,#10b981); display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 1.2rem; box-shadow:0 0 25px rgba(16,185,129,0.4);">&#10003;</div>
+                <h3 style="margin-bottom:0.5rem;">Password Reset!</h3>
+                <p style="color:rgba(255,255,255,0.45); font-size:0.9rem; margin-bottom:1.5rem;">Your password has been updated successfully. You can now sign in with your new credentials.</p>
+                <button onclick="closeForgotModal()" style="width:100%; padding:0.9rem; background:linear-gradient(90deg,#1d4ed8,#3b82f6); border:none; border-radius:10px; color:white; font-size:1rem; font-weight:700; cursor:pointer;">Back to Sign In</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes forgotIn { from{opacity:0;transform:scale(0.95) translateY(10px)} to{opacity:1;transform:none} }
+    </style>
 
     <script>
         let selectedRole = 'patient';
@@ -296,6 +363,108 @@
                 btnText.innerText = 'Sign In';
             }
         });
+
+        // ── Forgot Password Modal ──────────────────────────
+        let fpVerifiedUsername = '';
+
+        function openForgotModal() {
+            document.getElementById('forgotModal').style.display = 'flex';
+            document.getElementById('fpStep1').style.display = 'block';
+            document.getElementById('fpStep2').style.display = 'none';
+            document.getElementById('fpStep3').style.display = 'none';
+            document.getElementById('fpError').style.display = 'none';
+            document.getElementById('fpUsername').value = '';
+            document.getElementById('fpNewPwd').value = '';
+            document.getElementById('fpConfirmPwd').value = '';
+        }
+
+        function closeForgotModal() {
+            document.getElementById('forgotModal').style.display = 'none';
+        }
+
+        async function submitForgotPassword() {
+            const username = document.getElementById('fpUsername').value.trim();
+            const errEl   = document.getElementById('fpError');
+            const btn     = document.getElementById('fpBtn');
+            const spin    = document.getElementById('fpSpinner');
+            const txt     = document.getElementById('fpBtnText');
+
+            if (!username) {
+                errEl.innerText = 'Please enter your username.';
+                errEl.style.display = 'block';
+                return;
+            }
+            errEl.style.display = 'none';
+            btn.disabled = true;
+            spin.style.display = 'block';
+            txt.innerText = 'Verifying...';
+
+            try {
+                const res = await fetch('/api/auth/check-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+                const data = await res.json();
+                if (res.ok && data.found) {
+                    fpVerifiedUsername = username;
+                    document.getElementById('fpStep1').style.display = 'none';
+                    document.getElementById('fpStep2').style.display = 'block';
+                } else {
+                    errEl.innerText = 'No account found with that username. Please check and try again.';
+                    errEl.style.display = 'block';
+                }
+            } catch(e) {
+                errEl.innerText = 'Server error. Please ensure the backend is running.';
+                errEl.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                spin.style.display = 'none';
+                txt.innerText = 'Send Reset Instructions';
+            }
+        }
+
+        async function submitNewPassword() {
+            const newPwd  = document.getElementById('fpNewPwd').value;
+            const confPwd = document.getElementById('fpConfirmPwd').value;
+            const errEl   = document.getElementById('fpStep2Error');
+            const btn     = document.getElementById('fpResetBtn');
+
+            errEl.style.display = 'none';
+            if (newPwd.length < 6) {
+                errEl.innerText = 'Password must be at least 6 characters.';
+                errEl.style.display = 'block'; return;
+            }
+            if (newPwd !== confPwd) {
+                errEl.innerText = 'Passwords do not match. Please try again.';
+                errEl.style.display = 'block'; return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = 'Resetting...';
+
+            try {
+                const res = await fetch('/api/auth/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: fpVerifiedUsername, newPassword: newPwd })
+                });
+                if (res.ok) {
+                    document.getElementById('fpStep2').style.display = 'none';
+                    document.getElementById('fpStep3').style.display = 'block';
+                } else {
+                    errEl.innerText = 'Failed to reset password. Please try again.';
+                    errEl.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerText = 'Reset My Password';
+                }
+            } catch(e) {
+                errEl.innerText = 'Server error. Please try again.';
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                btn.innerText = 'Reset My Password';
+            }
+        }
     </script>
     <script src="js/bg-slider.js"></script>
 </body>
