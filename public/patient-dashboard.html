@@ -230,6 +230,57 @@
         </div>
     </div>
 
+    <!-- Patient Card Modal (Appointment Pass) -->
+    <div id="patientCardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+        <div class="auth-container glass-card" style="margin: auto; max-width: 500px; position: relative;" onclick="event.stopPropagation()">
+            <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 12px 12px 0 0; padding: 2rem; text-align: center; margin: -2.5rem -2.5rem 2rem -2.5rem;">
+                <h2 style="color: white; margin: 0;">Appointment Pass</h2>
+                <p style="color: rgba(255,255,255,0.8); margin-top: 0.5rem; font-size: 0.9rem;">LifeCare Hospital System</p>
+            </div>
+            
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px dashed var(--border-color); margin-bottom: 2rem; position: relative;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                    <div>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Patient Name</p>
+                        <p id="pcPatientName" style="color: white; font-weight: 600; font-size: 1.1rem;">-</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Status</p>
+                        <span style="background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 3px 8px; border-radius: 4px; font-weight: 600;">Confirmed</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                    <div>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Date</p>
+                        <p id="pcDate" style="color: white; font-weight: 600; font-size: 1.1rem;">-</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Time</p>
+                        <p id="pcTime" style="color: white; font-weight: 600; font-size: 1.1rem;">-</p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Specialist</p>
+                    <p id="pcDoctor" style="color: var(--primary); font-weight: 600; font-size: 1.1rem;">-</p>
+                    <p id="pcDept" style="color: var(--text-muted); font-size: 0.9rem;">-</p>
+                </div>
+                
+                <!-- Fake Barcode -->
+                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed var(--border-color);">
+                    <div style="font-family: 'Courier New', Courier, monospace; letter-spacing: 2px; font-size: 1.5rem; color: white;">||| || ||| | ||| || ||</div>
+                    <p style="color: var(--text-muted); font-size: 0.7rem; margin-top: 0.5rem;">Please present this pass at the reception.</p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button type="button" class="btn-primary" style="flex: 1;" onclick="window.print()">🖨️ Print Pass</button>
+                <button type="button" class="btn-outline" style="flex: 1;" onclick="document.getElementById('patientCardModal').style.display='none'">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Dynamic Profile Modal (Hidden by default) -->
     <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
         <div class="auth-container glass-card" style="margin: auto;" onclick="event.stopPropagation()">
@@ -455,7 +506,16 @@
                 });
                 
                 if(response.ok) {
-                    alert("Appointment Booked successfully!");
+                    // Show Patient Card with booked details
+                    const docSelect = document.getElementById('bookDoctor');
+                    document.getElementById('pcDoctor').innerText = docSelect.options[docSelect.selectedIndex].text;
+                    document.getElementById('pcDept').innerText = document.getElementById('bookDept').value;
+                    document.getElementById('pcDate').innerText = document.getElementById('bookDate').value;
+                    document.getElementById('pcTime').innerText = document.getElementById('bookTime').value;
+                    document.getElementById('pcPatientName').innerText = userData.username.toUpperCase();
+                    
+                    document.getElementById('patientCardModal').style.display = 'flex';
+                    document.getElementById('bookReason').value = ''; // Reset form visually
                     hideBookingModal();
                     loadDashboard(); // Refresh stats immediately 
                 } else {
