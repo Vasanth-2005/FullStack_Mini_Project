@@ -3,192 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Dashboard - LifeCare Hospital</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>LifeCare | Patient Mission Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
+        :root {
+            --pat-primary: #3b82f6;
+            --pat-accent: #8b5cf6;
+            --pat-success: #10b981;
         }
-        
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050d1a;
+            color: #f1f5f9;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container { display: flex; min-height: 100vh; }
+
+        /* Sidebar - Consistent */
         .sidebar {
-            width: 250px;
-            background: rgba(15, 23, 42, 0.95);
-            border-right: 1px solid var(--border-color);
-            padding: 2rem 1rem;
+            width: 260px;
+            background: rgba(10, 18, 38, 0.98);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2.5rem 1.5rem;
             display: flex;
             flex-direction: column;
-        }
-        
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
         }
 
-        .sidebar a {
-            color: var(--text-muted);
+        .sidebar h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 2.5rem; letter-spacing: -0.5px; }
+        .sidebar h2 span { color: var(--pat-primary); }
+
+        .nav-links { flex: 1; }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s;
-            display: block;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: 0.25s;
         }
 
-        .sidebar a:hover, .sidebar a.active {
+        .nav-links a:hover, .nav-links a.active {
             background: rgba(59, 130, 246, 0.1);
-            color: var(--primary);
+            color: white;
         }
 
+        .nav-links a.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), transparent);
+            border-left: 3px solid var(--pat-primary);
+        }
+
+        /* Main Content */
         .main-content {
             flex: 1;
-            padding: 2rem 5%;
+            margin-left: 260px;
+            padding: 3rem 4%;
         }
 
         .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 3rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
+            margin-bottom: 3.5rem;
         }
 
-        .cards-grid {
+        .top-bar h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 40%, var(--pat-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Quick Widgets */
+        .widgets-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
         }
 
-        .dash-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
+        .widget-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .widget-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.3);
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .widget-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--pat-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+        }
+
+        .widget-info h3 { font-size: 1.8rem; font-weight: 800; margin: 0; }
+        .widget-info p { margin: 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Tables & Lists */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .panel {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 2.5rem;
+        }
+
+        .panel h2 { font-size: 1.4rem; font-weight: 700; margin: 0 0 1.5rem; display: flex; align-items: center; gap: 0.8rem; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255, 255, 255, 0.3); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        td { padding: 1.2rem 1rem; font-size: 0.92rem; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+
+        .status-pill {
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .pill-pending { background: rgba(234, 179, 8, 0.1); color: #eab308; }
+        .pill-confirmed { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+        /* Action Panel */
+        .action-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 24px;
+            padding: 2rem;
             text-align: center;
+            margin-bottom: 1.5rem;
         }
 
-        .dash-card h3 {
-            color: var(--primary);
-            font-size: 2rem;
-        }
-
-        .table-container {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            overflow-x: auto;
-        }
-
-        table {
+        .btn-booking {
+            background: var(--pat-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
         }
 
-        th, td {
-            text-align: left;
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
+        .btn-booking:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4); }
 
-        th {
-            color: var(--text-muted);
-            font-weight: 600;
-        }
+        /* ── Transitions ── */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .status-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        .status-confirmed { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-        .status-pending { background: rgba(234, 179, 8, 0.2); color: #facc15; }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2><span class="highlight">Life</span>Care</h2>
-            <a href="patient-dashboard.html" class="active">Dashboard</a>
-            <a href="patient-ai-checker.html">AI Symptom Checker</a>
-            <a href="#" onclick="showBookingModal()">Book Appointment</a>
-            <a href="patient-telemedicine.html">Live Telemedicine</a>
-            <a href="patient-records.html">My Records</a>
-            <a href="patient-lab-reports.html">Lab Reports</a>
-            <a href="patient-prescriptions.html">Prescriptions</a>
-            <a href="patient-pharmacy.html">Pharmacy</a>
-            <a href="patient-invoices.html">Invoices</a>
-            <div style="flex: 1;"></div>
-            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">🚑 Emergency SOS</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <h2><span>Life</span>Care</h2>
+            <nav class="nav-links">
+                <a href="patient-dashboard.html" class="active">🏠 Dashboard</a>
+                <a href="patient-ai-checker.html">🧠 AI Diagnostic</a>
+                <a href="patient-telemedicine.html">📹 Live Telemedicine</a>
+                <a href="patient-records.html">📁 My Records</a>
+                <a href="patient-lab-reports.html">🔬 Lab Reports</a>
+                <a href="patient-prescriptions.html">📝 Prescriptions</a>
+                <a href="patient-pharmacy.html">💊 Pharmacy Shop</a>
+                <a href="patient-invoices.html">💳 Invoices</a>
+                <a href="emergency.html" class="sos-link" style="color:#ef4444 !important;">🚑 Emergency SOS</a>
+            </nav>
+            <a href="#" onclick="logout()" style="opacity: 0.5; margin-top: auto;">🚪 Logout</a>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="top-bar">
-                <h1 id="welcomeUser">Welcome, Patient!</h1>
-                <div class="user-profile" style="cursor: pointer;" onclick="showProfileModal()" title="View Profile">
-                    <div id="userAvatar" class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1.2rem; margin: 0; background-color: var(--primary); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">P</div>
+            <div class="top-bar fade-in">
+                <h1 id="welcomeUser">Welcome back!</h1>
+                <div class="user-profile" onclick="showProfileModal()" style="cursor:pointer;">
+                    <div id="userAvatar" class="doc-avatar" style="background: var(--pat-primary); width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800;">P</div>
                 </div>
             </div>
 
-            <!-- Dashboard Widgets -->
-            <div class="cards-grid">
-                <div class="dash-card glass-card">
-                    <h3 id="countUpcoming">-</h3>
-                    <p>Upcoming Appointments</p>
+            <div class="widgets-grid fade-in" style="animation-delay: 0.1s;">
+                <div class="widget-card">
+                    <div class="widget-icon">📅</div>
+                    <div class="widget-info">
+                        <h3 id="countUpcoming">0</h3>
+                        <p>Scheduled Appts</p>
+                    </div>
                 </div>
-                <div class="dash-card glass-card">
-                    <h3 id="countPast">-</h3>
-                    <p>Past Visits</p>
+                <div class="widget-card">
+                    <div class="widget-icon" style="color:var(--pat-accent); background:rgba(139, 92, 246, 0.1);">📂</div>
+                    <div class="widget-info">
+                        <h3 id="countPast">0</h3>
+                        <p>Past Visits</p>
+                    </div>
                 </div>
-                <div class="dash-card glass-card">
-                    <h3 id="countPending">1</h3>
-                    <p>Pending Bills</p>
+                <div class="widget-card">
+                    <div class="widget-icon" style="color:#eab308; background:rgba(234, 179, 8, 0.1);">💳</div>
+                    <div class="widget-info">
+                        <h3 id="countPending">0</h3>
+                        <p>Pending Invoices</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Recent Appointments Table -->
-            <div class="table-container">
-                <h2>Recent Appointments</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Doctor</th>
-                            <th>Department</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="appointmentsList">
-                        <tr><td colspan="5" style="text-align:center;">Loading appointments...</td></tr>
-                    </tbody>
-                </table>
+            <div class="dashboard-grid fade-in" style="animation-delay: 0.2s;">
+                <div class="panel">
+                    <h2>Recent Consultations</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Specialist</th>
+                                <th>Department</th>
+                                <th>Date/Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsList">
+                            <tr><td colspan="4" style="text-align:center; padding: 2rem; color: rgba(255,255,255,0.2);">Loading schedules...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; flex-direction: column;">
+                    <div class="action-card">
+                        <h4 style="margin: 0 0 1rem;">Need a Consultation?</h4>
+                        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.4); margin-bottom: 1.5rem;">Book a session with our top-tier specialists instantly.</p>
+                        <button class="btn-booking" onclick="showBookingModal()">Schedule Appointment</button>
+                    </div>
+                    
+                    <div class="panel" style="flex: 1; padding: 1.5rem;">
+                        <h4 style="margin: 0 0 1rem; font-size: 1rem; color: var(--pat-primary);">Health Tips</h4>
+                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.6;">Remember to stay hydrated and complete your active medical courses as prescribed by your physician.</p>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
 
-    <!-- Booking Modal (Hidden by default) -->
-    <div id="bookingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
-        <div class="auth-container glass-card" style="margin: auto;" onclick="event.stopPropagation()">
-            <div class="auth-header">
-                <h2>Book Appointment</h2>
-                <p>Schedule a visit with our specialists.</p>
-            </div>
-            <form class="auth-form" onsubmit="submitBooking(event)">
-                <div class="form-group">
-                    <label>Department</label>
-                    <select id="bookDept" onchange="filterDoctors()" required>
-                        <option value="">Select Department first...</option>
+    <!-- Modals -->
+    <!-- Booking Modal -->
+    <div id="bookingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(2, 6, 23, 0.95); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+        <div class="panel" style="width: 500px; max-width: 90%; border: 1px solid rgba(59, 130, 246, 0.3);" onclick="event.stopPropagation()">
+            <h2 style="margin-bottom: 1.5rem;">New Appointment</h2>
+            <form id="bookingForm" onsubmit="submitBooking(event)">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display:block; margin-bottom: 0.5rem; font-size: 0.8rem; color:rgba(255,255,255,0.4); text-transform:uppercase;">Department</label>
+                    <select id="bookDept" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); padding:0.8rem; border-radius:12px; color:white;" onchange="filterDoctors()" required>
+                        <option value="">Select Specialty...</option>
                         <option value="General Checkup">General Checkup</option>
                         <option value="Cardiology">Cardiology</option>
                         <option value="Neurology">Neurology</option>
@@ -196,335 +293,133 @@
                         <option value="Pediatrics">Pediatrics</option>
                         <option value="Dermatology">Dermatology</option>
                         <option value="Oncology">Oncology</option>
-                        <option value="Psychiatry">Psychiatry</option>
-                        <option value="Ophthalmology">Ophthalmology</option>
-                        <option value="Gynecology">Gynecology</option>
-                        <option value="Urology">Urology</option>
-                        <option value="Gastroenterology">Gastroenterology</option>
-                        <option value="ENT">ENT</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Specialist Doctor</label>
-                    <select id="bookDoctor" required disabled>
-                        <option value="">Please select a Department first...</option>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display:block; margin-bottom: 0.5rem; font-size: 0.8rem; color:rgba(255,255,255,0.4); text-transform:uppercase;">Consulting Physician</label>
+                    <select id="bookDoctor" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); padding:0.8rem; border-radius:12px; color:white;" required disabled>
+                        <option value="">Select Specialty First...</option>
                     </select>
                 </div>
-                <div class="form-group flex-group">
-                    <div class="half-width">
-                        <label>Date</label>
-                        <input type="date" id="bookDate" required>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="display:block; margin-bottom: 0.5rem; font-size: 0.8rem; color:rgba(255,255,255,0.4); text-transform:uppercase;">Preferred Date</label>
+                        <input type="text" id="bookDate" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); padding:0.8rem; border-radius:12px; color:white;" required>
                     </div>
-                    <div class="half-width">
-                        <label>Time</label>
-                        <input type="time" id="bookTime" required>
+                    <div>
+                        <label style="display:block; margin-bottom: 0.5rem; font-size: 0.8rem; color:rgba(255,255,255,0.4); text-transform:uppercase;">Time Slot</label>
+                        <input type="time" id="bookTime" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); padding:0.8rem; border-radius:12px; color:white;" required>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Reason for Visit</label>
-                    <input type="text" id="bookReason" placeholder="Brief description" required>
+                <div style="margin-bottom: 2rem;">
+                    <label style="display:block; margin-bottom: 0.5rem; font-size: 0.8rem; color:rgba(255,255,255,0.4); text-transform:uppercase;">Reason for Visit</label>
+                    <input type="text" id="bookReason" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); padding:0.8rem; border-radius:12px; color:white;" placeholder="Brief description..." required>
                 </div>
-                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">Confirm Booking</button>
-                <button type="button" class="btn-outline" style="width: 100%; margin-top: 0.5rem;" onclick="hideBookingModal()">Cancel</button>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <button type="submit" class="btn-booking">Confirm Booking</button>
+                    <button type="button" class="btn-outline" style="border-radius:14px;" onclick="hideBookingModal()">Cancel</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Dynamic Profile Modal (Hidden by default) -->
-    <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
-        <div class="auth-container glass-card" style="margin: auto;" onclick="event.stopPropagation()">
-            <div class="auth-header">
-                <h2>Patient Profile</h2>
-                <p>Your securely registered medical identity.</p>
+    <!-- Profile Modal -->
+    <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(2, 6, 23, 0.95); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+        <div class="panel" style="width: 400px; text-align:center;">
+            <div id="profAvatar" style="width: 80px; height: 80px; background: var(--pat-primary); border-radius: 20px; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800;">P</div>
+            <h2 id="profName" style="margin-bottom: 0.5rem;">Patient Name</h2>
+            <p id="profId" style="color: rgba(255,255,255,0.4); font-size: 0.85rem; margin-bottom: 2rem;">LC-PAT-XXXX</p>
+            <div id="profileDetails" style="text-align:left; background:rgba(0,0,0,0.2); padding:1.5rem; border-radius:20px; margin-bottom:2rem;">
+                <!-- Filled via JS -->
             </div>
-            <div id="profileBody" style="color: var(--text-main); margin-top: 1.5rem; line-height: 2; font-size: 1.05rem;">
-                <p style="text-align: center; color: var(--text-muted);">Decrypting backend database...</p>
-            </div>
-            <button type="button" class="btn-primary" style="width: 100%; margin-top: 2rem;" onclick="hideProfileModal()">Close Window</button>
+            <button class="btn-booking" onclick="hideProfileModal()">Close Profile</button>
         </div>
     </div>
 
-    <!-- Patient E-Pass Card Modal -->
-    <div id="patientCardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:1050; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
-        <div style="margin:auto; width:420px; max-width:95vw; background:linear-gradient(135deg,rgba(10,18,38,0.98) 0%,rgba(25,35,65,0.98) 100%); border:1px solid rgba(59,130,246,0.6); border-radius:20px; box-shadow:0 0 50px rgba(59,130,246,0.25); overflow:hidden;" onclick="event.stopPropagation()">
-            <div style="background:linear-gradient(90deg,#1d4ed8,#3b82f6,#06b6d4); padding:1.5rem 2rem; position:relative; overflow:hidden;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <div>
-                        <p style="color:rgba(255,255,255,0.8);font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;margin:0;">LifeCare Hospital</p>
-                        <h2 style="color:white;font-size:1.6rem;margin:0.3rem 0 0;">Appointment E-Pass</h2>
-                    </div>
-                    <div style="font-size:2.8rem;">&#127973;</div>
-                </div>
-                <div style="margin-top:1rem;">
-                    <span style="background:rgba(16,185,129,0.25);border:1px solid #10b981;color:#10b981;padding:0.3rem 1rem;border-radius:20px;font-size:0.8rem;font-weight:700;">&#10003; CONFIRMED</span>
-                </div>
-            </div>
-            <div style="padding:1.8rem 2rem;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px dashed rgba(255,255,255,0.1);">
-                    <div>
-                        <p style="color:rgba(255,255,255,0.4);font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;margin:0;">Patient Name</p>
-                        <h3 id="cardPatientName" style="color:white;font-size:1.3rem;margin:0.3rem 0 0;">Loading...</h3>
-                    </div>
-                    <div style="text-align:right;">
-                        <p style="color:rgba(255,255,255,0.4);font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;margin:0;">PRN No.</p>
-                        <h3 id="cardPrn" style="color:#60a5fa;font-size:1.2rem;margin:0.3rem 0 0;font-family:monospace;">LC----</h3>
-                    </div>
-                </div>
-                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.2rem;margin-bottom:1.2rem;">
-                    <p style="color:rgba(255,255,255,0.4);font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;margin:0 0 0.5rem;">Consulting Specialist</p>
-                    <h4 id="cardDoctorName" style="color:white;font-size:1.15rem;margin:0;">-</h4>
-                    <p id="cardDept" style="color:#34d399;font-size:0.9rem;margin:0.3rem 0 0;">-</p>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;">
-                    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1rem;text-align:center;">
-                        <p style="color:rgba(255,255,255,0.4);font-size:0.7rem;text-transform:uppercase;margin:0;">&#128197; Date</p>
-                        <h4 id="cardDate" style="color:white;font-size:1rem;margin:0.4rem 0 0;">-</h4>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1rem;text-align:center;">
-                        <p style="color:rgba(255,255,255,0.4);font-size:0.7rem;text-transform:uppercase;margin:0;">&#8987; Time</p>
-                        <h4 id="cardTime" style="color:white;font-size:1rem;margin:0.4rem 0 0;">-</h4>
-                    </div>
-                </div>
-                <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:1rem;margin-bottom:1.5rem;">
-                    <p style="color:rgba(255,255,255,0.4);font-size:0.7rem;text-transform:uppercase;margin:0;">Reason for Visit</p>
-                    <p id="cardReason" style="color:white;font-size:0.95rem;margin:0.4rem 0 0;">-</p>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-                    <button onclick="printPatientCard()" style="background:linear-gradient(90deg,#1d4ed8,#3b82f6);border:none;color:white;padding:0.9rem;border-radius:10px;font-size:0.95rem;font-weight:600;cursor:pointer;box-shadow:0 4px 15px rgba(59,130,246,0.35);">&#128424; Print Card</button>
-                    <button onclick="closePatientCard()" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.8);padding:0.9rem;border-radius:10px;font-size:0.95rem;cursor:pointer;">&#10005; Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        // Check local storage for user
         const userData = JSON.parse(localStorage.getItem('user'));
-        if (userData) {
-            document.getElementById('welcomeUser').innerText = 'Welcome, ' + (userData.username || 'Patient');
-            // Dynamically set Avatar Initial correctly from DB payload username
-            document.getElementById('userAvatar').innerText = (userData.username || 'P').charAt(0).toUpperCase();
-        } else {
-            // Optional: redirect to login if not logged in
-            // window.location.href = 'login.html';
-        }
+        if (!userData || !userData.id) window.location.href = 'login.html';
+
+        document.getElementById('welcomeUser').innerText = `Welcome back, ${userData.username || 'Patient'}!`;
+        document.getElementById('userAvatar').innerText = (userData.username || 'P').charAt(0).toUpperCase();
 
         function logout() {
             localStorage.removeItem('user');
             window.location.href = 'index.html';
         }
 
-        async function showProfileModal() {
-            document.getElementById('profileModal').style.display = 'flex';
-            const pBody = document.getElementById('profileBody');
-            if(userData && userData.id) {
-                try {
-                    const res = await fetch('/api/patient/profile/' + userData.id);
-                    if(res.ok) {
-                        const profile = await res.json();
-                        const dobStr = profile.dob ? new Date(profile.dob).toLocaleDateString() : 'N/A';
-                        pBody.innerHTML = `
-                            <div style="background: rgba(30, 41, 59, 0.5); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
-                                <p><b>Full Name:</b> <span style="color: var(--primary); float: right;">${profile.full_name || 'N/A'}</span></p>
-                                <p><b>Account:</b> <span style="float: right;">${profile.username}</span></p>
-                                <p><b>Gender:</b> <span style="float: right;">${profile.gender || 'N/A'}</span></p>
-                                <p><b>Birth Date:</b> <span style="float: right;">${dobStr}</span></p>
-                                <p><b>Phone:</b> <span style="float: right;">${profile.phone || 'N/A'}</span></p>
-                            </div>
-                        `;
-                    } else {
-                        pBody.innerHTML = '<p style="color: #ef4444; text-align: center;">Error retrieving database profile natively.</p>';
-                    }
-                } catch(e) { console.error('Error fetching profile', e); }
-            }
-        }
-
-        function hideProfileModal() {
-            document.getElementById('profileModal').style.display = 'none';
-        }
-
-        function showBookingModal() {
-            document.getElementById('bookingModal').style.display = 'flex';
-        }
-
-        function hideBookingModal() {
-            document.getElementById('bookingModal').style.display = 'none';
-        }
-
-        async function showPatientCard(doctorName, dept, date, time, reason) {
-            document.getElementById('bookingModal').style.display = 'none';
-            document.getElementById('patientCardModal').style.display = 'flex';
-            document.getElementById('cardDoctorName').innerText = doctorName;
-            document.getElementById('cardDept').innerText = dept;
-            document.getElementById('cardDate').innerText = new Date(date).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
-            document.getElementById('cardTime').innerText = time;
-            document.getElementById('cardReason').innerText = reason;
-            document.getElementById('cardPrn').innerText = 'LC-' + Math.floor(100000 + Math.random() * 900000);
-            try {
-                const res = await fetch('/api/patient/profile/' + userData.id);
-                if(res.ok) {
-                    const profile = await res.json();
-                    document.getElementById('cardPatientName').innerText = profile.full_name || userData.username;
-                }
-            } catch(e) { document.getElementById('cardPatientName').innerText = userData.username; }
-        }
-
-        function closePatientCard() {
-            document.getElementById('patientCardModal').style.display = 'none';
-            loadDashboard();
-        }
-
-        function printPatientCard() {
-            const card = document.getElementById('patientCardModal');
-            const original = document.body.innerHTML;
-            document.body.innerHTML = card.querySelector('div').innerHTML;
-            window.print();
-            document.body.innerHTML = original;
-            location.reload();
-        }
-
-
         async function loadDashboard() {
-            if (!userData) return;
             try {
-                const response = await fetch('/api/patient-stats/' + userData.id);
-                if(response.ok) {
-                    const data = await response.json();
+                const res = await fetch('/api/patient-stats/' + userData.id);
+                if (res.ok) {
+                    const data = await res.json();
                     document.getElementById('countUpcoming').innerText = data.upcoming;
                     document.getElementById('countPast').innerText = data.past;
                     document.getElementById('countPending').innerText = data.pendingBills;
                     
                     const tbody = document.getElementById('appointmentsList');
                     tbody.innerHTML = '';
-                    if(data.appointments.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No recent appointments found.</td></tr>';
+                    if (data.appointments.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem; color: rgba(255,255,255,0.2);">No active consultations found.</td></tr>';
                     } else {
-                        data.appointments.forEach(app => {
-                            const dateStr = new Date(app.date).toISOString().split('T')[0];
-                            let badgeClass = 'status-pending';
-                            let actionBtn = '';
-                            
-                            if (app.status === 'Completed') {
-                                badgeClass = 'status-confirmed'; // we can reuse CSS
-                            } else if (app.status === 'Confirmed') {
-                                badgeClass = 'status-confirmed';
-                            } else {
-                                // Add a beautiful action button for Portfolio presentation!
-                                actionBtn = `<button class="btn-outline" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; margin-left: 10px; border-color: #22c55e; color: #4ade80;" onclick="markCompleted(${app.id})">✔️ Complete</button>`;
-                            }
-                            
+                        data.appointments.forEach(a => {
+                            const date = new Date(a.date).toLocaleDateString();
+                            const pill = a.status === 'Confirmed' ? 'pill-confirmed' : 'pill-pending';
                             tbody.innerHTML += `
                                 <tr>
-                                    <td>${dateStr}</td>
-                                    <td>${app.time}</td>
-                                    <td>${app.doctor}</td>
-                                    <td>${app.dept}</td>
-                                    <td>
-                                        <span class="status-badge ${badgeClass}">${app.status}</span>
-                                        ${actionBtn}
-                                    </td>
+                                    <td style="font-weight:600;">Dr. ${a.doctor}</td>
+                                    <td>${a.dept}</td>
+                                    <td>${date} @ ${a.time}</td>
+                                    <td><span class="status-pill ${pill}">${a.status}</span></td>
                                 </tr>
                             `;
                         });
                     }
                 }
-            } catch(e) {
-                console.error(e);
-            }
+            } catch(e) { console.error(e); }
         }
 
-        window.allDoctors = []; // Store globally for client-side rapid filtering
-        
-        async function loadDoctorsDropdown() {
-            try {
-                const res = await fetch('/api/doctors');
-                if (res.ok) {
-                    window.allDoctors = await res.json();
-                    
-                    // Do not populate yet, wait for Department selection
-                    const select = document.getElementById('bookDoctor');
-                    select.innerHTML = '<option value="">Please select a Department first...</option>';
-                    select.disabled = true;
-                }
-            } catch(err) {
-                console.error(err);
+        function showBookingModal() { document.getElementById('bookingModal').style.display = 'flex'; }
+        function hideBookingModal() { document.getElementById('bookingModal').style.display = 'none'; }
+
+        async function showProfileModal() {
+            document.getElementById('profileModal').style.display = 'flex';
+            const res = await fetch('/api/patient/profile/' + userData.id);
+            if(res.ok) {
+                const p = await res.json();
+                document.getElementById('profName').innerText = p.full_name || p.username;
+                document.getElementById('profId').innerText = `LC-PAT-${userData.id}`;
+                document.getElementById('profAvatar').innerText = (p.full_name || p.username).charAt(0).toUpperCase();
+                document.getElementById('profileDetails').innerHTML = `
+                    <div style="margin-bottom:0.8rem;"><span style="color:rgba(255,255,255,0.4); font-size:0.8rem; text-transform:uppercase;">Gender</span><br/>${p.gender || 'N/A'}</div>
+                    <div style="margin-bottom:0.8rem;"><span style="color:rgba(255,255,255,0.4); font-size:0.8rem; text-transform:uppercase;">Phone</span><br/>${p.phone || 'N/A'}</div>
+                    <div style="margin-bottom:0.8rem;"><span style="color:rgba(255,255,255,0.4); font-size:0.8rem; text-transform:uppercase;">Birth Date</span><br/>${p.dob ? new Date(p.dob).toLocaleDateString() : 'N/A'}</div>
+                `;
             }
+        }
+        function hideProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+
+        window.allDoctors = [];
+        async function loadDoctors() {
+            const res = await fetch('/api/doctors');
+            if (res.ok) window.allDoctors = await res.json();
         }
 
         function filterDoctors() {
             const dept = document.getElementById('bookDept').value;
             const select = document.getElementById('bookDoctor');
-            
-            // Clear current specialists
-            select.innerHTML = '<option value="">Select a Specialist...</option>';
-            
-            if (!dept) {
-                select.disabled = true;
-                return;
-            }
-            
-            // Enable dropdown
+            select.innerHTML = '<option value="">Select Specialist...</option>';
+            if (!dept) { select.disabled = true; return; }
             select.disabled = false;
-            
-            // Dynamically filter global doctors precisely matching the selected clinical Department
-            const filtered = window.allDoctors.filter(doc => doc.specialty === dept);
-            
-            if (filtered.length === 0) {
-                select.innerHTML = '<option value="">No specialists currently available for this department.</option>';
-                select.disabled = true;
-                return;
-            }
-
-            filtered.forEach(doc => {
-                const opt = document.createElement('option');
-                opt.value = doc.id;
-                opt.textContent = `Dr. ${doc.name.replace('Dr. ', '')} (${doc.experience_years} Yrs Exp)`;
-                select.appendChild(opt);
+            const filtered = window.allDoctors.filter(d => d.specialty === dept);
+            filtered.forEach(d => {
+                select.innerHTML += `<option value="${d.id}">Dr. ${d.name} (${d.experience_years} Yrs Exp)</option>`;
             });
-        }
-        
-        // Execute on load
-        loadDashboard();
-        loadDoctorsDropdown();
-
-        // Deep linking natively: Automatically open booking modal if routed with param securely!
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            if(urlParams.get('action') === 'book') {
-                showBookingModal();
-                // Strip the param out of the URL without refreshing to keep it clean
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        });
-        
-        // Temporally restrict the Calendar to only allow bookings today or in the future
-        const timezoneOffset = new Date().getTimezoneOffset() * 60000;
-        const localISOTime = (new Date(Date.now() - timezoneOffset)).toISOString().split('T')[0];
-        document.getElementById('bookDate').setAttribute('min', localISOTime);
-
-        async function markCompleted(appointmentId) {
-            try {
-                const res = await fetch(`/api/appointments/${appointmentId}/complete`, { method: 'POST' });
-                if(res.ok) {
-                    loadDashboard(); // Instant refresh after completion
-                } else {
-                    alert('Failed to update status.');
-                }
-            } catch(e) { console.error('Error completing', e); }
         }
 
         async function submitBooking(e) {
             e.preventDefault();
-            
-            if (!userData || !userData.id) {
-                alert("You need to log in to securely book an appointment.");
-                window.location.href = 'login.html';
-                return;
-            }
-
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            submitBtn.textContent = 'Processing...';
-
             const payload = {
                 userId: userData.id,
                 doctorId: document.getElementById('bookDoctor').value,
@@ -532,51 +427,22 @@
                 time: document.getElementById('bookTime').value,
                 reason: document.getElementById('bookReason').value
             };
-
-            try {
-                const response = await fetch('/api/book-appointment', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
-                
-                if(response.ok) {
-                    const doctorSelect = document.getElementById('bookDoctor');
-                    const doctorName = doctorSelect.options[doctorSelect.selectedIndex].text;
-                    const dept = document.getElementById('bookDept').value;
-                    const date = document.getElementById('bookDate').value;
-                    const time = document.getElementById('bookTime').value;
-                    const reason = document.getElementById('bookReason').value;
-                    showPatientCard(doctorName, dept, date, time, reason);
-                    document.getElementById('bookAppointmentForm').reset();
-                } else {
-                    const errorResponse = await response.json();
-                    alert("Error: " + errorResponse.message);
-                    
-                    // If their local cache is outdated compared to the database
-                    if(errorResponse.message === 'Patient profile not found.') {
-                       localStorage.removeItem('user');
-                       window.location.href = 'login.html';
-                    }
-                }
-            } catch(err) {
-                console.error(err);
-                alert("Server error connecting to backend.");
-            } finally {
-                submitBtn.textContent = 'Confirm Booking';
+            const res = await fetch('/api/book-appointment', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if(res.ok) {
+                alert("Appointment scheduled successfully.");
+                hideBookingModal();
+                loadDashboard();
             }
         }
+
+        flatpickr("#bookDate", { minDate: "today", dateFormat: "Y-m-d" });
+        loadDashboard();
+        loadDoctors();
     </script>
     <script src="js/bg-slider.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        flatpickr("#bookDate", {
-            altInput: true,
-            altFormat: "d-m-y",  // Display exactly as DD-MM-YY visually
-            dateFormat: "Y-m-d", // Submit to backend securely as YYYY-MM-DD
-            minDate: "1970-01-01",
-            maxDate: "2050-12-31"
-        });
-    </script>
 </body>
 </html>

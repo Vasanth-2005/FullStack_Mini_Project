@@ -3,102 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Invoices - LifeCare</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>LifeCare | Billing & Invoices</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <style>
+        :root {
+            --bill-primary: #3b82f6;
+            --bill-success: #10b981;
+            --bill-danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050d1a;
+            color: #f1f5f9;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
         .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
-        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
-        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
-        .main-content { flex: 1; padding: 2rem 5%; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+
+        /* Sidebar - Consistent */
+        .sidebar {
+            width: 260px;
+            background: rgba(10, 18, 38, 0.98);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 2.5rem; letter-spacing: -0.5px; }
+        .sidebar h2 span { color: var(--bill-primary); }
+
+        .nav-links { flex: 1; }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), transparent);
+            border-left: 3px solid var(--bill-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 3rem 4%;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 3.5rem;
+        }
+
+        .header-bar h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 40%, var(--bill-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Bill Card */
+        .bill-section {
+            margin-bottom: 4rem;
+        }
+
+        .bill-section h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .bill-section h2::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .table-wrap {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 1rem;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1.2rem 1.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td {
+            padding: 1.5rem;
+            font-size: 0.95rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .invoice-id { font-weight: 700; color: white; }
         
-        .table-container { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; overflow-x: auto; margin-bottom: 2rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { text-align: left; padding: 1rem; border-bottom: 1px solid var(--border-color); }
-        th { color: var(--text-muted); font-weight: 600; }
-        
-        .status-badge { padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
-        .status-paid { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-        .status-unpaid { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-        
-        .btn-pay { padding: 0.4rem 1.2rem; background: var(--primary); border: none; color: white; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: 600;}
-        .btn-pay:hover { background: var(--primary-hover); }
+        .status-pill {
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .pill-paid { background: rgba(16, 185, 129, 0.1); color: var(--bill-success); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .pill-unpaid { background: rgba(239, 68, 68, 0.1); color: var(--bill-danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        .btn-pay {
+            background: var(--bill-primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-pay:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .link-print {
+            color: var(--bill-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .link-print:hover { text-decoration: underline; }
+
+        /* ── Transitions ── */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2><span class="highlight">Life</span>Care</h2>
-            <a href="patient-dashboard.html">Dashboard</a>
-            <a href="patient-ai-checker.html">AI Symptom Checker</a>
-            <a href="#" onclick="alert('Please use the main Dashboard to book.')">Book Appointment</a>
-            <a href="patient-telemedicine.html">Live Telemedicine</a>
-            <a href="patient-records.html">My Records</a>
-            <a href="patient-lab-reports.html">Lab Reports</a>
-            <a href="patient-prescriptions.html">Prescriptions</a>
-            <a href="patient-pharmacy.html">Pharmacy</a>
-            <a href="patient-invoices.html" class="active">Invoices</a>
-            <div style="flex: 1;"></div>
-            <div style="flex: 1;"></div>
-            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">🚑 Emergency SOS</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <h2><span>Life</span>Care</h2>
+            <nav class="nav-links">
+                <a href="patient-dashboard.html">🏠 Dashboard</a>
+                <a href="patient-ai-checker.html">🧠 AI Diagnostic</a>
+                <a href="patient-telemedicine.html">📹 Live Telemedicine</a>
+                <a href="patient-records.html">📁 My Records</a>
+                <a href="patient-lab-reports.html">🔬 Lab Reports</a>
+                <a href="patient-prescriptions.html">📝 Prescriptions</a>
+                <a href="patient-pharmacy.html">💊 Pharmacy Shop</a>
+                <a href="patient-invoices.html" class="active">💳 Invoices</a>
+                <a href="emergency.html" class="sos-link" style="color:#ef4444 !important;">🚑 Emergency SOS</a>
+            </nav>
+            <a href="#" onclick="logout()" style="opacity: 0.5; margin-top: auto;">🚪 Logout</a>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="top-bar">
-                <h1>Billing & Invoices</h1>
+            <div class="header-bar fade-in">
+                <div>
+                    <h1>Billing & Payments</h1>
+                    <p style="color: rgba(255,255,255,0.4); margin-top: 0.4rem;">Manage your medical expenses and download receipts.</p>
+                </div>
                 <div class="user-profile">
-                    <div class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1rem; margin: 0;">P</div>
+                    <div class="doc-avatar" id="userAvatar" style="background: var(--bill-primary); width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800;">P</div>
                 </div>
             </div>
 
-            <div class="table-container">
-                <h2>Pending Payments</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Invoice #</th>
-                            <th>Date Issued</th>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pendingInvoicesBody">
-                        <tr><td colspan="6" style="text-align: center;">Loading server securely...</td></tr>
-                    </tbody>
-                </table>
+            <div class="bill-section fade-in" style="animation-delay: 0.1s;">
+                <h2>Pending Transactions</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice ID</th>
+                                <th>Date Issued</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingBody">
+                            <!-- JS loaded -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="table-container">
-                <h2>Payment History</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Invoice #</th>
-                            <th>Date Issued</th>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Receipt</th>
-                        </tr>
-                    </thead>
-                    <tbody id="paidInvoicesBody">
-                        <tr><td colspan="6" style="text-align: center;">Loading server securely...</td></tr>
-                    </tbody>
-                </table>
+            <div class="bill-section fade-in" style="animation-delay: 0.2s;">
+                <h2>Settled History</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Invoice ID</th>
+                                <th>Date Settled</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Document</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paidBody">
+                            <!-- JS loaded -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
+
     <script>
         const userData = JSON.parse(localStorage.getItem('user'));
-        if (!userData) window.location.href = 'login.html';
+        if (!userData || !userData.id) window.location.href = 'login.html';
+        else document.getElementById('userAvatar').innerText = userData.name.charAt(0).toUpperCase();
 
         function logout() {
             localStorage.removeItem('user');
@@ -110,92 +280,75 @@
                 const res = await fetch('/api/invoices/' + userData.id);
                 if (res.ok) {
                     const invoices = await res.json();
-                    const pendingBody = document.getElementById('pendingInvoicesBody');
-                    const paidBody = document.getElementById('paidInvoicesBody');
+                    const pendingBody = document.getElementById('pendingBody');
+                    const paidBody = document.getElementById('paidBody');
                     
                     pendingBody.innerHTML = '';
                     paidBody.innerHTML = '';
 
-                    let hasPending = false;
-                    let hasPaid = false;
-
                     invoices.forEach(inv => {
+                        const date = new Date(inv.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                         if (inv.status === 'Unpaid') {
-                            hasPending = true;
                             pendingBody.innerHTML += `
                                 <tr>
-                                    <td>INV-${10000 + inv.id}</td>
-                                    <td>${inv.date}</td>
-                                    <td>Consultation (${inv.reason})</td>
-                                    <td>$${inv.amount}</td>
-                                    <td><span class="status-badge status-unpaid">Unpaid</span></td>
-                                    <td><button class="btn-pay" onclick="window.location.href='payment.html?id=${inv.id}&amt=${inv.amount}'">Pay Now</button></td>
+                                    <td class="invoice-id">#INV-${10000 + inv.id}</td>
+                                    <td>${date}</td>
+                                    <td>${inv.reason || 'Medical Consultation'}</td>
+                                    <td style="font-weight:700;">$${inv.amount}</td>
+                                    <td><span class="status-pill pill-unpaid">Unpaid</span></td>
+                                    <td><button class="btn-pay" onclick="window.location.href='payment.html?id=${inv.id}&amt=${inv.amount}'">Settle Now</button></td>
                                 </tr>
                             `;
                         } else {
-                            hasPaid = true;
                             paidBody.innerHTML += `
                                 <tr>
-                                    <td id="invNum-${inv.id}">INV-${10000 + inv.id}</td>
-                                    <td id="invDate-${inv.id}">${inv.date}</td>
-                                    <td id="invReason-${inv.id}">Consultation (${inv.reason})</td>
-                                    <td id="invAmt-${inv.id}">$${inv.amount}</td>
-                                    <td><span class="status-badge status-paid">Paid</span></td>
-                                    <td><a href="#" style="color:var(--text-main);" onclick="printReceipt(${inv.id})">Print Receipt</a></td>
+                                    <td class="invoice-id">#INV-${10000 + inv.id}</td>
+                                    <td>${date}</td>
+                                    <td>${inv.reason || 'Medical Consultation'}</td>
+                                    <td style="font-weight:700;">$${inv.amount}</td>
+                                    <td><span class="status-pill pill-paid">Settled</span></td>
+                                    <td><a href="#" class="link-print" onclick="printReceipt(${inv.id}, '${date}', '${inv.reason}', '${inv.amount}')">📄 View Receipt</a></td>
                                 </tr>
                             `;
                         }
                     });
 
-                    if(!hasPending) pendingBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No Pending Bills available!</td></tr>';
-                    if(!hasPaid) paidBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No Paid Invoice History found.</td></tr>';
+                    if (pendingBody.innerHTML === '') pendingBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 3rem; color: rgba(255,255,255,0.2);">No pending medical bills.</td></tr>';
+                    if (paidBody.innerHTML === '') paidBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 3rem; color: rgba(255,255,255,0.2);">No past transaction history.</td></tr>';
                 }
             } catch(e) { console.error(e); }
         }
-        loadInvoices();
 
-        function printReceipt(invId) {
-            const num = document.getElementById('invNum-' + invId).innerText;
-            const date = document.getElementById('invDate-' + invId).innerText;
-            const reason = document.getElementById('invReason-' + invId).innerText;
-            const amt = document.getElementById('invAmt-' + invId).innerText;
-            
-            const originalContents = document.body.innerHTML;
-            
-            document.body.innerHTML = `
-                <div style="padding: 3rem; font-family: sans-serif; color: black; max-width: 600px; margin: 0 auto;">
-                    <h1 style="text-align: center; border-bottom: 2px solid black; padding-bottom: 1rem; color: black;">LifeCare Hospital</h1>
-                    <h3 style="text-align: center; margin-top: 1rem; color: #555;">Official Medical Receipt</h3>
-                    
-                    <div style="margin-top: 3rem;">
-                        <p><strong>Receipt No:</strong> ${num}</p>
-                        <p><strong>Date Paid:</strong> ${date}</p>
-                        <p><strong>Patient ID:</strong> #${userData.id}</p>
+        function printReceipt(id, date, reason, amt) {
+            const receiptWin = window.open('', '_blank');
+            receiptWin.document.write(`
+                <div style="padding: 40px; font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 20px;">
+                    <h1 style="color: #3b82f6; text-align:center; margin-bottom: 0;">LifeCare</h1>
+                    <p style="text-align:center; color: #666; margin-top: 5px;">OFFICIAL PAYMENT RECEIPT</p>
+                    <hr style="margin: 30px 0; border: none; border-top: 1px dashed #ccc;">
+                    <div style="display:flex; justify-content: space-between; margin-bottom: 20px;">
+                        <div><strong>Invoice ID:</strong> #INV-${10000 + id}</div>
+                        <div><strong>Date:</strong> ${date}</div>
                     </div>
-                    
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 2rem;">
-                        <tr style="border-bottom: 2px solid black;">
-                            <th style="text-align: left; padding: 0.5rem;">Description</th>
-                            <th style="text-align: right; padding: 0.5rem;">Amount</th>
-                        </tr>
-                        <tr>
-                            <td style="padding: 1rem 0.5rem;">${reason}</td>
-                            <td style="text-align: right; padding: 1rem 0.5rem; font-weight: bold;">${amt}</td>
-                        </tr>
-                    </table>
-                    
-                    <div style="margin-top: 3rem; border-top: 1px dashed black; padding-top: 1rem; text-align: center;">
-                        <p style="font-size: 1.2rem; font-weight: bold;">Total Paid: ${amt}</p>
-                        <p style="color: green; font-weight: bold; margin-top: 0.5rem;">STATUS: COMPLETED</p>
+                    <div style="margin-bottom: 20px;"><strong>Patient:</strong> ${userData.name}</div>
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 15px; margin: 30px 0;">
+                        <div style="display:flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>${reason}</span>
+                            <span>$${amt}</span>
+                        </div>
+                        <hr style="border: none; border-top: 1px solid #eee; margin: 10px 0;">
+                        <div style="display:flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem; color: #10b981;">
+                            <span>Total Paid</span>
+                            <span>$${amt}</span>
+                        </div>
                     </div>
-                    
-                    <p style="text-align: center; margin-top: 4rem; font-size: 0.8rem; color: #888;">Thank you for trusting LifeCare Hospital with your health.</p>
+                    <p style="text-align:center; font-size: 0.8rem; color: #999; margin-top: 50px;">This is a computer-generated document. No signature is required.</p>
                 </div>
-            `;
-            
-            window.print();
-            window.location.reload();
+            `);
+            receiptWin.print();
         }
+
+        loadInvoices();
     </script>
     <script src="js/bg-slider.js"></script>
 </body>
