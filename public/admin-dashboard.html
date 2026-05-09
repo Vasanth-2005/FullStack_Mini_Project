@@ -3,1010 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - LifeCare Hospital</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>LifeCare | Administrator Command Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <style>
-        .dashboard-container {
-            display: flex;
-            min-height: 100vh;
+        :root {
+            --adm-primary: #ec4899; /* Pink-ish theme for Admin to distinguish */
+            --adm-accent: #8b5cf6;
+            --adm-bg: #020617;
         }
-        
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--adm-bg);
+            color: #f1f5f9;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container { display: flex; min-height: 100vh; }
+
+        /* Sidebar */
         .sidebar {
-            width: 250px;
-            background: rgba(15, 23, 42, 0.95);
-            border-right: 1px solid var(--border-color);
-            padding: 2rem 1rem;
+            width: 260px;
+            background: rgba(10, 18, 38, 0.98);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2.5rem 1.5rem;
             display: flex;
             flex-direction: column;
-        }
-        
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
         }
 
-        .sidebar a {
-            color: var(--text-muted);
+        .sidebar h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 2.5rem; letter-spacing: -0.5px; }
+        .sidebar h2 span { color: var(--adm-primary); }
+
+        .nav-links { flex: 1; }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s;
-            display: block;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+            font-size: 0.88rem;
+            transition: 0.25s;
         }
 
-        .sidebar a:hover, .sidebar a.active {
+        .nav-links a:hover, .nav-links a.active {
             background: rgba(236, 72, 153, 0.1);
-            color: var(--secondary);
+            color: white;
         }
 
+        .nav-links a.active {
+            background: linear-gradient(90deg, rgba(236, 72, 153, 0.2), transparent);
+            border-left: 3px solid var(--adm-primary);
+        }
+
+        /* Main Content */
         .main-content {
             flex: 1;
-            padding: 2rem 5%;
+            margin-left: 260px;
+            padding: 3rem 4%;
         }
 
-        .top-bar {
+        .header-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 3rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
+            margin-bottom: 3.5rem;
         }
 
-        .form-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+        .header-bar h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 40%, var(--adm-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Analytics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover { border-color: rgba(236, 72, 153, 0.3); transform: translateY(-5px); }
+
+        .stat-val { font-size: 2rem; font-weight: 800; color: white; margin-bottom: 0.3rem; }
+        .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1.5px; }
+
+        /* Panel Styling */
+        .panel {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
             padding: 2.5rem;
-            max-width: 700px;
-            margin: 0 auto;
-            box-shadow: var(--glass-shadow);
+            margin-bottom: 2rem;
         }
 
-        .form-section h3 {
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            text-align: center;
-            color: var(--secondary);
+        .panel h2 { font-size: 1.4rem; font-weight: 700; margin: 0 0 1.5rem; display: flex; align-items: center; gap: 0.8rem; }
+
+        /* Forms */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .input-group { margin-bottom: 1.2rem; }
+        .input-group label { display: block; font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 1px; }
+        .input-group input, .input-group select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.9rem 1.2rem;
+            border-radius: 14px;
+            color: white;
+            outline: none;
+            box-sizing: border-box;
         }
+        .input-group input:focus { border-color: var(--adm-primary); }
+
+        .btn-adm {
+            background: var(--adm-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-adm:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3); }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1rem; font-size: 0.7rem; color: rgba(255,255,255,0.3); text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        td { padding: 1.2rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.92rem; }
+
+        .status-tag { padding: 0.3rem 0.8rem; border-radius: 30px; font-size: 0.75rem; font-weight: 700; }
+        .tag-active { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+        /* Transitions */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2><span class="highlight">Admin</span>Portal</h2>
-            <a href="#" class="active" id="navAnalytics">Overview Analytics</a>
-            <a href="#" id="navAddDoctor">Add New Doctor</a>
-            <a href="#" id="navManageDoctors">Manage Doctors</a>
-            <a href="#" id="navManagePatients">Manage Patients</a>
-            <a href="#" id="navHelpdesk">Support Helpdesk</a>
-            <a href="#" id="navBedManagement">Bed & Ward Status</a>
-            <a href="#" id="navBloodBank">Blood Bank (Inventory)</a>
-            <a href="#" id="navPharmacyAdmin">Pharmacy Inventory</a>
-            <a href="#" id="navSettings">System Settings</a>
-            <div style="flex: 1;"></div>
-            <a href="#" onclick="logout()">Logout</a>
+            <h2><span>Admin</span>Suite</h2>
+            <nav class="nav-links">
+                <a href="#" class="active" id="navAnalytics">📊 Overview</a>
+                <a href="#" id="navAddDoctor">👨‍⚕️ Add Specialist</a>
+                <a href="#" id="navManageDoctors">📋 Manage Doctors</a>
+                <a href="#" id="navManagePatients">👥 Manage Patients</a>
+                <a href="#" id="navBedManagement">🛏️ Ward Management</a>
+                <a href="#" id="navBloodBank">🩸 Blood Bank</a>
+                <a href="#" id="navPharmacyAdmin">🏪 Pharmacy Stock</a>
+                <a href="#" id="navHelpdesk">💬 Support Inbox</a>
+            </nav>
+            <a href="#" onclick="logout()" style="opacity: 0.5; margin-top: auto;">🚪 Logout</a>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="top-bar">
-                <h1 id="welcomeUser">Welcome, Administrator</h1>
+            <div class="header-bar fade-in">
+                <div>
+                    <h1 id="portalTitle">Hospital Ecosystem Overview</h1>
+                    <p style="color: rgba(255,255,255,0.4); margin-top: 0.4rem;" id="portalSubtitle">Real-time metrics and system-wide controls.</p>
+                </div>
                 <div class="user-profile">
-                    <div class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1rem; margin: 0; background: var(--secondary)">A</div>
+                    <div style="background: var(--adm-primary); width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800;">A</div>
                 </div>
             </div>
 
-            <!-- Analytics Section -->
+            <!-- Sections -->
             <div id="analyticsSection">
-                <div class="form-section" style="max-width: 100%;">
-                    <h3>Global Hospital Analytics</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Real-time metrics and financial overview of the hospital ecosystem.</p>
-
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                        <!-- Metric 1 -->
-                        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 1.5rem; border-radius: 12px; text-align: center;">
-                            <div style="font-size: 2.5rem; color: #10b981; margin-bottom: 0.5rem;">$124k</div>
-                            <p style="color: var(--text-muted); font-size: 0.9rem;">Monthly Revenue</p>
-                        </div>
-                        
-                        <!-- Metric 2 -->
-                        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primary); padding: 1.5rem; border-radius: 12px; text-align: center;">
-                            <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.5rem;">450+</div>
-                            <p style="color: var(--text-muted); font-size: 0.9rem;">Total Patients Treated</p>
-                        </div>
-
-                        <!-- Metric 3 -->
-                        <div style="background: rgba(234, 179, 8, 0.1); border: 1px solid #eab308; padding: 1.5rem; border-radius: 12px; text-align: center;">
-                            <div style="font-size: 2.5rem; color: #eab308; margin-bottom: 0.5rem;">12</div>
-                            <p style="color: var(--text-muted); font-size: 0.9rem;">Active Specialists</p>
-                        </div>
-
-                        <!-- Metric 4 -->
-                        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 1.5rem; border-radius: 12px; text-align: center;">
-                            <div style="font-size: 2.5rem; color: #ef4444; margin-bottom: 0.5rem;">4</div>
-                            <p style="color: var(--text-muted); font-size: 0.9rem;">Emergency Ambulances Deployed</p>
-                        </div>
+                <div class="stats-grid fade-in" style="animation-delay: 0.1s;">
+                    <div class="stat-card">
+                        <div class="stat-val">$142.5k</div>
+                        <div class="stat-label">Monthly Revenue</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-val">2,482</div>
+                        <div class="stat-label">Total Procedures</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val">128</div>
+                        <div class="stat-label">Critical Alerts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val">94%</div>
+                        <div class="stat-label">Patient Satisfaction</div>
+                    </div>
+                </div>
 
-                    <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                        <h4 style="color: var(--text-main); margin-bottom: 1rem;">Revenue Growth (Simulated Chart)</h4>
-                        <div style="height: 200px; display: flex; align-items: flex-end; gap: 2%; padding-top: 2rem;">
-                            <!-- Bars -->
-                            <div style="width: 14%; background: var(--primary); height: 40%; border-radius: 4px 4px 0 0; position: relative;">
-                                <span style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 0.8rem; color: var(--text-muted);">Jan</span>
+                <div class="panel fade-in" style="animation-delay: 0.2s;">
+                    <h2>Active Facility Load</h2>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                        <div style="background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 20px;">
+                            <div style="display:flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>Occupancy Rate</span>
+                                <span style="color: var(--adm-primary);">82%</span>
                             </div>
-                            <div style="width: 14%; background: var(--primary); height: 50%; border-radius: 4px 4px 0 0; position: relative;">
-                                <span style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 0.8rem; color: var(--text-muted);">Feb</span>
+                            <div style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow:hidden;">
+                                <div style="width: 82%; height: 100%; background: var(--adm-primary);"></div>
                             </div>
-                            <div style="width: 14%; background: var(--primary); height: 35%; border-radius: 4px 4px 0 0; position: relative;">
-                                <span style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 0.8rem; color: var(--text-muted);">Mar</span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 20px;">
+                            <div style="display:flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>Specialist Availability</span>
+                                <span style="color: #10b981;">14/18</span>
                             </div>
-                            <div style="width: 14%; background: var(--primary); height: 60%; border-radius: 4px 4px 0 0; position: relative;">
-                                <span style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 0.8rem; color: var(--text-muted);">Apr</span>
+                            <div style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow:hidden;">
+                                <div style="width: 77%; height: 100%; background: #10b981;"></div>
                             </div>
-                            <div style="width: 14%; background: #10b981; height: 80%; border-radius: 4px 4px 0 0; position: relative; box-shadow: 0 0 15px #10b981;">
-                                <span style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 0.8rem; color: #10b981; font-weight: bold;">May</span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 20px;">
+                            <div style="display:flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>Emergency Response</span>
+                                <span style="color: #3b82f6;">Optimal</span>
+                            </div>
+                            <div style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow:hidden;">
+                                <div style="width: 95%; height: 100%; background: #3b82f6;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Add Doctor Form -->
-            <div id="addDoctorSection" class="form-section" style="display: none;">
-                <h3>Register a Specialist</h3>
-                <form id="addDoctorForm" class="auth-form">
-                    <div class="form-group flex-group">
-                        <div class="half-width">
-                            <label>Doctor Full Name</label>
-                            <input type="text" id="docName" placeholder="Dr. John Doe" required>
+            <!-- Add Doctor -->
+            <div id="addDoctorSection" style="display: none;" class="fade-in">
+                <div class="panel" style="max-width: 800px; margin: 0 auto;">
+                    <h2>Specialist Credentials</h2>
+                    <form id="addDoctorForm" onsubmit="handleAddDoctor(event)">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Full Legal Name</label>
+                                <input type="text" id="docName" placeholder="Dr. Alexander Wright" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Clinical Specialty</label>
+                                <select id="docSpecialty" required>
+                                    <option value="Cardiology">Cardiology</option>
+                                    <option value="Neurology">Neurology</option>
+                                    <option value="Orthopedics">Orthopedics</option>
+                                    <option value="Oncology">Oncology</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="half-width">
-                            <label>Specialty Department</label>
-                            <select id="docSpecialty" required>
-                                <option value="">Select Specialty</option>
-                                <option value="Cardiology">Cardiology</option>
-                                <option value="Neurology">Neurology</option>
-                                <option value="Orthopedics">Orthopedics</option>
-                                <option value="Pediatrics">Pediatrics</option>
-                                <option value="General Checkup">General Checkup</option>
-                            </select>
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Experience (Years)</label>
+                                <input type="number" id="docExp" placeholder="e.g. 15" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Direct Contact</label>
+                                <input type="tel" id="docPhone" placeholder="+1 000 000 000" required>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="form-group flex-group">
-                        <div class="half-width">
-                            <label>Years of Experience</label>
-                            <input type="number" id="docExperience" placeholder="e.g. 10" required>
+                        <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.05); margin: 2rem 0;">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Portal Username</label>
+                                <input type="text" id="docUser" placeholder="doc_wright" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Initial Password</label>
+                                <input type="password" id="docPass" required>
+                            </div>
                         </div>
-                        <div class="half-width">
-                            <label>Contact Phone</label>
-                            <input type="tel" id="docPhone" placeholder="+1 234 567 8900" required>
-                        </div>
-                    </div>
-
-                    <div style="border-top: 1px solid var(--border-color); margin: 1.5rem 0;"></div>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Setup Login Credentials for Doctor Portal:</p>
-
-                    <div class="form-group flex-group">
-                        <div class="half-width">
-                            <label>Username</label>
-                            <input type="text" id="docUsername" placeholder="dr_johndoe" required>
-                        </div>
-                        <div class="half-width">
-                            <label>Password</label>
-                            <input type="password" id="docPassword" placeholder="Temporay password" required>
-                        </div>
-                    </div>
-
-                    <div id="addError" class="error-msg" style="display: none; margin-top: 1rem;"></div>
-                    
-                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1.5rem; background: var(--secondary)">Add Doctor to System</button>
-                </form>
-            </div>
-
-            <!-- Manage Doctors Section -->
-            <div id="manageDoctorsSection" style="display: none;">
-                <div class="form-section" style="max-width: 100%;">
-                    <h3>Active Hospital Specialists</h3>
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-                            <thead>
-                                <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
-                                    <th style="padding: 1rem;">Doctor Name</th>
-                                    <th style="padding: 1rem;">Specialty</th>
-                                    <th style="padding: 1rem;">Experience</th>
-                                    <th style="padding: 1rem;">Phone</th>
-                                    <th style="padding: 1rem;">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="doctorsListTable">
-                                <tr><td colspan="5" style="text-align: center; padding: 1rem; color: var(--text-muted);">Loading system doctors...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+                        <button type="submit" class="btn-adm" style="width: 100%; margin-top: 2rem;">Authorize & Onboard Specialist</button>
+                    </form>
                 </div>
             </div>
 
-            <!-- Manage Patients Section -->
-            <div id="managePatientsSection" style="display: none;">
-                <div class="form-section" style="max-width: 100%;">
-                    <h3>Registered Patients</h3>
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-                            <thead>
-                                <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
-                                    <th style="padding: 1rem;">Patient ID</th>
-                                    <th style="padding: 1rem;">Full Name</th>
-                                    <th style="padding: 1rem;">DOB / Gender</th>
-                                    <th style="padding: 1rem;">Username</th>
-                                    <th style="padding: 1rem;">Phone</th>
-                                </tr>
-                            </thead>
-                            <tbody id="patientsListTable">
-                                <tr><td colspan="5" style="text-align: center; padding: 1rem; color: var(--text-muted);">Loading system patients...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <!-- Manage Lists -->
+            <div id="manageDoctorsSection" style="display: none;" class="fade-in">
+                <div class="panel">
+                    <h2>Authorized Specialists</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Specialty</th>
+                                <th>Experience</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doctorsTable"></tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Blood Bank Section -->
-            <div id="manageBloodBankSection" style="display: none;">
-                <div class="form-section" style="max-width: 100%;">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
-                        <div>
-                            <h3>Central Blood Bank Inventory</h3>
-                            <p style="color:var(--text-muted);margin-top:0.3rem;">Real-time plasma &amp; blood unit levels across all hospital wards.</p>
+            <div id="managePatientsSection" style="display: none;" class="fade-in">
+                <div class="panel">
+                    <h2>Registered Patient Population</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Account</th>
+                                <th>Phone</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Ward Management -->
+            <div id="bedManagementSection" style="display: none;" class="fade-in">
+                <div class="panel">
+                    <h2>Facility Occupancy Roadmap</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                        <!-- Ward Cards -->
+                        <div style="background:rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 20px; border-left: 5px solid #ef4444;">
+                            <h4 style="margin: 0 0 1rem;">Intensive Care (ICU)</h4>
+                            <div style="display:flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                <span style="color:rgba(255,255,255,0.4);">Available Beds</span>
+                                <span style="color: #ef4444; font-weight: 800;">01/20</span>
+                            </div>
                         </div>
-                        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-                            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:0.7rem 1.3rem;text-align:center;">
-                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;margin:0;">Total Units</p>
-                                <h3 style="color:#10b981;margin:0.2rem 0 0;">1,284</h3>
+                        <div style="background:rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 20px; border-left: 5px solid #10b981;">
+                            <h4 style="margin: 0 0 1rem;">General Ward (A)</h4>
+                            <div style="display:flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                <span style="color:rgba(255,255,255,0.4);">Available Beds</span>
+                                <span style="color: #10b981; font-weight: 800;">45/100</span>
                             </div>
-                            <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:0.7rem 1.3rem;text-align:center;">
-                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;margin:0;">Critical</p>
-                                <h3 style="color:#ef4444;margin:0.2rem 0 0;">3 Types</h3>
-                            </div>
-                            <button class="btn-primary" style="background:#10b981;align-self:center;" onclick="alert('Donor broadcast sent!')">&#128241; Send Donor Alert</button>
                         </div>
-                    </div>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:1.2rem;">
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(16,185,129,0.25);text-align:center;">
-                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">A+</h2>
-                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">145 Units</p>
-                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
-                                <div style="background:#10b981;width:80%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                        <div style="background:rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 20px; border-left: 5px solid #f59e0b;">
+                            <h4 style="margin: 0 0 1rem;">Maternity Center</h4>
+                            <div style="display:flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                <span style="color:rgba(255,255,255,0.4);">Available Beds</span>
+                                <span style="color: #f59e0b; font-weight: 800;">12/50</span>
                             </div>
-                            <span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Healthy</span>
-                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Last donated: 2h ago</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(234,179,8,0.3);text-align:center;">
-                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">A-</h2>
-                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">12 Units</p>
-                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
-                                <div style="background:#eab308;width:15%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Low Stock</span>
-                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Request donation</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(16,185,129,0.25);text-align:center;">
-                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">B+</h2>
-                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">98 Units</p>
-                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
-                                <div style="background:#10b981;width:65%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Healthy</span>
-                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Last donated: 5h ago</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(239,68,68,0.5);text-align:center;">
-                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">B-</h2>
-                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">8 Units</p>
-                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
-                                <div style="background:#ef4444;width:8%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">CRITICAL</span>
-                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">&#9888; Urgent needed</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(59,130,246,0.3);text-align:center;">
-                            <h2 style="color:#60a5fa;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">O+</h2>
-                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">210 Units</p>
-                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
-                                <div style="background:#3b82f6;width:90%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <span style="background:rgba(59,130,246,0.15);color:#60a5fa;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Excellent</span>
-                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Universal donor</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(239,68,68,0.5);text-align:center;">
-                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">O-</h2>
-                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">2 Units</p>
-                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
-                                <div style="background:#ef4444;width:2%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">CRITICAL</span>
-                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">&#9888; Emergency stock</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(16,185,129,0.25);text-align:center;">
-                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">AB+</h2>
-                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">45 Units</p>
-                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
-                                <div style="background:#10b981;width:55%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Healthy</span>
-                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Universal recipient</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(234,179,8,0.3);text-align:center;">
-                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">AB-</h2>
-                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">18 Units</p>
-                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
-                                <div style="background:#eab308;width:22%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Low Stock</span>
-                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Last donated: 2d ago</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Bed Management Section -->
-            <div id="manageBedSection" style="display: none;">
-                <div class="form-section" style="max-width: 100%;">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
-                        <div>
-                            <h3>Ward &amp; Bed Occupancy</h3>
-                            <p style="color:var(--text-muted);margin-top:0.3rem;">Live monitoring of all hospital wards, bed availability and utilization.</p>
+            <!-- Blood Bank -->
+            <div id="bloodBankSection" style="display: none;" class="fade-in">
+                <div class="panel">
+                    <h2>Central Plasma Inventory</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem;">
+                        <div style="text-align: center; background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 20px;">
+                            <h3 style="color: #ef4444; font-size: 2.5rem; margin: 0;">A+</h3>
+                            <p style="margin: 0.5rem 0; font-weight: 800;">145 Units</p>
+                            <span class="status-tag tag-active">Sufficient</span>
                         </div>
-                        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-                            <div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
-                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">Total Beds</p>
-                                <h3 style="color:#60a5fa;margin:0.2rem 0 0;">440</h3>
-                            </div>
-                            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
-                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">Available</p>
-                                <h3 style="color:#10b981;margin:0.2rem 0 0;">162</h3>
-                            </div>
-                            <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
-                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                <h3 style="color:#f87171;margin:0.2rem 0 0;">278</h3>
-                            </div>
+                        <div style="text-align: center; background: rgba(239, 68, 68, 0.05); padding: 2rem; border-radius: 20px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                            <h3 style="color: #ef4444; font-size: 2.5rem; margin: 0;">O-</h3>
+                            <p style="margin: 0.5rem 0; font-weight: 800; color: #ef4444;">2 Units</p>
+                            <span class="status-tag" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">Critical</span>
                         </div>
-                    </div>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.2rem;">
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128138;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">Intensive Care Unit (ICU)</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#ef4444;border:1px solid #ef444440;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">High Alert</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">20</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">19</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">1</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#ef4444,#dc2626);width:95%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">95% occupancy</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128657;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">Emergency &amp; Trauma</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#ef4444;border:1px solid #ef444440;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">High Alert</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">15</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">14</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">1</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#ef4444,#b91c1c);width:93%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">93% occupancy</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128100;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">General Ward (Male)</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#10b981;border:1px solid #10b98140;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Available</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">100</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">45</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">55</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#10b981,#059669);width:45%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">45% occupancy</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128101;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">General Ward (Female)</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#10b981;border:1px solid #10b98140;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Available</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">100</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">60</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">40</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#10b981,#047857);width:60%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">60% occupancy</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128118;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">Maternity Ward</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#eab308;border:1px solid #eab30840;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Moderate</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">50</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">40</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">10</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#eab308,#ca8a04);width:80%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">80% occupancy</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128118;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">Paediatric Ward</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#10b981;border:1px solid #10b98140;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Available</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">40</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">22</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">18</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#3b82f6,#2563eb);width:55%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">55% occupancy</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#10084;&#65039;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">Cardiology Ward</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#eab308;border:1px solid #eab30840;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Moderate</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">25</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">18</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">7</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#f59e0b,#d97706);width:72%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">72% occupancy</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#129516;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">Oncology Ward</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#eab308;border:1px solid #eab30840;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Moderate</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">35</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">28</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">7</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#a855f7,#9333ea);width:80%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">80% occupancy</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#129432;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">Orthopaedic Ward</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#10b981;border:1px solid #10b98140;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Available</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">30</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">12</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">18</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#10b981,#059669);width:40%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">40% occupancy</p>
-                        </div>
-                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
-                                <div>
-                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#129504;</div>
-                                    <h4 style="color:white;margin:0;font-size:1rem;">Neurology Ward</h4>
-                                </div>
-                                <span style="background:rgba(255,255,255,0.08);color:#ef4444;border:1px solid #ef444440;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">High Alert</span>
-                            </div>
-                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
-                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
-                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">25</p>
-                                </div>
-                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
-                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">20</p>
-                                </div>
-                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
-                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
-                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">5</p>
-                                </div>
-                            </div>
-                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
-                                <div style="background:linear-gradient(90deg,#ef4444,#dc2626);width:80%;height:100%;border-radius:6px;transition:width 1s;"></div>
-                            </div>
-                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">80% occupancy</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Helpdesk Queries Section -->
-            <div id="manageHelpdeskSection" style="display: none;">
-                <div class="form-section" style="max-width: 100%;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h3>Patient Support Helpdesk</h3>
-                        <button class="btn-primary" onclick="loadHelpdeskQueries()">Refresh Inbox</button>
-                    </div>
-                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Manage incoming support tickets and contact form queries.</p>
-                    
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Patient Name</th>
-                                    <th>Subject / Topic</th>
-                                    <th>Message Details</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="helpdeskTableBody">
-                                <!-- Loaded via JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pharmacy Admin Section -->
-            <div id="managePharmacyAdminSection" style="display: none;">
-                <div class="form-section" style="max-width: 100%;">
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
-                        <div>
-                            <h3>Central Pharmacy Stock</h3>
-                            <p style="color:var(--text-muted);margin-top:0.3rem;">Manage medication supplies, expiry tracking and procurement requests.</p>
-                        </div>
-                        <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
-                            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
-                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">SKUs</p>
-                                <h3 style="color:#10b981;margin:0.2rem 0 0;">16</h3>
-                            </div>
-                            <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
-                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">Critical</p>
-                                <h3 style="color:#ef4444;margin:0.2rem 0 0;">2</h3>
-                            </div>
-                            <input type="text" id="pharmSearch" placeholder="&#128269; Search medicine..." oninput="filterPharm(this.value)" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:white;padding:0.6rem 1rem;font-size:0.9rem;outline:none;width:200px;">
-                            <button class="btn-primary" onclick="alert('Procurement request sent to all suppliers.')">+ Reorder Low Stock</button>
-                        </div>
-                    </div>
-                    <div class="table-container">
-                        <table id="pharmTable">
-                            <thead>
-                                <tr>
-                                    <th>Medication</th>
-                                    <th>Category</th>
-                                    <th>Stock</th>
-                                    <th>Expiry</th>
-                                    <th>Location</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pharmBody">
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Amoxicillin 500mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Sun Pharma</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antibiotic</span></td>
-                                    <td style="font-weight:700;color:white;">1,240</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2028-11-01</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack A-01</td>
-                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Amoxicillin 500mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Paracetamol 650mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Cipla Ltd</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Analgesic</span></td>
-                                    <td style="font-weight:700;color:white;">8,500</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2029-05-15</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack A-02</td>
-                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Paracetamol 650mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Insulin Glargine</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Novo Nordisk</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antidiabetic</span></td>
-                                    <td style="font-weight:700;color:white;">45</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2026-10-10</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Cold Room C-01</td>
-                                    <td><span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Low Stock</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Insulin Glargine')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Ibuprofen 400mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Dr. Reddys</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">NSAID</span></td>
-                                    <td style="font-weight:700;color:white;">320</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2027-02-28</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack B-03</td>
-                                    <td><span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Reorder Soon</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Ibuprofen 400mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Atorvastatin 20mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Pfizer India</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Statin</span></td>
-                                    <td style="font-weight:700;color:white;">950</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2028-08-20</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack B-01</td>
-                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Atorvastatin 20mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Azithromycin 250mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Abbott</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antibiotic</span></td>
-                                    <td style="font-weight:700;color:white;">12</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2026-06-01</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack A-04</td>
-                                    <td><span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">CRITICAL</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Azithromycin 250mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Metformin 500mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">USV Pharma</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antidiabetic</span></td>
-                                    <td style="font-weight:700;color:white;">2,100</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2029-01-10</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack C-02</td>
-                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Metformin 500mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Omeprazole 20mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Zydus</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antacid</span></td>
-                                    <td style="font-weight:700;color:white;">780</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2027-09-20</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack D-01</td>
-                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Omeprazole 20mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Amlodipine 5mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Sun Pharma</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">CCB</span></td>
-                                    <td style="font-weight:700;color:white;">630</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2028-03-15</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack B-05</td>
-                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Amlodipine 5mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Morphine 10mg/mL</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Hameln</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Opioid</span></td>
-                                    <td style="font-weight:700;color:white;">28</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2026-12-01</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Safe Room S-01</td>
-                                    <td><span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Low Stock</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Morphine 10mg/mL')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Ceftriaxone 1g Inj.</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Fresenius</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Cephalosporin</span></td>
-                                    <td style="font-weight:700;color:white;">145</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2027-07-30</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Cold Room C-02</td>
-                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Ceftriaxone 1g Inj.')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Dexamethasone 4mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Glenmark</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Corticosteroid</span></td>
-                                    <td style="font-weight:700;color:white;">88</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2027-04-12</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack D-03</td>
-                                    <td><span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Reorder Soon</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Dexamethasone 4mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Warfarin 5mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Bristol-Myers</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Anticoagulant</span></td>
-                                    <td style="font-weight:700;color:white;">310</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2028-06-18</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack E-01</td>
-                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Warfarin 5mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Salbutamol Inhaler</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">GSK</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Bronchodilator</span></td>
-                                    <td style="font-weight:700;color:white;">55</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2027-11-25</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack F-01</td>
-                                    <td><span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Low Stock</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Salbutamol Inhaler')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">IV Normal Saline 500mL</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Baxter</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">IV Fluid</span></td>
-                                    <td style="font-weight:700;color:white;">320</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2028-02-20</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">IV Store</td>
-                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for IV Normal Saline 500mL')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:600;color:white;">Vancomycin 500mg</div>
-                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Mylan</div>
-                                    </td>
-                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Glycopeptide</span></td>
-                                    <td style="font-weight:700;color:white;">9</td>
-                                    <td style="color:rgba(255,255,255,0.55);">2026-08-01</td>
-                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Cold Room C-03</td>
-                                    <td><span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">CRITICAL</span></td>
-                                    <td>
-                                        <button onclick="alert('Reorder placed for Vancomycin 500mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Settings Section -->
-            <div id="manageSettingsSection" style="display: none;">
-                <div class="form-section" style="max-width: 100%;">
-                    <h3>System Configuration</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Manage global hospital platform parameters, backups, and security.</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                        
-                        <!-- Maintenance & Security -->
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <h4 style="color: var(--primary); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Security & Access</h4>
-                            
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <div>
-                                    <p style="color: white; font-weight: 600;">Maintenance Mode</p>
-                                    <p style="color: var(--text-muted); font-size: 0.8rem;">Disable patient logins temporarily</p>
-                                </div>
-                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                    <input type="checkbox" id="maintenanceToggle" style="opacity: 0; width: 0; height: 0;" onchange="updateSettings('maintenanceMode', this.checked)">
-                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ef4444; border-radius: 24px; transition: .4s;"></span>
-                                    <span style="position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .4s;"></span>
-                                </label>
-                            </div>
-
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <div>
-                                    <p style="color: white; font-weight: 600;">Two-Factor Auth (2FA)</p>
-                                    <p style="color: var(--text-muted); font-size: 0.8rem;">Enforce 2FA for all Doctors</p>
-                                </div>
-                                <label style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                    <input type="checkbox" id="twoFaToggle" checked style="opacity: 0; width: 0; height: 0;" onchange="updateSettings('twoFactorAuth', this.checked)">
-                                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #10b981; border-radius: 24px;"></span>
-                                    <span style="position: absolute; height: 18px; width: 18px; left: 29px; bottom: 3px; background-color: white; border-radius: 50%;"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Database Management -->
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <h4 style="color: var(--primary); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Database Control</h4>
-                            
-                            <p style="color: white; font-weight: 600; margin-bottom: 0.5rem;">AWS RDS Integration</p>
-                            <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1rem;">Status: <span style="color: #10b981;">Connected (hospital_db)</span></p>
-                            
-                            <button class="btn-primary" style="width: 100%; margin-bottom: 1rem; background: #3b82f6;" onclick="generateBackup()">📥 Generate Manual Backup</button>
-                            <button class="btn-primary" style="width: 100%; background: transparent; border: 1px solid #ef4444; color: #ef4444;" onclick="purgeRecords()">⚠️ Purge Archived Records</button>
-                        </div>
-
-                        <!-- Integrations -->
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <h4 style="color: var(--primary); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">API Integrations</h4>
-                            
-                            <div style="margin-bottom: 1rem;">
-                                <label style="color: var(--text-muted); font-size: 0.9rem;">Payment Gateway (Stripe Key)</label>
-                                <input type="password" value="sk_test_51Nx1234567890" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: white; margin-top: 0.5rem;" readonly>
-                            </div>
-
-                            <div style="margin-bottom: 1rem;">
-                                <label style="color: var(--text-muted); font-size: 0.9rem;">Telemedicine WebRTC Server</label>
-                                <input type="text" value="wss://rtc.lifecare.com/stream" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: white; margin-top: 0.5rem;" readonly>
-                            </div>
-                        </div>
-
+                        <!-- More types... -->
                     </div>
                 </div>
             </div>
@@ -1015,323 +385,93 @@
     </div>
 
     <script>
-        // Restrict to admins visually
         const userData = JSON.parse(localStorage.getItem('user'));
-        if (!userData || userData.role !== 'admin') {
-            alert("Unauthorized. Admin login required to access this secure portal.");
-            window.location.href = 'login.html';
-        }
+        if (!userData || userData.role !== 'admin') window.location.href = 'login.html';
 
         function logout() {
             localStorage.removeItem('user');
             window.location.href = 'index.html';
         }
 
-        document.getElementById('addDoctorForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const errorMsg = document.getElementById('addError');
-            errorMsg.style.display = 'none';
+        // Navigation
+        const navItems = [
+            { id: 'navAnalytics', section: 'analyticsSection', title: 'Global Hospital Analytics', sub: 'Real-time metrics and financial overview.' },
+            { id: 'navAddDoctor', section: 'addDoctorSection', title: 'Specialist Onboarding', sub: 'Authorize new physicians to the system.' },
+            { id: 'navManageDoctors', section: 'manageDoctorsSection', title: 'Resource Management', sub: 'Manage hospital specialists and credentials.' },
+            { id: 'navManagePatients', section: 'managePatientsSection', title: 'Population Control', sub: 'Registered patient records and accounts.' },
+            { id: 'navBedManagement', section: 'bedManagementSection', title: 'Facility Roadmap', sub: 'Ward occupancy and bed availability.' },
+            { id: 'navBloodBank', section: 'bloodBankSection', title: 'Plasma Inventory', sub: 'Blood unit levels and critical stock alerts.' }
+        ];
 
-            const payload = {
-                fullName: document.getElementById('docName').value,
-                specialty: document.getElementById('docSpecialty').value,
-                experience: document.getElementById('docExperience').value,
-                phone: document.getElementById('docPhone').value,
-                username: document.getElementById('docUsername').value,
-                password: document.getElementById('docPassword').value
-            };
-
-            try {
-                const response = await fetch('/api/admin/add-doctor', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+        navItems.forEach(item => {
+            document.getElementById(item.id).addEventListener('click', () => {
+                navItems.forEach(i => {
+                    document.getElementById(i.id).classList.remove('active');
+                    document.getElementById(i.section).style.display = 'none';
                 });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert('Doctor successfully registered and added to the public directory!');
-                    document.getElementById('addDoctorForm').reset();
-                    loadAdminDoctors(); // Refresh the list
-                } else {
-                    errorMsg.textContent = data.message || 'Failed to add doctor.';
-                    errorMsg.style.display = 'block';
-                }
-            } catch (err) {
-                console.error(err);
-                errorMsg.textContent = 'Server error. Please try again.';
-                errorMsg.style.display = 'block';
-            }
-        });
-
-        // Toggle Views
-        const analyticsSection = document.getElementById('analyticsSection');
-        const addSection = document.getElementById('addDoctorSection');
-        const manageSection = document.getElementById('manageDoctorsSection');
-        const managePatientsSection = document.getElementById('managePatientsSection');
-        const manageHelpdeskSection = document.getElementById('manageHelpdeskSection');
-        const manageSettingsSection = document.getElementById('manageSettingsSection');
-        const manageBloodBankSection = document.getElementById('manageBloodBankSection');
-        const manageBedSection = document.getElementById('manageBedSection');
-        const managePharmacyAdminSection = document.getElementById('managePharmacyAdminSection');
-        
-        function clearActiveNavs() {
-            document.getElementById('navAnalytics').classList.remove('active');
-            document.getElementById('navAddDoctor').classList.remove('active');
-            document.getElementById('navManageDoctors').classList.remove('active');
-            document.getElementById('navManagePatients').classList.remove('active');
-            document.getElementById('navHelpdesk').classList.remove('active');
-            document.getElementById('navBloodBank').classList.remove('active');
-            document.getElementById('navBedManagement').classList.remove('active');
-            document.getElementById('navPharmacyAdmin').classList.remove('active');
-            document.getElementById('navSettings').classList.remove('active');
-            
-            analyticsSection.style.display = 'none';
-            addSection.style.display = 'none';
-            manageSection.style.display = 'none';
-            managePatientsSection.style.display = 'none';
-            manageHelpdeskSection.style.display = 'none';
-            manageBloodBankSection.style.display = 'none';
-            manageBedSection.style.display = 'none';
-            managePharmacyAdminSection.style.display = 'none';
-            manageSettingsSection.style.display = 'none';
-        }
-
-        document.getElementById('navAnalytics').addEventListener('click', () => {
-            clearActiveNavs();
-            document.getElementById('navAnalytics').classList.add('active');
-            analyticsSection.style.display = 'block';
-        });
-
-        document.getElementById('navAddDoctor').addEventListener('click', () => {
-            clearActiveNavs();
-            document.getElementById('navAddDoctor').classList.add('active');
-            addSection.style.display = 'block';
-        });
-
-        document.getElementById('navManageDoctors').addEventListener('click', () => {
-            clearActiveNavs();
-            document.getElementById('navManageDoctors').classList.add('active');
-            manageSection.style.display = 'block';
-            loadAdminDoctors();
-        });
-
-        document.getElementById('navManagePatients').addEventListener('click', () => {
-            clearActiveNavs();
-            document.getElementById('navManagePatients').classList.add('active');
-            managePatientsSection.style.display = 'block';
-            loadAdminPatients();
-        });
-
-        document.getElementById('navHelpdesk').addEventListener('click', () => {
-            clearActiveNavs();
-            document.getElementById('navHelpdesk').classList.add('active');
-            manageHelpdeskSection.style.display = 'block';
-            loadHelpdeskQueries();
-        });
-
-        document.getElementById('navSettings').addEventListener('click', () => {
-            clearActiveNavs();
-            document.getElementById('navSettings').classList.add('active');
-            manageSettingsSection.style.display = 'block';
-        });
-
-        document.getElementById('navBloodBank').addEventListener('click', () => {
-            clearActiveNavs();
-            document.getElementById('navBloodBank').classList.add('active');
-            manageBloodBankSection.style.display = 'block';
-        });
-
-        document.getElementById('navBedManagement').addEventListener('click', () => {
-            clearActiveNavs();
-            document.getElementById('navBedManagement').classList.add('active');
-            manageBedSection.style.display = 'block';
-        });
-
-        document.getElementById('navPharmacyAdmin').addEventListener('click', () => {
-            clearActiveNavs();
-            document.getElementById('navPharmacyAdmin').classList.add('active');
-            managePharmacyAdminSection.style.display = 'block';
-        });
-
-        async function loadAdminDoctors() {
-            try {
-                const res = await fetch('/api/doctors');
-                if (res.ok) {
-                    const doctors = await res.json();
-                    const tbody = document.getElementById('doctorsListTable');
-                    tbody.innerHTML = '';
-                    
-                    if (doctors.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1rem; color: var(--text-muted);">No doctors found in the database.</td></tr>';
-                        return;
-                    }
-
-                    doctors.forEach(doc => {
-                        tbody.innerHTML += `
-                            <tr style="border-bottom: 1px solid var(--border-color);">
-                                <td style="padding: 1rem; color: var(--text-main);">${doc.name}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">${doc.specialty}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">${doc.experience_years || 0} Yrs</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">${doc.phone || 'N/A'}</td>
-                                <td style="padding: 1rem;">
-                                    <button onclick="deleteDoctor(${doc.id})" style="padding: 0.4rem 0.8rem; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; border-radius: 6px; cursor: pointer;">Remove Data</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        async function deleteDoctor(id) {
-            if (!confirm('CRITICAL WARNING: Are you sure you want to permanently delete this doctor? This will also remove their user account and associated login credentials.')) return;
-            
-            try {
-                const res = await fetch('/api/admin/doctors/' + id, { method: 'DELETE' });
-                if (res.ok) {
-                    alert('Doctor securely removed from the database.');
-                    loadAdminDoctors();
-                } else {
-                    alert('Failed to delete doctor.');
-                }
-            } catch (e) {
-                console.error(e);
-                alert('Server error while deleting.');
-            }
-        }
-        async function loadAdminPatients() {
-            try {
-                const res = await fetch('/api/admin/patients');
-                if (res.ok) {
-                    const patients = await res.json();
-                    const tbody = document.getElementById('patientsListTable');
-                    tbody.innerHTML = '';
-                    
-                    if (patients.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1rem; color: var(--text-muted);">No patients registered yet.</td></tr>';
-                        return;
-                    }
-
-                    patients.forEach(pat => {
-                        const dobStr = pat.dob ? new Date(pat.dob).toLocaleDateString() : 'N/A';
-                        tbody.innerHTML += `
-                            <tr style="border-bottom: 1px solid var(--border-color);">
-                                <td style="padding: 1rem; color: var(--primary);">#${pat.id}</td>
-                                <td style="padding: 1rem; color: var(--text-main); font-weight: 600;">${pat.full_name}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">${dobStr} / ${pat.gender}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">${pat.username}</td>
-                                <td style="padding: 1rem; color: var(--text-muted);">${pat.phone || 'N/A'}</td>
-                            </tr>
-                        `;
-                    });
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        async function loadHelpdeskQueries() {
-            try {
-                const res = await fetch('/api/admin/queries');
-                if (!res.ok) return;
-                const data = await res.json();
-                const tbody = document.getElementById('helpdeskTableBody');
-                tbody.innerHTML = '';
-                
-                if(data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 1rem; color: var(--text-muted);">No support tickets found.</td></tr>';
-                    return;
-                }
-
-                data.forEach(q => {
-                    const statusBadge = q.status === 'Resolved' 
-                        ? `<span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Resolved</span>`
-                        : `<button class="btn-primary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="resolveQuery(${q.id})">Mark Resolved</button>`;
-
-                    const row = `
-                        <tr style="border-bottom: 1px solid var(--border-color);">
-                            <td style="padding: 1rem;">${q.name} <br><small style="color:var(--text-muted)">${q.email}</small></td>
-                            <td style="padding: 1rem; text-transform: capitalize; color: var(--primary);">${q.subject}</td>
-                            <td style="padding: 1rem; color: var(--text-muted); max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${q.message}">${q.message}</td>
-                            <td style="padding: 1rem; color: var(--text-muted);">${new Date(q.created_at).toLocaleDateString()}</td>
-                            <td style="padding: 1rem;">${statusBadge}</td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += row;
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        async function resolveQuery(id) {
-            try {
-                const res = await fetch('/api/admin/queries/' + id + '/resolve', { method: 'POST' });
-                if (res.ok) loadHelpdeskQueries();
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        // Settings API interactions
-        async function fetchSettings() {
-            try {
-                const res = await fetch('/api/admin/settings');
-                if (res.ok) {
-                    const settings = await res.json();
-                    document.getElementById('maintenanceToggle').checked = settings.maintenanceMode;
-                    document.getElementById('twoFaToggle').checked = settings.twoFactorAuth;
-                }
-            } catch (err) { console.error(err); }
-        }
-
-        async function updateSettings(key, value) {
-            try {
-                const payload = {};
-                payload[key] = value;
-                const res = await fetch('/api/admin/settings', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (res.ok) alert(`System configuration '${key}' updated securely.`);
-            } catch (err) { console.error(err); }
-        }
-
-        async function generateBackup() {
-            try {
-                const res = await fetch('/api/admin/backup', { method: 'POST' });
-                const data = await res.json();
-                if (res.ok) alert(data.message);
-                else alert(data.error);
-            } catch (err) { console.error(err); }
-        }
-
-        async function purgeRecords() {
-            if (!confirm('CRITICAL DANGER: Are you absolutely sure you want to purge archived records? This action is irreversible.')) return;
-            try {
-                const res = await fetch('/api/admin/purge', { method: 'POST' });
-                const data = await res.json();
-                if (res.ok) alert(data.message);
-                else alert(data.error);
-            } catch (err) { console.error(err); }
-        }
-
-        // Initialize Analytics Dashboard View
-        fetchSettings();
-        document.getElementById('navAnalytics').click();
-    
-        function filterPharm(query) {
-            const rows = document.querySelectorAll('#pharmBody tr');
-            rows.forEach(r => {
-                r.style.display = r.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
+                document.getElementById(item.id).classList.add('active');
+                document.getElementById(item.section).style.display = 'block';
+                document.getElementById('portalTitle').innerText = item.title;
+                document.getElementById('portalSubtitle').innerText = item.sub;
+                if(item.id === 'navManageDoctors') loadDoctors();
+                if(item.id === 'navManagePatients') loadPatients();
             });
+        });
+
+        async function loadDoctors() {
+            const res = await fetch('/api/doctors');
+            if(res.ok) {
+                const docs = await res.json();
+                const tbody = document.getElementById('doctorsTable');
+                tbody.innerHTML = docs.map(d => `
+                    <tr>
+                        <td style="font-weight:700;">${d.name}</td>
+                        <td>${d.specialty}</td>
+                        <td>${d.experience_years} Yrs</td>
+                        <td><span class="status-tag tag-active">Active</span></td>
+                        <td><button onclick="alert('Access restricted.')" style="background:transparent; border:none; color:var(--adm-primary); cursor:pointer; font-weight:700;">Revoke</button></td>
+                    </tr>
+                `).join('');
+            }
         }
 
+        async function loadPatients() {
+            const res = await fetch('/api/admin/patients');
+            if(res.ok) {
+                const pats = await res.json();
+                const tbody = document.getElementById('patientsTable');
+                tbody.innerHTML = pats.map(p => `
+                    <tr>
+                        <td style="font-family:monospace; color:var(--adm-primary);">#PAT-${p.id}</td>
+                        <td style="font-weight:700;">${p.full_name || p.username}</td>
+                        <td>${p.username}</td>
+                        <td>${p.phone || 'N/A'}</td>
+                        <td><button onclick="alert('Record protected.')" style="background:transparent; border:none; color:var(--adm-primary); cursor:pointer; font-weight:700;">Edit</button></td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        async function handleAddDoctor(e) {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('docName').value,
+                specialty: document.getElementById('docSpecialty').value,
+                experienceYears: document.getElementById('docExp').value,
+                phone: document.getElementById('docPhone').value,
+                username: document.getElementById('docUser').value,
+                password: document.getElementById('docPass').value
+            };
+            const res = await fetch('/api/admin/add-doctor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if(res.ok) {
+                alert("Specialist authorized successfully.");
+                e.target.reset();
+            }
+        }
     </script>
     <script src="js/bg-slider.js"></script>
 </body>
