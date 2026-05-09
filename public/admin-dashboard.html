@@ -259,40 +259,95 @@
             <!-- Blood Bank Section -->
             <div id="manageBloodBankSection" style="display: none;">
                 <div class="form-section" style="max-width: 100%;">
-                    <h3>Central Blood Bank Inventory</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Monitor real-time plasma and blood unit levels across all hospital wards.</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-                        <!-- Blood Cards -->
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
-                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">A+</h2>
-                            <p style="color: var(--text-main); font-weight: 600;">145 Units</p>
-                            <span style="color: #10b981; font-size: 0.8rem; background: rgba(16, 185, 129, 0.2); padding: 2px 8px; border-radius: 12px;">Healthy</span>
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+                        <div>
+                            <h3>Central Blood Bank Inventory</h3>
+                            <p style="color:var(--text-muted);margin-top:0.3rem;">Real-time plasma &amp; blood unit levels across all hospital wards.</p>
                         </div>
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
-                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">A-</h2>
-                            <p style="color: var(--text-main); font-weight: 600;">12 Units</p>
-                            <span style="color: #facc15; font-size: 0.8rem; background: rgba(234, 179, 8, 0.2); padding: 2px 8px; border-radius: 12px;">Low Stock</span>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:0.7rem 1.3rem;text-align:center;">
+                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;margin:0;">Total Units</p>
+                                <h3 style="color:#10b981;margin:0.2rem 0 0;">1,284</h3>
+                            </div>
+                            <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:0.7rem 1.3rem;text-align:center;">
+                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;margin:0;">Critical</p>
+                                <h3 style="color:#ef4444;margin:0.2rem 0 0;">3 Types</h3>
+                            </div>
+                            <button class="btn-primary" style="background:#10b981;align-self:center;" onclick="alert('Donor broadcast sent!')">&#128241; Send Donor Alert</button>
                         </div>
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
-                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">B+</h2>
-                            <p style="color: var(--text-main); font-weight: 600;">98 Units</p>
-                            <span style="color: #10b981; font-size: 0.8rem; background: rgba(16, 185, 129, 0.2); padding: 2px 8px; border-radius: 12px;">Healthy</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:1.2rem;">
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(16,185,129,0.25);text-align:center;">
+                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">A+</h2>
+                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">145 Units</p>
+                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
+                                <div style="background:#10b981;width:80%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Healthy</span>
+                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Last donated: 2h ago</p>
                         </div>
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid #ef4444; text-align: center; box-shadow: 0 0 15px rgba(239,68,68,0.2);">
-                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">O-</h2>
-                            <p style="color: var(--text-main); font-weight: 600;">2 Units</p>
-                            <span style="color: #ef4444; font-size: 0.8rem; background: rgba(239, 68, 68, 0.2); padding: 2px 8px; border-radius: 12px;">CRITICAL</span>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(234,179,8,0.3);text-align:center;">
+                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">A-</h2>
+                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">12 Units</p>
+                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
+                                <div style="background:#eab308;width:15%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Low Stock</span>
+                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Request donation</p>
                         </div>
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
-                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">AB+</h2>
-                            <p style="color: var(--text-main); font-weight: 600;">45 Units</p>
-                            <span style="color: #10b981; font-size: 0.8rem; background: rgba(16, 185, 129, 0.2); padding: 2px 8px; border-radius: 12px;">Healthy</span>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(16,185,129,0.25);text-align:center;">
+                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">B+</h2>
+                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">98 Units</p>
+                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
+                                <div style="background:#10b981;width:65%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Healthy</span>
+                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Last donated: 5h ago</p>
                         </div>
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); text-align: center;">
-                            <h2 style="color: #ef4444; font-size: 2.5rem; margin-bottom: 0.5rem;">AB-</h2>
-                            <p style="color: var(--text-main); font-weight: 600;">18 Units</p>
-                            <span style="color: #facc15; font-size: 0.8rem; background: rgba(234, 179, 8, 0.2); padding: 2px 8px; border-radius: 12px;">Low Stock</span>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(239,68,68,0.5);text-align:center;">
+                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">B-</h2>
+                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">8 Units</p>
+                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
+                                <div style="background:#ef4444;width:8%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">CRITICAL</span>
+                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">&#9888; Urgent needed</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(59,130,246,0.3);text-align:center;">
+                            <h2 style="color:#60a5fa;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">O+</h2>
+                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">210 Units</p>
+                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
+                                <div style="background:#3b82f6;width:90%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <span style="background:rgba(59,130,246,0.15);color:#60a5fa;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Excellent</span>
+                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Universal donor</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(239,68,68,0.5);text-align:center;">
+                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">O-</h2>
+                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">2 Units</p>
+                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
+                                <div style="background:#ef4444;width:2%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">CRITICAL</span>
+                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">&#9888; Emergency stock</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(16,185,129,0.25);text-align:center;">
+                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">AB+</h2>
+                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">45 Units</p>
+                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
+                                <div style="background:#10b981;width:55%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Healthy</span>
+                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Universal recipient</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(234,179,8,0.3);text-align:center;">
+                            <h2 style="color:#ef4444;font-size:2.6rem;font-weight:800;margin:0 0 0.3rem;">AB-</h2>
+                            <p style="font-size:1.2rem;font-weight:700;color:white;margin:0 0 0.6rem;">18 Units</p>
+                            <div style="background:rgba(0,0,0,0.35);border-radius:6px;height:7px;margin-bottom:0.8rem;overflow:hidden;">
+                                <div style="background:#eab308;width:22%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 12px;border-radius:12px;font-size:0.78rem;font-weight:700;">Low Stock</span>
+                            <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin-top:0.6rem;">Last donated: 2d ago</p>
                         </div>
                     </div>
                 </div>
@@ -301,70 +356,297 @@
             <!-- Bed Management Section -->
             <div id="manageBedSection" style="display: none;">
                 <div class="form-section" style="max-width: 100%;">
-                    <h3>Ward & Bed Occupancy</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Live monitoring of hospital bed availability and ward utilization.</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-                        <!-- Ward Card 1 -->
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h3 style="color: var(--primary);">Intensive Care Unit (ICU)</h3>
-                                <span style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">High Alert</span>
-                            </div>
-                            <div style="background: rgba(0,0,0,0.3); border-radius: 8px; height: 10px; margin-bottom: 0.5rem; overflow: hidden;">
-                                <div style="background: #ef4444; width: 95%; height: 100%;"></div>
-                            </div>
-                            <p style="color: var(--text-muted); display: flex; justify-content: space-between;">
-                                <span>Occupied: 19</span>
-                                <span>Total: 20</span>
-                            </p>
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+                        <div>
+                            <h3>Ward &amp; Bed Occupancy</h3>
+                            <p style="color:var(--text-muted);margin-top:0.3rem;">Live monitoring of all hospital wards, bed availability and utilization.</p>
                         </div>
-
-                        <!-- Ward Card 2 -->
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h3 style="color: #10b981;">General Ward (Male)</h3>
-                                <span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Available</span>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                            <div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
+                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">Total Beds</p>
+                                <h3 style="color:#60a5fa;margin:0.2rem 0 0;">440</h3>
                             </div>
-                            <div style="background: rgba(0,0,0,0.3); border-radius: 8px; height: 10px; margin-bottom: 0.5rem; overflow: hidden;">
-                                <div style="background: #10b981; width: 45%; height: 100%;"></div>
+                            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
+                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">Available</p>
+                                <h3 style="color:#10b981;margin:0.2rem 0 0;">162</h3>
                             </div>
-                            <p style="color: var(--text-muted); display: flex; justify-content: space-between;">
-                                <span>Occupied: 45</span>
-                                <span>Total: 100</span>
-                            </p>
+                            <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
+                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                <h3 style="color:#f87171;margin:0.2rem 0 0;">278</h3>
+                            </div>
                         </div>
-
-                        <!-- Ward Card 3 -->
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h3 style="color: #10b981;">General Ward (Female)</h3>
-                                <span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Available</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.2rem;">
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128138;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">Intensive Care Unit (ICU)</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#ef4444;border:1px solid #ef444440;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">High Alert</span>
                             </div>
-                            <div style="background: rgba(0,0,0,0.3); border-radius: 8px; height: 10px; margin-bottom: 0.5rem; overflow: hidden;">
-                                <div style="background: #10b981; width: 60%; height: 100%;"></div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">20</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">19</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">1</p>
+                                </div>
                             </div>
-                            <p style="color: var(--text-muted); display: flex; justify-content: space-between;">
-                                <span>Occupied: 60</span>
-                                <span>Total: 100</span>
-                            </p>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#ef4444,#dc2626);width:95%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">95% occupancy</p>
                         </div>
-
-                        <!-- Ward Card 4 -->
-                        <div style="background: rgba(15, 23, 42, 0.6); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h3 style="color: #eab308;">Maternity Ward</h3>
-                                <span style="background: rgba(234, 179, 8, 0.2); color: #eab308; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Moderate</span>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128657;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">Emergency &amp; Trauma</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#ef4444;border:1px solid #ef444440;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">High Alert</span>
                             </div>
-                            <div style="background: rgba(0,0,0,0.3); border-radius: 8px; height: 10px; margin-bottom: 0.5rem; overflow: hidden;">
-                                <div style="background: #eab308; width: 80%; height: 100%;"></div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">15</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">14</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">1</p>
+                                </div>
                             </div>
-                            <p style="color: var(--text-muted); display: flex; justify-content: space-between;">
-                                <span>Occupied: 40</span>
-                                <span>Total: 50</span>
-                            </p>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#ef4444,#b91c1c);width:93%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">93% occupancy</p>
                         </div>
-
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128100;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">General Ward (Male)</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#10b981;border:1px solid #10b98140;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Available</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">100</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">45</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">55</p>
+                                </div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#10b981,#059669);width:45%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">45% occupancy</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128101;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">General Ward (Female)</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#10b981;border:1px solid #10b98140;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Available</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">100</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">60</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">40</p>
+                                </div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#10b981,#047857);width:60%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">60% occupancy</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128118;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">Maternity Ward</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#eab308;border:1px solid #eab30840;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Moderate</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">50</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">40</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">10</p>
+                                </div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#eab308,#ca8a04);width:80%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">80% occupancy</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#128118;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">Paediatric Ward</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#10b981;border:1px solid #10b98140;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Available</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">40</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">22</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">18</p>
+                                </div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#3b82f6,#2563eb);width:55%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">55% occupancy</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#10084;&#65039;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">Cardiology Ward</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#eab308;border:1px solid #eab30840;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Moderate</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">25</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">18</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">7</p>
+                                </div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#f59e0b,#d97706);width:72%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">72% occupancy</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#129516;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">Oncology Ward</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#eab308;border:1px solid #eab30840;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Moderate</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">35</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">28</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">7</p>
+                                </div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#a855f7,#9333ea);width:80%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">80% occupancy</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#129432;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">Orthopaedic Ward</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#10b981;border:1px solid #10b98140;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">Available</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">30</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">12</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">18</p>
+                                </div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#10b981,#059669);width:40%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">40% occupancy</p>
+                        </div>
+                        <div style="background:rgba(15,23,42,0.75);padding:1.5rem;border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+                                <div>
+                                    <div style="font-size:1.5rem;margin-bottom:0.3rem;">&#129504;</div>
+                                    <h4 style="color:white;margin:0;font-size:1rem;">Neurology Ward</h4>
+                                </div>
+                                <span style="background:rgba(255,255,255,0.08);color:#ef4444;border:1px solid #ef444440;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;white-space:nowrap;">High Alert</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;margin-bottom:1rem;text-align:center;">
+                                <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Total</p>
+                                    <p style="color:white;font-weight:700;font-size:1.1rem;margin:0;">25</p>
+                                </div>
+                                <div style="background:rgba(239,68,68,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Occupied</p>
+                                    <p style="color:#f87171;font-weight:700;font-size:1.1rem;margin:0;">20</p>
+                                </div>
+                                <div style="background:rgba(16,185,129,0.1);border-radius:8px;padding:0.6rem;">
+                                    <p style="color:rgba(255,255,255,0.4);font-size:0.68rem;text-transform:uppercase;margin:0;">Free</p>
+                                    <p style="color:#34d399;font-weight:700;font-size:1.1rem;margin:0;">5</p>
+                                </div>
+                            </div>
+                            <div style="background:rgba(0,0,0,0.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:0.5rem;">
+                                <div style="background:linear-gradient(90deg,#ef4444,#dc2626);width:80%;height:100%;border-radius:6px;transition:width 1s;"></div>
+                            </div>
+                            <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;text-align:right;">80% occupancy</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -400,65 +682,261 @@
             <!-- Pharmacy Admin Section -->
             <div id="managePharmacyAdminSection" style="display: none;">
                 <div class="form-section" style="max-width: 100%;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h3>Central Pharmacy Stock</h3>
-                        <button class="btn-primary" onclick="alert('Procurement request sent to suppliers.')">+ Reorder Low Stock</button>
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+                        <div>
+                            <h3>Central Pharmacy Stock</h3>
+                            <p style="color:var(--text-muted);margin-top:0.3rem;">Manage medication supplies, expiry tracking and procurement requests.</p>
+                        </div>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+                            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
+                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">SKUs</p>
+                                <h3 style="color:#10b981;margin:0.2rem 0 0;">16</h3>
+                            </div>
+                            <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:0.7rem 1.2rem;text-align:center;">
+                                <p style="color:rgba(255,255,255,0.45);font-size:0.7rem;text-transform:uppercase;margin:0;">Critical</p>
+                                <h3 style="color:#ef4444;margin:0.2rem 0 0;">2</h3>
+                            </div>
+                            <input type="text" id="pharmSearch" placeholder="&#128269; Search medicine..." oninput="filterPharm(this.value)" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:white;padding:0.6rem 1rem;font-size:0.9rem;outline:none;width:200px;">
+                            <button class="btn-primary" onclick="alert('Procurement request sent to all suppliers.')">+ Reorder Low Stock</button>
+                        </div>
                     </div>
-                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Manage medication supplies, track expiry dates, and handle procurement.</p>
-                    
                     <div class="table-container">
-                        <table>
+                        <table id="pharmTable">
                             <thead>
                                 <tr>
-                                    <th>Medication Name</th>
+                                    <th>Medication</th>
                                     <th>Category</th>
-                                    <th>Current Stock (Strips/Vials)</th>
-                                    <th>Expiry Date</th>
+                                    <th>Stock</th>
+                                    <th>Expiry</th>
+                                    <th>Location</th>
                                     <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="pharmBody">
                                 <tr>
-                                    <td>Amoxicillin 500mg</td>
-                                    <td>Antibiotic</td>
-                                    <td>1,240</td>
-                                    <td>2028-11-01</td>
-                                    <td><span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Sufficient</span></td>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Amoxicillin 500mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Sun Pharma</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antibiotic</span></td>
+                                    <td style="font-weight:700;color:white;">1,240</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2028-11-01</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack A-01</td>
+                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Amoxicillin 500mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Paracetamol 650mg</td>
-                                    <td>Analgesic</td>
-                                    <td>8,500</td>
-                                    <td>2029-05-15</td>
-                                    <td><span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Sufficient</span></td>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Paracetamol 650mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Cipla Ltd</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Analgesic</span></td>
+                                    <td style="font-weight:700;color:white;">8,500</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2029-05-15</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack A-02</td>
+                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Paracetamol 650mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Insulin Glargine</td>
-                                    <td>Antidiabetic</td>
-                                    <td>45</td>
-                                    <td>2026-10-10</td>
-                                    <td><span style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Low Stock</span></td>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Insulin Glargine</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Novo Nordisk</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antidiabetic</span></td>
+                                    <td style="font-weight:700;color:white;">45</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2026-10-10</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Cold Room C-01</td>
+                                    <td><span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Low Stock</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Insulin Glargine')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Ibuprofen 400mg</td>
-                                    <td>NSAID</td>
-                                    <td>320</td>
-                                    <td>2027-02-28</td>
-                                    <td><span style="background: rgba(234, 179, 8, 0.2); color: #eab308; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Reorder Soon</span></td>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Ibuprofen 400mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Dr. Reddys</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">NSAID</span></td>
+                                    <td style="font-weight:700;color:white;">320</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2027-02-28</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack B-03</td>
+                                    <td><span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Reorder Soon</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Ibuprofen 400mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Atorvastatin 20mg</td>
-                                    <td>Statin</td>
-                                    <td>950</td>
-                                    <td>2028-08-20</td>
-                                    <td><span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Sufficient</span></td>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Atorvastatin 20mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Pfizer India</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Statin</span></td>
+                                    <td style="font-weight:700;color:white;">950</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2028-08-20</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack B-01</td>
+                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Atorvastatin 20mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Azithromycin 250mg</td>
-                                    <td>Antibiotic</td>
-                                    <td>12</td>
-                                    <td>2026-06-01</td>
-                                    <td><span style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">CRITICAL</span></td>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Azithromycin 250mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Abbott</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antibiotic</span></td>
+                                    <td style="font-weight:700;color:white;">12</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2026-06-01</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack A-04</td>
+                                    <td><span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">CRITICAL</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Azithromycin 250mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Metformin 500mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">USV Pharma</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antidiabetic</span></td>
+                                    <td style="font-weight:700;color:white;">2,100</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2029-01-10</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack C-02</td>
+                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Metformin 500mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Omeprazole 20mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Zydus</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Antacid</span></td>
+                                    <td style="font-weight:700;color:white;">780</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2027-09-20</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack D-01</td>
+                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Omeprazole 20mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Amlodipine 5mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Sun Pharma</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">CCB</span></td>
+                                    <td style="font-weight:700;color:white;">630</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2028-03-15</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack B-05</td>
+                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Amlodipine 5mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Morphine 10mg/mL</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Hameln</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Opioid</span></td>
+                                    <td style="font-weight:700;color:white;">28</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2026-12-01</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Safe Room S-01</td>
+                                    <td><span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Low Stock</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Morphine 10mg/mL')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Ceftriaxone 1g Inj.</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Fresenius</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Cephalosporin</span></td>
+                                    <td style="font-weight:700;color:white;">145</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2027-07-30</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Cold Room C-02</td>
+                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Ceftriaxone 1g Inj.')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Dexamethasone 4mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Glenmark</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Corticosteroid</span></td>
+                                    <td style="font-weight:700;color:white;">88</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2027-04-12</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack D-03</td>
+                                    <td><span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Reorder Soon</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Dexamethasone 4mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Warfarin 5mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Bristol-Myers</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Anticoagulant</span></td>
+                                    <td style="font-weight:700;color:white;">310</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2028-06-18</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack E-01</td>
+                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Warfarin 5mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Salbutamol Inhaler</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">GSK</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Bronchodilator</span></td>
+                                    <td style="font-weight:700;color:white;">55</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2027-11-25</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Rack F-01</td>
+                                    <td><span style="background:rgba(234,179,8,0.15);color:#eab308;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Low Stock</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Salbutamol Inhaler')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">IV Normal Saline 500mL</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Baxter</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">IV Fluid</span></td>
+                                    <td style="font-weight:700;color:white;">320</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2028-02-20</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">IV Store</td>
+                                    <td><span style="background:rgba(16,185,129,0.15);color:#10b981;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">Sufficient</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for IV Normal Saline 500mL')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:600;color:white;">Vancomycin 500mg</div>
+                                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);">Mylan</div>
+                                    </td>
+                                    <td><span style="background:rgba(59,130,246,0.1);color:#60a5fa;padding:2px 8px;border-radius:8px;font-size:0.8rem;">Glycopeptide</span></td>
+                                    <td style="font-weight:700;color:white;">9</td>
+                                    <td style="color:rgba(255,255,255,0.55);">2026-08-01</td>
+                                    <td style="color:rgba(255,255,255,0.45);font-size:0.82rem;">Cold Room C-03</td>
+                                    <td><span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 10px;border-radius:10px;font-size:0.78rem;font-weight:700;">CRITICAL</span></td>
+                                    <td>
+                                        <button onclick="alert('Reorder placed for Vancomycin 500mg')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#60a5fa;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.78rem;">Reorder</button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -846,6 +1324,14 @@
         // Initialize Analytics Dashboard View
         fetchSettings();
         document.getElementById('navAnalytics').click();
+    
+        function filterPharm(query) {
+            const rows = document.querySelectorAll('#pharmBody tr');
+            rows.forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(query.toLowerCase()) ? '' : 'none';
+            });
+        }
+
     </script>
     <script src="js/bg-slider.js"></script>
 </body>
