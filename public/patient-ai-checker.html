@@ -3,192 +3,366 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Symptom Checker - LifeCare</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>LifeCare | AI Symptom Diagnostics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <style>
+        :root {
+            --ai-glow: #3b82f6;
+            --ai-accent: #8b5cf6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050d1a;
+            color: #f1f5f9;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
         .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
-        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
-        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
-        .sidebar a.sos-link { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
-        .sidebar a.sos-link:hover { background: #ef4444; color: white; }
-        
-        .main-content { flex: 1; padding: 2rem 5%; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        
-        .ai-container {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--primary);
-            border-radius: 16px;
-            padding: 2.5rem;
-            max-width: 800px;
-            margin: 0 auto;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
-        }
 
-        .ai-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .ai-header span {
-            font-size: 3rem;
-            display: inline-block;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .symptom-input-group {
+        /* Sidebar - Consistent with Pharmacy */
+        .sidebar {
+            width: 260px;
+            background: rgba(10, 18, 38, 0.98);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2.5rem 1.5rem;
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
         }
 
-        .symptom-input-group input {
-            flex: 1;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--border-color);
+        .sidebar h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+        .sidebar h2 span { color: var(--ai-glow); }
+
+        .nav-links { flex: 1; }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: all 0.25s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(59, 130, 246, 0.1);
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), transparent);
+            border-left: 3px solid var(--ai-glow);
+        }
+
+        .sos-link { color: #f87171 !important; border: 1px solid rgba(248, 113, 113, 0.2); margin-top: 1.5rem; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 3rem 4%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .ai-hero {
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 3.5rem;
+        }
+
+        .ai-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 30%, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .ai-hero p {
             font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.6;
         }
 
-        .symptom-input-group input:focus {
+        /* Diagnostic Card */
+        .diag-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .diag-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .input-area {
+            position: relative;
+            z-index: 10;
+        }
+
+        .symptom-textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            color: white;
+            font-size: 1.15rem;
+            font-family: inherit;
+            resize: none;
+            min-height: 150px;
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s;
+            margin-bottom: 1.5rem;
         }
 
-        .ai-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+        .symptom-textarea:focus {
+            border-color: var(--ai-glow);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tips {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #2563eb, #8b5cf6);
             color: white;
             border: none;
-            padding: 0 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.1rem;
+            padding: 1rem 2.5rem;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
 
-        .ai-btn:hover {
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-            transform: translateY(-2px);
+        .analyze-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
         }
 
-        .ai-result {
+        /* Results Area */
+        .results-area {
             display: none;
-            background: rgba(15, 23, 42, 0.8);
-            border-left: 4px solid var(--primary);
-            padding: 2rem;
-            border-radius: 8px;
-            animation: fadeIn 0.5s ease;
+            margin-top: 3rem;
+            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .loader {
-            display: none;
+        .scanner-wrap {
             text-align: center;
-            margin: 2rem 0;
-            color: var(--primary);
+            padding: 2rem 0;
         }
 
-        .loader-bars {
-            display: inline-block;
-            width: 50px;
-            height: 30px;
+        .dna-spinner {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
             position: relative;
+            animation: rotate 2s linear infinite;
         }
 
-        .loader-bars span {
-            display: block;
-            position: absolute;
-            bottom: 0;
-            width: 9px;
-            height: 10px;
-            background: var(--primary);
-            animation: equalizer 1.5s infinite ease-in-out;
+        @keyframes rotate { to { transform: rotate(360deg); } }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
         }
 
-        .loader-bars span:nth-child(2) { left: 15px; animation-delay: 0.2s; }
-        .loader-bars span:nth-child(3) { left: 30px; animation-delay: 0.4s; }
-        .loader-bars span:nth-child(4) { left: 45px; animation-delay: 0.6s; }
-
-        @keyframes equalizer {
-            0% { height: 10px; }
-            50% { height: 30px; }
-            100% { height: 10px; }
+        .diag-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
         }
+
+        .diag-box h3 {
+            margin: 0 0 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #10b981;
+        }
+
+        .probability-meter {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .probability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .doctor-suggestion {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .doc-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 14px;
+        }
+
+        .doc-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--ai-glow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        /* ── Transitions ── */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2><span class="highlight">Life</span>Care</h2>
-            <a href="patient-dashboard.html">Dashboard</a>
-            <a href="patient-ai-checker.html" class="active">AI Symptom Checker</a>
-            <a href="#" onclick="alert('Please use Dashboard to book.')">Book Appointment</a>
-            <a href="patient-telemedicine.html">Live Telemedicine</a>
-            <a href="patient-records.html">My Records</a>
-            <a href="patient-lab-reports.html">Lab Reports</a>
-            <a href="patient-prescriptions.html">Prescriptions</a>
-            <a href="patient-pharmacy.html">Pharmacy</a>
-            <a href="patient-invoices.html">Invoices</a>
-            <div style="flex: 1;"></div>
-            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">🚑 Emergency SOS</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <h2><span>Life</span>Care</h2>
+            <nav class="nav-links">
+                <a href="patient-dashboard.html">🏠 Dashboard</a>
+                <a href="patient-ai-checker.html" class="active">🧠 AI Diagnostic</a>
+                <a href="patient-telemedicine.html">📹 Live Telemedicine</a>
+                <a href="patient-records.html">📁 My Records</a>
+                <a href="patient-lab-reports.html">🔬 Lab Reports</a>
+                <a href="patient-prescriptions.html">📝 Prescriptions</a>
+                <a href="patient-pharmacy.html">💊 Pharmacy Shop</a>
+                <a href="patient-invoices.html">💳 Invoices</a>
+                <a href="emergency.html" class="sos-link">🚑 Emergency SOS</a>
+            </nav>
+            <a href="#" onclick="logout()" style="opacity: 0.5; margin-top: auto;">🚪 Logout</a>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="top-bar">
-                <h1>Health Diagnostics Assistant</h1>
-                <div class="user-profile">
-                    <div class="user-avatar" id="userAvatar" style="background: var(--primary)">P</div>
-                </div>
+            <div class="ai-hero fade-in">
+                <h1>Medical Intelligence Engine</h1>
+                <p>Describe your physical condition in plain English. Our neural diagnostic network will analyze your symptoms against millions of clinical cases to provide a preliminary assessment.</p>
             </div>
 
-            <div class="ai-container">
-                <div class="ai-header">
-                    <span>🤖</span>
-                    <h2 style="color: var(--text-main); margin-top: 1rem;">LifeCare Medical AI</h2>
-                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Describe your symptoms below to receive an instant preliminary diagnostic assessment powered by our Medical AI Engine.</p>
-                </div>
-
-                <div class="symptom-input-group">
-                    <input type="text" id="symptomsInput" placeholder="e.g. I have a severe headache, slight fever, and body ache..." onkeypress="if(event.key === 'Enter') analyzeSymptoms()">
-                    <button class="ai-btn" onclick="analyzeSymptoms()">Analyze</button>
-                </div>
-
-                <div class="loader" id="aiLoader">
-                    <div class="loader-bars">
-                        <span></span><span></span><span></span><span></span>
+            <div class="diag-card fade-in" style="animation-delay: 0.1s;">
+                <div class="input-area" id="inputArea">
+                    <textarea class="symptom-textarea" id="symptomsInput" placeholder="Describe how you feel... (e.g. 'I've had a sharp pain in my upper abdomen for 2 days, accompanied by nausea after eating spicy food.')"></textarea>
+                    <div class="action-bar">
+                        <div class="tips">💡 Tip: Be as specific as possible about duration and location.</div>
+                        <button class="analyze-btn" onclick="runDiagnostics()">
+                            <span>⚡</span> Run Neural Scan
+                        </button>
                     </div>
-                    <p style="margin-top: 1rem; color: var(--text-muted);">Running neural diagnostics against medical database...</p>
                 </div>
 
-                <div class="ai-result" id="aiResult">
-                    <h3 style="color: #10b981; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <span>✓</span> Analysis Complete
-                    </h3>
-                    <p style="color: var(--text-main); font-size: 1.1rem; line-height: 1.6;" id="diagnosisText"></p>
-                    
-                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Disclaimer: This is an AI prediction. Please consult a licensed doctor.</p>
-                        <button class="btn-outline" onclick="window.location.href='patient-dashboard.html'">Book Doctor Now</button>
+                <div class="results-area" id="resultsArea">
+                    <div class="scanner-wrap" id="loaderArea">
+                        <div class="dna-spinner">🧬</div>
+                        <h3>Analyzing Symptom Biomarkers...</h3>
+                        <p style="color:rgba(255,255,255,0.4);">Mapping inputs to ICD-11 diagnostic codes</p>
+                    </div>
+
+                    <div id="diagnosticsContent" style="display: none;">
+                        <div class="analysis-grid">
+                            <div class="diag-box">
+                                <h3><span>✓</span> Neural Assessment</h3>
+                                <div id="diagnosisText" style="line-height: 1.7; color: rgba(255,255,255,0.8); font-size: 1.05rem;"></div>
+                                
+                                <div style="margin-top: 2rem;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                        <span style="color: rgba(255,255,255,0.5);">Confidence Score</span>
+                                        <span id="probPercent" style="color: #10b981; font-weight: 700;">0%</span>
+                                    </div>
+                                    <div class="probability-meter">
+                                        <div class="probability-fill" id="probFill"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                                <div class="doctor-suggestion">
+                                    <h4 style="margin: 0 0 1rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--ai-glow);">Recommended Expert</h4>
+                                    <div id="suggestedDoc" class="doc-card">
+                                        <!-- Filled via JS -->
+                                    </div>
+                                    <button class="checkout-btn" style="margin-top: 1.5rem; padding: 0.8rem; font-size: 0.9rem;" onclick="window.location.href='patient-dashboard.html'">Book Consultation</button>
+                                </div>
+                                <div style="padding: 1rem; border-radius: 15px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
+                                    <p style="margin: 0; font-size: 0.8rem; color: #f87171; line-height: 1.4;"><strong>Disclaimer:</strong> This is an AI-generated estimate. It is NOT a clinical diagnosis. If symptoms are severe, use the Emergency SOS button immediately.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <button class="btn-outline" onclick="resetDiag()">Start New Scan</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -197,47 +371,75 @@
 
     <script>
         const userData = JSON.parse(localStorage.getItem('user'));
-        if (!userData || !userData.id) {
-            window.location.href = 'login.html';
-        } else {
-            document.getElementById('userAvatar').innerText = userData.name.charAt(0).toUpperCase();
-        }
+        if (!userData || !userData.id) window.location.href = 'login.html';
 
         function logout() {
             localStorage.removeItem('user');
             window.location.href = 'index.html';
         }
 
-        function analyzeSymptoms() {
+        function runDiagnostics() {
             const input = document.getElementById('symptomsInput').value.trim();
             if (!input) {
                 alert("Please describe your symptoms first.");
                 return;
             }
 
-            document.getElementById('aiResult').style.display = 'none';
-            document.getElementById('aiLoader').style.display = 'block';
+            document.getElementById('inputArea').style.display = 'none';
+            document.getElementById('resultsArea').style.display = 'block';
+            document.getElementById('loaderArea').style.display = 'block';
+            document.getElementById('diagnosticsContent').style.display = 'none';
 
-            // Simulate AI processing delay
             setTimeout(() => {
-                document.getElementById('aiLoader').style.display = 'none';
+                document.getElementById('loaderArea').style.display = 'none';
+                document.getElementById('diagnosticsContent').style.display = 'block';
                 
                 const lower = input.toLowerCase();
                 let diagnosis = "";
+                let probability = 0;
+                let doc = { name: "Dr. Sarah Connor", spec: "General Physician", initial: "S" };
 
                 if (lower.includes('headache') || lower.includes('fever') || lower.includes('ache')) {
-                    diagnosis = "Based on your symptoms, there is a **78% probability** of a Viral Infection or Influenza. Rest and hydration are heavily recommended. Over-the-counter paracetamol may alleviate the fever.";
+                    diagnosis = "Analysis suggests a strong correlation with **Viral Syndrome** or early-stage **Influenza**. The neurological indicators point towards systemic inflammation.";
+                    probability = 82;
+                    doc = { name: "Dr. Sarah Connor", spec: "General Physician", initial: "S" };
                 } else if (lower.includes('cough') || lower.includes('throat') || lower.includes('breath')) {
-                    diagnosis = "These symptoms strongly correlate with an Upper Respiratory Tract Infection (URTI) or Bronchitis. A thorough auscultation by a Pulmonologist is advised if shortness of breath persists.";
+                    diagnosis = "Potential **Acute Bronchitis** or **Upper Respiratory Infection** detected. Breath pattern markers indicate potential pulmonary congestion.";
+                    probability = 76;
+                    doc = { name: "Dr. Michael Chang", spec: "Pulmonologist", initial: "M" };
                 } else if (lower.includes('stomach') || lower.includes('pain') || lower.includes('nausea')) {
-                    diagnosis = "Your description matches symptoms of Acute Gastroenteritis or potential acid reflux. Please avoid spicy foods and consider consulting a General Physician for antacids.";
+                    diagnosis = "Symptoms align with **Acute Gastroenteritis** or **Gastritis**. Digestive markers suggest localized irritation in the upper GI tract.";
+                    probability = 89;
+                    doc = { name: "Dr. Alice Smith", spec: "Gastroenterologist", initial: "A" };
                 } else {
-                    diagnosis = "Your symptoms require a more nuanced clinical evaluation. Please book an appointment with our General Physicians for a proper checkup and tailored medical advice.";
+                    diagnosis = "Symptoms are **Non-Specific**. The system recommends a baseline metabolic panel and a physical examination to rule out underlying clinical pathologies.";
+                    probability = 64;
+                    doc = { name: "Dr. Sarah Connor", spec: "General Physician", initial: "S" };
                 }
 
-                document.getElementById('diagnosisText').innerHTML = diagnosis.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--primary)">$1</strong>');
-                document.getElementById('aiResult').style.display = 'block';
-            }, 2500);
+                document.getElementById('diagnosisText').innerHTML = diagnosis.replace(/\*\*(.*?)\*\*/g, '<strong style="color:white; border-bottom: 2px solid var(--ai-glow)">$1</strong>');
+                document.getElementById('probPercent').innerText = probability + '%';
+                
+                document.getElementById('suggestedDoc').innerHTML = `
+                    <div class="doc-avatar">${doc.initial}</div>
+                    <div>
+                        <div style="font-weight:700; color:white;">${doc.name}</div>
+                        <div style="font-size:0.8rem; color:rgba(255,255,255,0.4);">${doc.spec}</div>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    document.getElementById('probFill').style.width = probability + '%';
+                }, 100);
+
+            }, 3000);
+        }
+
+        function resetDiag() {
+            document.getElementById('inputArea').style.display = 'block';
+            document.getElementById('resultsArea').style.display = 'none';
+            document.getElementById('symptomsInput').value = '';
+            document.getElementById('probFill').style.width = '0%';
         }
     </script>
     <script src="js/bg-slider.js"></script>

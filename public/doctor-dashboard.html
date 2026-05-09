@@ -3,131 +3,346 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Dashboard - LifeCare</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>LifeCare | Physician Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <style>
+        :root {
+            --doc-primary: #10b981;
+            --doc-accent: #3b82f6;
+            --doc-warning: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050d1a;
+            color: #f1f5f9;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
         .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
-        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
-        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-        .main-content { flex: 1; padding: 2rem 5%; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        
-        .appt-card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--border-color);
+
+        /* Sidebar - Professional Physician Theme */
+        .sidebar {
+            width: 260px;
+            background: rgba(10, 18, 38, 0.98);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+        .sidebar h2 span { color: var(--doc-primary); }
+
+        .nav-links { flex: 1; }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            padding: 0.9rem 1.2rem;
             border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: all 0.25s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: white;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.2), transparent);
+            border-left: 3px solid var(--doc-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 3rem 4%;
+        }
+
+        .header-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 3rem;
         }
 
-        .prescribe-box {
+        .header-bar h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 40%, var(--doc-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Quick Stats */
+        .doc-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        /* Appointment Cards */
+        .appt-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .appt-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .appt-card:hover {
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .appt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .patient-info h3 { margin: 0 0 0.4rem; font-size: 1.4rem; }
+        .patient-info p { margin: 0; color: rgba(255, 255, 255, 0.4); font-size: 0.9rem; }
+
+        .time-badge {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--doc-accent);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .status-tag {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: rgba(234, 179, 8, 0.1); color: #eab308; }
+        .status-completed { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+        .symptom-note {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1.2rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--doc-primary);
+        }
+
+        /* Prescribe Interface */
+        .prescribe-area {
             display: none;
-            margin-top: 1rem;
-            background: rgba(15, 23, 42, 0.5);
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+            margin-top: 1.5rem;
+            animation: fadeIn 0.4s ease;
         }
 
-        .prescribe-box textarea {
+        .prescribe-textarea {
             width: 100%;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 1rem;
-            border-radius: 8px;
-            min-height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.2rem;
+            color: white;
+            font-family: inherit;
+            min-height: 120px;
+            outline: none;
             margin-bottom: 1rem;
-            resize: vertical;
         }
 
-        .badge {
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
+        .prescribe-textarea:focus { border-color: var(--doc-primary); }
+
+        .action-btns {
+            display: flex;
+            gap: 1rem;
         }
-        .badge-pending { background: rgba(234, 179, 8, 0.2); color: #eab308; }
-        .badge-confirmed { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .badge-completed { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+
+        .btn-action {
+            flex: 1;
+            padding: 0.9rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+        }
+
+        .btn-confirm { background: var(--doc-primary); color: white; }
+        .btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
+
+        /* OT Section */
+        .ot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .ot-card {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(0,0,0,0.4));
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .ot-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ef4444;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        /* ── Transitions ── */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2><span class="highlight">Life</span>Care</h2>
-            <a href="#" class="active" id="navAppointments">My Appointments</a>
-            <a href="#" id="navOT">Operation Theater</a>
-            <a href="#" id="navChat">Live Patient Chat</a>
-            <div style="flex: 1;"></div>
-            <a href="#" onclick="logout()">Logout</a>
+            <h2><span>Life</span>Care</h2>
+            <nav class="nav-links">
+                <a href="#" class="active" id="navAppointments">📋 My Schedule</a>
+                <a href="#" id="navOT">⚔️ Operation Theater</a>
+                <a href="#" id="navChat">💬 Patient Consults</a>
+            </nav>
+            <a href="#" onclick="logout()" style="opacity: 0.5; margin-top: auto;">🚪 Logout</a>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="top-bar">
-                <h1>Doctor Portal</h1>
+            <div class="header-bar fade-in">
+                <div>
+                    <h1 id="portalTitle">Physician Command Center</h1>
+                    <p style="color: rgba(255,255,255,0.4); margin-top: 0.4rem;" id="portalSubtitle">Managing your clinical sessions and surgical roadmap.</p>
+                </div>
                 <div class="user-profile">
-                    <div class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1rem; margin: 0; background: #10b981;">D</div>
+                    <div class="doc-avatar" style="background: var(--doc-primary); width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800;">D</div>
                 </div>
             </div>
 
-            <div id="appointmentsContainer">
-                <p style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading your schedule...</p>
+            <!-- Dashboard Sections -->
+            <div id="appointmentsSection">
+                <div class="doc-stats fade-in" style="animation-delay: 0.1s;">
+                    <div class="stat-card">
+                        <div style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">📅</div>
+                        <div>
+                            <div style="font-size: 1.2rem; font-weight: 800;">08</div>
+                            <div style="font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase;">Today's Appts</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="background: rgba(16, 185, 129, 0.1); color: #10b981; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">✅</div>
+                        <div>
+                            <div style="font-size: 1.2rem; font-weight: 800;">05</div>
+                            <div style="font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase;">Completed</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">⚔️</div>
+                        <div>
+                            <div style="font-size: 1.2rem; font-weight: 800;">02</div>
+                            <div style="font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase;">Surgical Ops</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="appointmentsContainer" class="appt-grid fade-in" style="animation-delay: 0.2s;">
+                    <!-- Appts loaded here -->
+                </div>
             </div>
 
-            <div id="otContainer" style="display: none;">
-                <div class="appt-card" style="flex-direction: column; align-items: stretch; border-left: 4px solid #ef4444;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
-                        <h3 style="color: #ef4444;">CRITICAL: Open Heart Surgery</h3>
-                        <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">OT-Room 1</span>
+            <!-- OT Section -->
+            <div id="otSection" style="display: none;" class="fade-in">
+                <div class="ot-grid">
+                    <div class="ot-card">
+                        <div class="ot-indicator"></div>
+                        <h3 style="color: #ef4444; margin: 0 0 1rem;">CRITICAL: Open Heart Surgery</h3>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.2rem; border-radius: 16px; margin-bottom: 1.5rem;">
+                            <p style="margin: 0 0 0.5rem;"><strong>Patient:</strong> Marcus Johnson (M)</p>
+                            <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 0.9rem;">Theatre Room 01 • Today 14:00</p>
+                        </div>
+                        <button class="btn-action" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);">Request O- Blood Units</button>
                     </div>
-                    <p style="color: var(--text-main); margin-bottom: 0.5rem;"><strong>Patient:</strong> Marcus Johnson (M)</p>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;"><strong>Time:</strong> Today, 14:00 - 18:00</p>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;"><strong>Anesthesiologist:</strong> Dr. Sarah Connor</p>
-                    <div style="margin-top: 1.5rem;">
-                        <button class="btn-outline" style="border-color: #ef4444; color: #ef4444;">Request Blood Pack (O-)</button>
+                    <div class="ot-card" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2);">
+                        <h3 style="color: #3b82f6; margin: 0 0 1rem;">Appendectomy</h3>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.2rem; border-radius: 16px; margin-bottom: 1.5rem;">
+                            <p style="margin: 0 0 0.5rem;"><strong>Patient:</strong> Lily Evans (F)</p>
+                            <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 0.9rem;">Theatre Room 04 • Tomorrow 09:00</p>
+                        </div>
                     </div>
-                </div>
-
-                <div class="appt-card" style="flex-direction: column; align-items: stretch; border-left: 4px solid #3b82f6;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
-                        <h3 style="color: #3b82f6;">Appendectomy</h3>
-                        <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">OT-Room 4</span>
-                    </div>
-                    <p style="color: var(--text-main); margin-bottom: 0.5rem;"><strong>Patient:</strong> Lily Evans (F)</p>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;"><strong>Time:</strong> Tomorrow, 09:00 - 11:30</p>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;"><strong>Anesthesiologist:</strong> Dr. Michael Chang</p>
                 </div>
             </div>
 
-            <!-- Chat Container -->
-            <div id="chatContainer" style="display: none; height: 100%; flex-direction: column;">
-                <h3>Active Patient Consultations</h3>
-                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Select a patient ID below to join their Live Telemedicine room.</p>
-                
-                <div style="display: flex; gap: 1rem;">
-                    <input type="number" id="chatPatientId" placeholder="Enter Patient ID (e.g. 1)" style="padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.5); color: white;">
-                    <button class="btn-primary" onclick="openDoctorChat()">Join Room</button>
+            <!-- Chat Section -->
+            <div id="chatSection" style="display: none; flex-direction: column;" class="fade-in">
+                <div style="max-width: 600px; margin-bottom: 2rem;">
+                    <h3>Live Consultations</h3>
+                    <p style="color: rgba(255,255,255,0.4);">Enter the Patient UID to initialize a secure encrypted telemedicine session.</p>
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <input type="number" id="chatPatientId" placeholder="Patient ID (e.g. 1)" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 0.9rem; border-radius: 12px; color: white; outline: none;">
+                        <button class="btn-action btn-confirm" style="flex: 0 0 150px;" onclick="openDoctorChat()">Join Session</button>
+                    </div>
                 </div>
 
-                <div id="doctorChatRoom" style="display: none; flex: 1; margin-top: 2rem; background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; max-height: 500px;">
-                    <div style="padding: 1rem; background: rgba(15, 23, 42, 0.8); border-bottom: 1px solid var(--border-color);">
-                        <h4 style="color: #10b981;" id="chatRoomHeader">Room Connected</h4>
+                <div id="doctorChatRoom" style="display: none; flex: 1; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; flex-direction: column; overflow: hidden; height: 500px;">
+                    <div style="padding: 1.2rem 2rem; background: rgba(16, 185, 129, 0.1); border-bottom: 1px solid rgba(16, 185, 129, 0.2);">
+                        <h4 style="color: var(--doc-primary); margin: 0;" id="chatRoomHeader">Encrypted Line Active</h4>
                     </div>
-                    <div id="doctorChatMessages" style="flex: 1; padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
-                        <!-- Messages go here -->
+                    <div id="doctorChatMessages" style="flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem;">
                     </div>
-                    <div style="padding: 1rem; border-top: 1px solid var(--border-color); display: flex; gap: 0.5rem; background: rgba(15, 23, 42, 0.5);">
-                        <input type="text" id="doctorChatInput" placeholder="Type medical advice..." style="flex: 1; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(15, 23, 42, 0.8); color: white;" onkeypress="if(event.key === 'Enter') sendDoctorMsg()">
-                        <button class="btn-primary" onclick="sendDoctorMsg()">Send</button>
+                    <div style="padding: 1.5rem; background: rgba(0,0,0,0.3); display: flex; gap: 1rem;">
+                        <input type="text" id="doctorChatInput" placeholder="Enter clinical advice..." style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 1rem; border-radius: 14px; color: white; outline: none;" onkeypress="if(event.key === 'Enter') sendDoctorMsg()">
+                        <button class="btn-action btn-confirm" style="flex: 0 0 100px;" onclick="sendDoctorMsg()">Send</button>
                     </div>
                 </div>
             </div>
@@ -137,41 +352,31 @@
 
     <script>
         const userData = JSON.parse(localStorage.getItem('user'));
-        if (!userData || userData.role !== 'doctor') {
-            alert('Unauthorized access. Doctor login required.');
-            window.location.href = 'login.html';
-        }
+        if (!userData || userData.role !== 'doctor') window.location.href = 'login.html';
 
         function logout() {
             localStorage.removeItem('user');
             window.location.href = 'index.html';
         }
 
-        document.getElementById('navAppointments').addEventListener('click', () => {
-            document.getElementById('navAppointments').classList.add('active');
-            document.getElementById('navOT').classList.remove('active');
-            document.getElementById('navChat').classList.remove('active');
-            document.getElementById('appointmentsContainer').style.display = 'block';
-            document.getElementById('otContainer').style.display = 'none';
-            document.getElementById('chatContainer').style.display = 'none';
-        });
+        // Navigation
+        const sections = ['appointments', 'ot', 'chat'];
+        const navs = ['navAppointments', 'navOT', 'navChat'];
 
-        document.getElementById('navOT').addEventListener('click', () => {
-            document.getElementById('navOT').classList.add('active');
-            document.getElementById('navAppointments').classList.remove('active');
-            document.getElementById('navChat').classList.remove('active');
-            document.getElementById('otContainer').style.display = 'block';
-            document.getElementById('appointmentsContainer').style.display = 'none';
-            document.getElementById('chatContainer').style.display = 'none';
-        });
-
-        document.getElementById('navChat').addEventListener('click', () => {
-            document.getElementById('navChat').classList.add('active');
-            document.getElementById('navAppointments').classList.remove('active');
-            document.getElementById('navOT').classList.remove('active');
-            document.getElementById('chatContainer').style.display = 'flex';
-            document.getElementById('otContainer').style.display = 'none';
-            document.getElementById('appointmentsContainer').style.display = 'none';
+        navs.forEach((id, idx) => {
+            document.getElementById(id).addEventListener('click', () => {
+                navs.forEach(n => document.getElementById(n).classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                
+                sections.forEach(s => document.getElementById(s + 'Section').style.display = 'none');
+                const activeSec = sections[idx] + 'Section';
+                document.getElementById(activeSec).style.display = activeSec === 'chatSection' ? 'flex' : 'block';
+                
+                const titles = ['Physician Command Center', 'Surgical Roadmap', 'Clinical Consultations'];
+                const subs = ['Managing your clinical sessions.', 'Real-time theater availability.', 'Secure patient communication.'];
+                document.getElementById('portalTitle').innerText = titles[idx];
+                document.getElementById('portalSubtitle').innerText = subs[idx];
+            });
         });
 
         async function loadAppointments() {
@@ -183,95 +388,70 @@
                     container.innerHTML = '';
 
                     if (appointments.length === 0) {
-                        container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 3rem;">You have no scheduled appointments at this time.</p>';
+                        container.innerHTML = '<div style="text-align: center; padding: 5rem 0; color: rgba(255,255,255,0.3);">No scheduled sessions today.</div>';
                         return;
                     }
 
                     appointments.forEach(appt => {
-                        let badgeClass = 'badge-pending';
-                        if (appt.status === 'Completed') badgeClass = 'badge-completed';
-
+                        const statusClass = appt.status === 'Completed' ? 'status-completed' : 'status-pending';
                         const card = document.createElement('div');
-                        card.className = 'appt-card';
-                        card.style.flexDirection = 'column';
-                        card.style.alignItems = 'stretch';
+                        card.className = 'appt-card fade-in';
                         
                         let actionHtml = '';
                         if (!appt.prescription_text && appt.status !== 'Completed') {
                             actionHtml = `
-                                <button class="btn-primary" style="background: #10b981; margin-top: 1rem;" onclick="togglePrescribeBox(${appt.id})">Consult & Write Prescription</button>
-                                <div id="prescBox-${appt.id}" class="prescribe-box">
-                                    <h4 style="margin-bottom: 0.5rem; color: #10b981;">Medical Prescription Notes</h4>
-                                    <textarea id="prescText-${appt.id}" placeholder="e.g. Amoxicillin 500mg, twice a day for 7 days. Rest recommended."></textarea>
-                                    <button class="btn-primary" style="background: #10b981; width: 100%;" onclick="submitPrescription(${appt.id})">Approve & Issue Prescription</button>
+                                <button class="btn-action btn-confirm" style="width: 100%;" onclick="togglePrescribe(${appt.id})">Consult & Prescribe</button>
+                                <div id="prescArea-${appt.id}" class="prescribe-area">
+                                    <textarea id="prescText-${appt.id}" class="prescribe-textarea" placeholder="Clinical notes & medication..."></textarea>
+                                    <button class="btn-action btn-confirm" onclick="submitPresc(${appt.id})">Finalize & Issue RX</button>
                                 </div>
                             `;
                         } else {
-                            actionHtml = `
-                                <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; border-radius: 4px;">
-                                    <p style="color: #10b981; font-weight: 600;">Prescription Issued & Invoice Sent</p>
-                                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">Patient must now pay the invoice to complete the cycle.</p>
-                                </div>
-                            `;
+                            actionHtml = `<div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 12px; color: #10b981; font-weight: 700; text-align: center; font-size: 0.9rem;">RX Issued & Validated</div>`;
                         }
 
                         card.innerHTML = `
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">Patient: ${appt.patient_name} (${appt.gender})</h3>
-                                    <p style="color: var(--text-muted); font-size: 0.9rem;">
-                                        Date: <strong style="color: var(--primary)">${appt.appointment_date}</strong> at <strong style="color: var(--primary)">${appt.appointment_time}</strong>
-                                    </p>
-                                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.3rem;">
-                                        Presenting Condition: ${appt.reason || 'Standard Checkup'}
-                                    </p>
+                            <div class="appt-header">
+                                <div class="patient-info">
+                                    <span class="status-tag ${statusClass}">${appt.status}</span>
+                                    <h3 style="margin-top:0.8rem;">${appt.patient_name}</h3>
+                                    <p>${appt.gender} • ID: PAT-${appt.id}</p>
                                 </div>
-                                <div>
-                                    <span class="badge ${badgeClass}">${appt.status}</span>
-                                </div>
+                                <div class="time-badge">${appt.appointment_time}</div>
+                            </div>
+                            <div class="symptom-note">
+                                <p style="margin:0; font-size: 0.95rem; color: rgba(255,255,255,0.7);">${appt.reason || 'Routine clinical assessment.'}</p>
                             </div>
                             ${actionHtml}
                         `;
                         container.appendChild(card);
                     });
                 }
-            } catch (e) {
-                console.error(e);
-                document.getElementById('appointmentsContainer').innerHTML = '<p style="color: red; text-align: center;">Error loading appointments. Is the backend running?</p>';
+            } catch (e) { console.error(e); }
+        }
+
+        function togglePrescribe(id) {
+            const el = document.getElementById('prescArea-' + id);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+
+        async function submitPresc(id) {
+            const text = document.getElementById('prescText-' + id).value.trim();
+            if(!text) return alert('Enter medical notes.');
+            
+            const res = await fetch('/api/doctor/prescribe/' + id, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prescriptionText: text })
+            });
+
+            if(res.ok) {
+                alert('Prescription verified and issued.');
+                loadAppointments();
             }
         }
 
-        function togglePrescribeBox(id) {
-            const box = document.getElementById('prescBox-' + id);
-            box.style.display = box.style.display === 'block' ? 'none' : 'block';
-        }
-
-        async function submitPrescription(apptId) {
-            const text = document.getElementById('prescText-' + apptId).value;
-            if (!text.trim()) {
-                alert('Please enter prescription details before issuing.');
-                return;
-            }
-
-            try {
-                const res = await fetch('/api/doctor/prescribe/' + apptId, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prescriptionText: text })
-                });
-
-                if (res.ok) {
-                    alert('Prescription successfully securely issued! Invoice automatically generated for patient. Awaiting Patient Payment to complete.');
-                    loadAppointments();
-                } else {
-                    alert('Failed to issue prescription.');
-                }
-            } catch (err) {
-                console.error(err);
-                alert('An error occurred.');
-            }
-        }
-
+        // Chat logic remains similar but with UI updates
         let activeChatPid = null;
         let chatInterval = null;
 
@@ -281,64 +461,50 @@
             activeChatPid = pid;
             document.getElementById('doctorChatRoom').style.display = 'flex';
             document.getElementById('chatRoomHeader').innerText = 'Room Connected: Patient ID ' + pid;
-            
             if(chatInterval) clearInterval(chatInterval);
-            chatInterval = setInterval(loadDoctorChat, 2000);
-            loadDoctorChat();
+            chatInterval = setInterval(loadChat, 2000);
+            loadChat();
         }
 
-        async function loadDoctorChat() {
+        async function loadChat() {
             if(!activeChatPid) return;
-            try {
-                const res = await fetch('/api/chat/' + activeChatPid);
-                if (res.ok) {
-                    const messages = await res.json();
-                    const box = document.getElementById('doctorChatMessages');
-                    box.innerHTML = '';
-                    
-                    if (messages.length === 0) {
-                        box.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No messages yet. Waiting for patient...</p>';
+            const res = await fetch('/api/chat/' + activeChatPid);
+            if(res.ok) {
+                const msgs = await res.json();
+                const box = document.getElementById('doctorChatMessages');
+                box.innerHTML = '';
+                msgs.forEach(m => {
+                    const d = document.createElement('div');
+                    d.style.padding = '0.8rem 1.2rem';
+                    d.style.borderRadius = '16px';
+                    d.style.maxWidth = '80%';
+                    if(m.sender === 'doctor') {
+                        d.style.background = 'var(--doc-primary)';
+                        d.style.alignSelf = 'flex-end';
+                        d.style.borderBottomRightRadius = '4px';
                     } else {
-                        messages.forEach(m => {
-                            const msgDiv = document.createElement('div');
-                            msgDiv.style.maxWidth = '85%';
-                            msgDiv.style.padding = '0.8rem 1rem';
-                            msgDiv.style.borderRadius = '12px';
-                            msgDiv.style.marginBottom = '0.5rem';
-                            
-                            if (m.sender === 'doctor') {
-                                msgDiv.style.background = 'var(--primary)';
-                                msgDiv.style.color = 'white';
-                                msgDiv.style.alignSelf = 'flex-end';
-                                msgDiv.style.borderBottomRightRadius = '2px';
-                            } else {
-                                msgDiv.style.background = 'rgba(59, 130, 246, 0.2)';
-                                msgDiv.style.color = 'var(--text-main)';
-                                msgDiv.style.alignSelf = 'flex-start';
-                                msgDiv.style.borderBottomLeftRadius = '2px';
-                            }
-                            msgDiv.innerText = m.text;
-                            box.appendChild(msgDiv);
-                        });
+                        d.style.background = 'rgba(255,255,255,0.05)';
+                        d.style.alignSelf = 'flex-start';
+                        d.style.borderBottomLeftRadius = '4px';
                     }
-                    box.scrollTop = box.scrollHeight;
-                }
-            } catch(e) { console.error(e); }
+                    d.innerText = m.text;
+                    box.appendChild(d);
+                });
+                box.scrollTop = box.scrollHeight;
+            }
         }
 
         async function sendDoctorMsg() {
-            if(!activeChatPid) return;
             const input = document.getElementById('doctorChatInput');
             const text = input.value.trim();
-            if(!text) return;
-            
+            if(!text || !activeChatPid) return;
             input.value = '';
             await fetch('/api/chat/' + activeChatPid, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ sender: 'doctor', text: text })
             });
-            loadDoctorChat();
+            loadChat();
         }
 
         loadAppointments();

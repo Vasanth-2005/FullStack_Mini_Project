@@ -3,90 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Prescriptions - LifeCare</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>LifeCare | Digital Prescriptions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <style>
-        .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
-        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
-        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
-        .main-content { flex: 1; padding: 2rem 5%; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        
-        .prescription-card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--glass-shadow);
+        :root {
+            --presc-primary: #8b5cf6;
+            --presc-accent: #3b82f6;
         }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050d1a;
+            color: #f1f5f9;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container { display: flex; min-height: 100vh; }
+
+        /* Sidebar - Consistent */
+        .sidebar {
+            width: 260px;
+            background: rgba(10, 18, 38, 0.98);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+        .sidebar h2 span { color: var(--presc-primary); }
+
+        .nav-links { flex: 1; }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: all 0.25s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(139, 92, 246, 0.1);
+            color: white;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.2), transparent);
+            border-left: 3px solid var(--presc-primary);
+        }
+
+        .sos-link { color: #f87171 !important; border: 1px solid rgba(248, 113, 113, 0.2); margin-top: 1.5rem; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 3rem 4%;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 3.5rem;
+        }
+
+        .header-bar h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 40%, var(--presc-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Prescription Cards */
+        .presc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .presc-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .presc-card:hover {
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.8);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .presc-card::after {
+            content: '℞';
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            font-size: 8rem;
+            color: rgba(139, 92, 246, 0.05);
+            font-family: serif;
+            pointer-events: none;
+        }
+
         .presc-header {
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 1.5rem;
         }
-        .med-list {
-            list-style: none;
-            margin-left: 0;
-            padding-left: 0;
+
+        .doc-info h3 { margin: 0 0 0.3rem; font-size: 1.3rem; }
+        .doc-info p { margin: 0; color: rgba(255, 255, 255, 0.4); font-size: 0.9rem; }
+
+        .date-badge {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            text-align: center;
         }
-        .med-list li {
-            background: rgba(15, 23, 42, 0.5);
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
+
+        .date-badge .day { font-size: 1.2rem; font-weight: 800; display: block; }
+        .date-badge .mon { font-size: 0.7rem; text-transform: uppercase; opacity: 0.5; }
+
+        .presc-body {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            min-height: 120px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .med-line {
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
         }
-        .med-name { color: var(--text-main); font-weight: 600;}
-        .med-dose { color: var(--secondary); font-size: 0.9rem;}
+
+        .med-line span { color: var(--presc-primary); }
+
+        .presc-footer {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-glass {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary-glass {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.3);
+            color: var(--presc-primary);
+        }
+
+        .btn-primary-glass:hover {
+            background: var(--presc-primary);
+            color: white;
+        }
+
+        /* ── Transitions ── */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2><span class="highlight">Life</span>Care</h2>
-            <a href="patient-dashboard.html">Dashboard</a>
-            <a href="patient-ai-checker.html">AI Symptom Checker</a>
-            <a href="#" onclick="alert('Please use the main Dashboard to book.')">Book Appointment</a>
-            <a href="patient-telemedicine.html">Live Telemedicine</a>
-            <a href="patient-records.html">My Records</a>
-            <a href="patient-lab-reports.html">Lab Reports</a>
-            <a href="patient-prescriptions.html" class="active">Prescriptions</a>
-            <a href="patient-pharmacy.html">Pharmacy</a>
-            <a href="patient-invoices.html">Invoices</a>
-            <div style="flex: 1;"></div>
-            <div style="flex: 1;"></div>
-            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">🚑 Emergency SOS</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <h2><span>Life</span>Care</h2>
+            <nav class="nav-links">
+                <a href="patient-dashboard.html">🏠 Dashboard</a>
+                <a href="patient-ai-checker.html">🧠 AI Diagnostic</a>
+                <a href="patient-telemedicine.html">📹 Live Telemedicine</a>
+                <a href="patient-records.html">📁 My Records</a>
+                <a href="patient-lab-reports.html">🔬 Lab Reports</a>
+                <a href="patient-prescriptions.html" class="active">📝 Prescriptions</a>
+                <a href="patient-pharmacy.html">💊 Pharmacy Shop</a>
+                <a href="patient-invoices.html">💳 Invoices</a>
+                <a href="emergency.html" class="sos-link">🚑 Emergency SOS</a>
+            </nav>
+            <a href="#" onclick="logout()" style="opacity: 0.5; margin-top: auto;">🚪 Logout</a>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="top-bar">
-                <h1>Active Prescriptions</h1>
+            <div class="header-bar fade-in">
+                <div>
+                    <h1>My Prescriptions</h1>
+                    <p style="color: rgba(255,255,255,0.4); margin-top: 0.4rem;">Access your verified medical scripts and digital refills.</p>
+                </div>
                 <div class="user-profile">
-                    <div class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1rem; margin: 0;">P</div>
+                    <div class="doc-avatar" id="userAvatar">P</div>
                 </div>
             </div>
 
-            <div id="prescriptionsWrapper">
-                <p style="text-align:center; color: var(--text-muted); padding: 2rem;">Loading dynamic prescriptions...</p>
+            <div id="prescriptionsWrapper" class="presc-grid fade-in" style="animation-delay: 0.2s;">
+                <!-- Loaded via JS -->
+                <p style="text-align:center; color: var(--text-muted); padding: 2rem;">Fetching digital records...</p>
             </div>
         </main>
     </div>
+
     <script>
         const userData = JSON.parse(localStorage.getItem('user'));
-        if (!userData || !userData.id) {
-            alert('Please login to view your secure prescriptions.');
-            window.location.href = 'login.html';
-        }
+        if (!userData || !userData.id) window.location.href = 'login.html';
+        else document.getElementById('userAvatar').innerText = userData.name.charAt(0).toUpperCase();
 
         function logout() {
             localStorage.removeItem('user');
@@ -104,53 +274,55 @@
                     const withPrescriptions = data.appointments.filter(a => a.prescription_text);
                     
                     if (withPrescriptions.length === 0) {
-                        container.innerHTML = '<p style="text-align:center; color: var(--text-muted); padding:3rem;">No active prescriptions found. Your doctor has not issued any prescriptions yet.</p>';
+                        container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 5rem 0;"><p style="color: rgba(255,255,255,0.3); font-size: 1.2rem;">No active digital prescriptions found.</p></div>';
                         return;
                     }
 
                     withPrescriptions.forEach((app, idx) => {
-                        const dateStr = new Date(app.date).toISOString().split('T')[0];
-                        const prescHtml = app.prescription_text.replace(/\n/g, '<br>');
+                        const date = new Date(app.date);
+                        const day = date.getDate();
+                        const mon = date.toLocaleString('default', { month: 'short' });
                         
-                        window['prescData' + idx] = `LifeCare Hospital\n========================\nOfficial Prescription\nDoctor: ${app.doctor}\nDate Issued: ${dateStr}\nDiagnosed Problem: ${app.reason || 'General Checkup'}\n\nPrescribed Medications & Notes:\n${app.prescription_text}\n\nElectronically Signed.\nNotes: Please complete the entire advised course.`;
+                        const lines = app.prescription_text.split('\n');
+                        let linesHtml = lines.map(l => `<div class="med-line"><span>⚡</span> ${l}</div>`).join('');
 
                         container.innerHTML += `
-                        <div class="prescription-card">
+                        <div class="presc-card fade-in">
                             <div class="presc-header">
-                                <div>
-                                    <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">${app.doctor}</h3>
-                                    <p style="color: var(--text-muted); font-size: 0.9rem;">${app.dept || 'General'} Department</p>
+                                <div class="doc-info">
+                                    <h3>${app.doctor}</h3>
+                                    <p>${app.dept || 'General'} Specialist</p>
                                 </div>
-                                <div style="text-align: right;">
-                                    <span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">Active Script</span>
-                                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.5rem;">Issued: ${dateStr}</p>
+                                <div class="date-badge">
+                                    <span class="day">${day}</span>
+                                    <span class="mon">${mon}</span>
                                 </div>
                             </div>
                             
-                            <div style="background: rgba(15, 23, 42, 0.5); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color); color: var(--text-main); line-height: 1.6; margin-bottom: 1.5rem;">
-                                ${prescHtml}
+                            <div class="presc-body">
+                                ${linesHtml}
                             </div>
                             
-                            <button class="btn-outline" style="width: 100%; margin-top: 0.5rem;" onclick="downloadSecurePrescription(${idx}, '${app.doctor}')">Download Verified Prescription (TXT)</button>
+                            <div class="presc-footer">
+                                <button class="btn-glass" onclick="downloadPresc('${app.doctor}', '${app.prescription_text}')">📄 Download TXT</button>
+                                <button class="btn-glass btn-primary-glass" onclick="window.location.href='patient-pharmacy.html'">🛒 Order Refill</button>
+                            </div>
                         </div>
                         `;
                     });
-                } else {
-                    document.getElementById('prescriptionsWrapper').innerHTML = '<p style="color: red; text-align:center;">Failed to load data natively.</p>';
                 }
             } catch(e) {
-                console.error('Error fetching dynamic prescriptions', e);
-                document.getElementById('prescriptionsWrapper').innerHTML = '<p style="color: red; text-align:center;">Server connection failed natively.</p>';
+                console.error(e);
             }
         }
 
-        function downloadSecurePrescription(idx, docName) {
-            const content = window['prescData' + idx];
-            const blob = new Blob([content], { type: "text/plain" });
+        function downloadPresc(doc, text) {
+            const content = `LIFECARE DIGITAL PRESCRIPTION\n============================\nDOCTOR: ${doc}\nDATE: ${new Date().toLocaleDateString()}\nPATIENT: ${userData.name}\n\nRX:\n${text}\n\n[Verified Digital Signature]`;
+            const blob = new Blob([content], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
+            const a = document.createElement('a');
             a.href = url;
-            a.download = `Prescription_${docName.replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
+            a.download = `Prescription_${doc.replace(/\s+/g, '_')}.txt`;
             a.click();
             URL.revokeObjectURL(url);
         }

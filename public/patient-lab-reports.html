@@ -3,147 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab Reports - LifeCare</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>LifeCare | Diagnostic Reports Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <style>
+        :root {
+            --lab-glow: #10b981;
+            --lab-primary: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050d1a;
+            color: #f1f5f9;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
         .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
-        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
-        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
-        .sidebar a.sos-link { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
-        .sidebar a.sos-link:hover { background: #ef4444; color: white; }
-        
-        .main-content { flex: 1; padding: 2rem 5%; }
-        
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        
-        .lab-card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--border-color);
+
+        /* Sidebar - Consistent */
+        .sidebar {
+            width: 260px;
+            background: rgba(10, 18, 38, 0.98);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+        .sidebar h2 span { color: var(--lab-primary); }
+
+        .nav-links { flex: 1; }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            padding: 0.9rem 1.2rem;
             border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: all 0.25s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), transparent);
+            border-left: 3px solid var(--lab-primary);
+        }
+
+        .sos-link { color: #f87171 !important; border: 1px solid rgba(248, 113, 113, 0.2); margin-top: 1.5rem; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 3rem 4%;
+        }
+
+        .header-bar {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 3rem;
+        }
+
+        .header-bar h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 40%, var(--lab-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Stats Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
             align-items: center;
-            transition: transform 0.3s, box-shadow 0.3s;
+            gap: 1.2rem;
         }
 
-        .lab-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            border-color: rgba(59, 130, 246, 0.5);
-        }
-
-        .lab-icon {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--primary);
-            width: 50px;
-            height: 50px;
+        .stat-icon {
+            width: 48px;
+            height: 48px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin-right: 1.5rem;
+            font-size: 1.4rem;
         }
 
-        .lab-details { flex: 1; }
-        
-        .status-badge {
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
+        /* Report Cards */
+        .report-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
         }
-        
-        .status-ready { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .status-processing { background: rgba(234, 179, 8, 0.2); color: #facc15; }
 
-        .download-btn {
-            background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
+        .report-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--lab-glow);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .report-card:hover {
+            transform: translateX(10px);
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .report-card:hover::before { opacity: 1; }
+
+        .report-info {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 2rem;
         }
 
-        .download-btn:hover {
-            background: var(--primary);
-            color: white;
+        .lab-badge {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            transition: 0.3s;
         }
+
+        .report-card:hover .lab-badge {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--lab-glow);
+            transform: scale(1.1);
+        }
+
+        .details h3 {
+            margin: 0 0 0.4rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .details p {
+            margin: 0;
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .status-pill {
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pill-ready { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .pill-pending { background: rgba(234, 179, 8, 0.15); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.2); }
+
+        .dl-btn {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.7rem 1.4rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.3s;
+        }
+
+        .dl-btn:hover {
+            background: var(--lab-primary);
+            border-color: var(--lab-primary);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .dl-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: rgba(255,255,255,0.05);
+            border-color: transparent;
+        }
+
+        /* ── Transitions ── */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2><span class="highlight">Life</span>Care</h2>
-            <a href="patient-dashboard.html">Dashboard</a>
-            <a href="patient-ai-checker.html">AI Symptom Checker</a>
-            <a href="#" onclick="alert('Please use Dashboard to book.')">Book Appointment</a>
-            <a href="patient-telemedicine.html">Live Telemedicine</a>
-            <a href="patient-records.html">My Records</a>
-            <a href="patient-lab-reports.html" class="active">Lab Reports</a>
-            <a href="patient-prescriptions.html">Prescriptions</a>
-            <a href="patient-pharmacy.html">Pharmacy</a>
-            <a href="patient-invoices.html">Invoices</a>
-            <div style="flex: 1;"></div>
-            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">🚑 Emergency SOS</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <h2><span>Life</span>Care</h2>
+            <nav class="nav-links">
+                <a href="patient-dashboard.html">🏠 Dashboard</a>
+                <a href="patient-ai-checker.html">🧠 AI Diagnostic</a>
+                <a href="patient-telemedicine.html">📹 Live Telemedicine</a>
+                <a href="patient-records.html">📁 My Records</a>
+                <a href="patient-lab-reports.html" class="active">🔬 Lab Reports</a>
+                <a href="patient-prescriptions.html">📝 Prescriptions</a>
+                <a href="patient-pharmacy.html">💊 Pharmacy Shop</a>
+                <a href="patient-invoices.html">💳 Invoices</a>
+                <a href="emergency.html" class="sos-link">🚑 Emergency SOS</a>
+            </nav>
+            <a href="#" onclick="logout()" style="opacity: 0.5; margin-top: auto;">🚪 Logout</a>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="top-bar">
-                <h1>Diagnostic Lab Reports</h1>
+            <div class="header-bar fade-in">
+                <div>
+                    <h1>Diagnostic Hub</h1>
+                    <p style="color: rgba(255,255,255,0.4); margin-top: 0.4rem;">View and download your official laboratory results.</p>
+                </div>
                 <div class="user-profile">
-                    <div class="user-avatar" id="userAvatar" style="background: var(--primary)">P</div>
+                    <div class="doc-avatar" id="userAvatar">P</div>
                 </div>
             </div>
 
-            <div id="reportsContainer">
-                <!-- Static Lab Reports for Demonstration -->
-                <div class="lab-card">
-                    <div class="lab-icon">🩸</div>
-                    <div class="lab-details">
-                        <h3 style="color: var(--text-main); margin-bottom: 0.3rem;">Complete Blood Count (CBC)</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Ordered by: Dr. Sarah Connor | Date: 2026-04-20</p>
+            <div class="stats-row fade-in" style="animation-delay: 0.1s;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">📊</div>
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800;">12</div>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase;">Total Tests</div>
                     </div>
-                    <div style="text-align: right;">
-                        <span class="status-badge status-ready" style="display: block; margin-bottom: 0.8rem;">Result Ready</span>
-                        <button class="download-btn" onclick="downloadSimulatedPDF('CBC_Report')">📥 Download PDF</button>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">✅</div>
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800;">11</div>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase;">Reports Ready</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(234, 179, 8, 0.1); color: #eab308;">⏳</div>
+                    <div>
+                        <div style="font-size: 1.4rem; font-weight: 800;">1</div>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase;">In Progress</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="report-list fade-in" style="animation-delay: 0.2s;">
+                <!-- CBC -->
+                <div class="report-card">
+                    <div class="report-info">
+                        <div class="lab-badge">🩸</div>
+                        <div class="details">
+                            <h3>Complete Blood Count (CBC)</h3>
+                            <p>Ordered by Dr. Sarah Connor • Apr 20, 2026</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 2rem;">
+                        <span class="status-pill pill-ready">Ready</span>
+                        <button class="dl-btn" onclick="downloadReport('CBC_Full_Panel')">📥 Download</button>
                     </div>
                 </div>
 
-                <div class="lab-card">
-                    <div class="lab-icon">🩻</div>
-                    <div class="lab-details">
-                        <h3 style="color: var(--text-main); margin-bottom: 0.3rem;">Chest X-Ray (PA View)</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Ordered by: Dr. Michael Chang | Date: 2026-04-18</p>
+                <!-- X-Ray -->
+                <div class="report-card">
+                    <div class="report-info">
+                        <div class="lab-badge">🩻</div>
+                        <div class="details">
+                            <h3>Chest X-Ray (PA View)</h3>
+                            <p>Ordered by Dr. Michael Chang • Apr 18, 2026</p>
+                        </div>
                     </div>
-                    <div style="text-align: right;">
-                        <span class="status-badge status-ready" style="display: block; margin-bottom: 0.8rem;">Result Ready</span>
-                        <button class="download-btn" onclick="downloadSimulatedPDF('XRAY_Report')">📥 Download PDF</button>
+                    <div style="display: flex; align-items: center; gap: 2rem;">
+                        <span class="status-pill pill-ready">Ready</span>
+                        <button class="dl-btn" onclick="downloadReport('Chest_XRay_PA')">📥 Download</button>
                     </div>
                 </div>
 
-                <div class="lab-card">
-                    <div class="lab-icon">🧬</div>
-                    <div class="lab-details">
-                        <h3 style="color: var(--text-main); margin-bottom: 0.3rem;">Lipid Profile & Glucose Fasting</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem;">Ordered by: Dr. Alice Smith | Date: 2026-05-01</p>
+                <!-- MRI -->
+                <div class="report-card">
+                    <div class="report-info">
+                        <div class="lab-badge">🧠</div>
+                        <div class="details">
+                            <h3>Brain MRI Scan (Contrast)</h3>
+                            <p>Ordered by Dr. James Wilson • Apr 12, 2026</p>
+                        </div>
                     </div>
-                    <div style="text-align: right;">
-                        <span class="status-badge status-processing" style="display: block; margin-bottom: 0.8rem;">Processing</span>
-                        <button class="download-btn" style="opacity: 0.5; cursor: not-allowed;" disabled>⏳ Pending</button>
+                    <div style="display: flex; align-items: center; gap: 2rem;">
+                        <span class="status-pill pill-ready">Ready</span>
+                        <button class="dl-btn" onclick="downloadReport('Brain_MRI_Contrast')">📥 Download</button>
+                    </div>
+                </div>
+
+                <!-- Lipid Profile -->
+                <div class="report-card" style="border-color: rgba(234, 179, 8, 0.2);">
+                    <div class="report-info">
+                        <div class="lab-badge">🧬</div>
+                        <div class="details">
+                            <h3>Lipid Profile &amp; Glucose Fasting</h3>
+                            <p>Ordered by Dr. Alice Smith • May 01, 2026</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 2rem;">
+                        <span class="status-pill pill-pending">Processing</span>
+                        <button class="dl-btn" disabled>⏳ Pending</button>
                     </div>
                 </div>
             </div>
@@ -152,33 +366,23 @@
 
     <script>
         const userData = JSON.parse(localStorage.getItem('user'));
-        if (!userData || !userData.id) {
-            window.location.href = 'login.html';
-        } else {
-            document.getElementById('userAvatar').innerText = userData.name.charAt(0).toUpperCase();
-        }
+        if (!userData || !userData.id) window.location.href = 'login.html';
+        else document.getElementById('userAvatar').innerText = userData.name.charAt(0).toUpperCase();
 
         function logout() {
             localStorage.removeItem('user');
             window.location.href = 'index.html';
         }
 
-        function downloadSimulatedPDF(reportName) {
-            // Generate a simple blob to simulate a PDF file download
-            const textContent = `LifeCare Hospital Diagnostic Laboratory\n\nPatient ID: ${userData.id}\nPatient Name: ${userData.name}\n\n[CONFIDENTIAL MEDICAL REPORT - ${reportName}]\n\nAll parameters are within normal reference ranges.\nPlease consult your primary physician for detailed clinical correlation.`;
-            
-            const blob = new Blob([textContent], { type: 'text/plain' });
+        function downloadReport(name) {
+            const content = `LIFECARE DIAGNOSTIC CENTER\n========================\nREPORT: ${name.replace(/_/g, ' ')}\nDATE: 2026-05-09\nPATIENT: ${userData.name}\n\n[SIMULATED DATA]\nHaemoglobin: 14.5 g/dL (Normal: 13.5-17.5)\nWBC Count: 7.2 x10^9/L (Normal: 4.5-11.0)\nPlatelets: 250 x10^9/L (Normal: 150-450)\n\nCLINICAL REMARKS:\nAll parameters appear within healthy reference ranges. No acute abnormalities detected.`;
+            const blob = new Blob([content], { type: 'text/plain' });
             const url = window.URL.createObjectURL(blob);
-            
             const a = document.createElement('a');
-            a.style.display = 'none';
             a.href = url;
-            a.download = `${userData.name.replace(/\s+/g, '_')}_${reportName}.txt`;
-            document.body.appendChild(a);
+            a.download = `Report_${name}.txt`;
             a.click();
-            
             window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
         }
     </script>
     <script src="js/bg-slider.js"></script>

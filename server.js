@@ -394,6 +394,30 @@ app.get('/api/records/:userId', async (req, res) => {
     }
 });
 
+// ── Pharmacy Order ────────────────────────────────
+app.post('/api/pharmacy/order', async (req, res) => {
+    try {
+        const { userId, items, amount } = req.body;
+        
+        // Find patient ID
+        const [patients] = await db.query('SELECT id FROM Patients WHERE user_id = ?', [userId]);
+        if (patients.length === 0) return res.status(404).json({ message: 'Patient not found' });
+        
+        const patientId = patients[0].id;
+        
+        // Insert a new Invoice for the pharmacy order (without an appointment_id)
+        await db.query(
+            "INSERT INTO Invoices (patient_id, amount, status) VALUES (?, ?, 'Unpaid')",
+            [patientId, amount]
+        );
+        
+        res.json({ success: true, message: 'Pharmacy order placed and billed.' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Failed to process pharmacy order.' });
+    }
+});
+
 // ==========================================
 // DOCTOR DASHBOARD APIs
 // ==========================================

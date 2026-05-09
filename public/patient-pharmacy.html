@@ -3,67 +3,411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Pharmacy - LifeCare</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>LifeCare | Digital Pharmacy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <style>
-        .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background: rgba(15, 23, 42, 0.95); border-right: 1px solid var(--border-color); padding: 2rem 1rem; display: flex; flex-direction: column; }
-        .sidebar h2 { text-align: center; margin-bottom: 2rem; font-size: 1.5rem; }
-        .sidebar a { color: var(--text-muted); text-decoration: none; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: all 0.3s; display: block; }
-        .sidebar a:hover, .sidebar a.active { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
-        .main-content { flex: 1; padding: 2rem 5%; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        
-        .pharmacy-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.5rem;
+        :root {
+            --pharm-primary: #3b82f6;
+            --pharm-accent: #10b981;
+            --pharm-card-bg: rgba(15, 23, 42, 0.6);
+            --pharm-sidebar-bg: rgba(10, 18, 38, 0.98);
         }
 
-        .med-card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: var(--glass-shadow);
-            transition: transform 0.3s ease;
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050d1a;
+            color: #f1f5f9;
+            margin: 0;
+            overflow-x: hidden;
         }
 
-        .med-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
         }
 
-        .med-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 260px;
+            background: var(--pharm-sidebar-bg);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
         }
 
-        .med-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 0.5rem;
-        }
-
-        .med-price {
-            font-size: 1.5rem;
-            color: var(--primary);
+        .sidebar h2 {
+            font-size: 1.6rem;
             font-weight: 800;
-            margin-bottom: 1rem;
+            margin-bottom: 2.5rem;
+            letter-spacing: -0.5px;
         }
 
-        .cart-panel {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--primary);
+        .sidebar h2 span { color: var(--pharm-primary); }
+
+        .nav-links { flex: 1; }
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            padding: 0.9rem 1.2rem;
             border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: all 0.25s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), transparent);
+            border-left: 3px solid var(--pharm-primary);
+        }
+
+        .sos-link { color: #f87171 !important; border: 1px solid rgba(248, 113, 113, 0.2); margin-top: 1.5rem; }
+        .sos-link:hover { background: rgba(248, 113, 113, 0.1) !important; }
+
+        /* ── Main Content ── */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 2rem 3rem;
+            position: relative;
+        }
+
+        .header-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .header-bar h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .search-box {
+            position: relative;
+            width: 380px;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 1rem 0.8rem 2.8rem;
+            border-radius: 12px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--pharm-primary);
+            background: rgba(59, 130, 246, 0.05);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-box span {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.4;
+        }
+
+        /* ── Categories ── */
+        .categories {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .cat-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.6rem 1.4rem;
+            border-radius: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+
+        .cat-btn:hover, .cat-btn.active {
+            background: var(--pharm-primary);
+            border-color: var(--pharm-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* ── Pharmacy Grid ── */
+        .pharmacy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 5rem;
+        }
+
+        .med-card {
+            background: var(--pharm-card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .med-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(15, 23, 42, 0.85);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .med-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .med-icon-wrap {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin-bottom: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .med-card:hover .med-icon-wrap {
+            background: rgba(59, 130, 246, 0.1);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .med-info h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 0.4rem;
+            color: white;
+        }
+
+        .med-info p {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.4);
+            margin: 0 0 1.2rem;
+            line-height: 1.4;
+        }
+
+        .med-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .med-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--pharm-primary);
+        }
+
+        .add-btn {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+
+        .add-btn:hover {
+            background: var(--pharm-primary);
+            border-color: var(--pharm-primary);
+            transform: scale(1.1);
+        }
+
+        /* ── Cart Sidebar ── */
+        .cart-sidebar {
+            width: 350px;
+            background: rgba(10, 18, 38, 0.98);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            position: fixed;
+            right: -350px;
+            top: 0;
+            height: 100vh;
+            z-index: 200;
+            padding: 2.5rem 2rem;
+            transition: all 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .cart-sidebar.open { right: 0; }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .cart-header h2 { font-size: 1.4rem; margin: 0; }
+        .close-cart { font-size: 1.5rem; cursor: pointer; opacity: 0.5; transition: 0.2s; }
+        .close-cart:hover { opacity: 1; color: #f87171; }
+
+        .cart-items { flex: 1; overflow-y: auto; margin-bottom: 2rem; }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .cart-item-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .cart-item-info { flex: 1; }
+        .cart-item-info h4 { font-size: 0.9rem; margin: 0 0 0.2rem; }
+        .cart-item-info p { font-size: 0.8rem; color: var(--pharm-primary); font-weight: 700; margin: 0; }
+        .remove-item { color: #f87171; font-size: 0.8rem; cursor: pointer; opacity: 0.6; }
+        .remove-item:hover { opacity: 1; }
+
+        .cart-footer {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .cart-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .cart-total {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border: none;
+            color: white;
+            padding: 1.1rem;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .cart-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--pharm-primary);
+            color: white;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+            z-index: 150;
+            transition: all 0.3s;
+        }
+
+        .cart-trigger:hover { transform: scale(1.1); }
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #050d1a;
+        }
+
+        /* ── Transitions ── */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 2rem; }
+            .header-bar { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+            .search-box { width: 100%; }
         }
     </style>
 </head>
@@ -71,95 +415,85 @@
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h2><span class="highlight">Life</span>Care</h2>
-            <a href="patient-dashboard.html">Dashboard</a>
-            <a href="patient-ai-checker.html">AI Symptom Checker</a>
-            <a href="#" onclick="alert('Please use the main Dashboard to book.')">Book Appointment</a>
-            <a href="patient-telemedicine.html">Live Telemedicine</a>
-            <a href="patient-records.html">My Records</a>
-            <a href="patient-lab-reports.html">Lab Reports</a>
-            <a href="patient-prescriptions.html">Prescriptions</a>
-            <a href="patient-pharmacy.html" class="active">Pharmacy</a>
-            <a href="patient-invoices.html">Invoices</a>
-            <div style="flex: 1;"></div>
-            <div style="flex: 1;"></div>
-            <a href="patient-ambulance.html" class="sos-link" style="color:#ef4444;">🚑 Emergency SOS</a>
-            <a href="#" onclick="logout()">Logout</a>
+            <h2><span>Life</span>Care</h2>
+            <nav class="nav-links">
+                <a href="patient-dashboard.html">🏠 Dashboard</a>
+                <a href="patient-ai-checker.html">🧠 AI Symptom Checker</a>
+                <a href="patient-telemedicine.html">📹 Live Telemedicine</a>
+                <a href="patient-records.html">📁 My Records</a>
+                <a href="patient-lab-reports.html">🔬 Lab Reports</a>
+                <a href="patient-prescriptions.html">📝 Prescriptions</a>
+                <a href="patient-pharmacy.html" class="active">💊 Pharmacy Shop</a>
+                <a href="patient-invoices.html">💳 Invoices</a>
+                <a href="emergency.html" class="sos-link">🚑 Emergency SOS</a>
+            </nav>
+            <a href="#" onclick="logout()" style="opacity: 0.5; margin-top: auto;">🚪 Logout</a>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="top-bar">
-                <h1>Online Pharmacy</h1>
-                <div class="user-profile">
-                    <div class="doctor-avatar" style="width: 40px; height: 40px; font-size: 1rem; margin: 0;">P</div>
+            <div class="header-bar">
+                <div class="fade-in">
+                    <h1>Digital Pharmacy</h1>
+                    <p style="color: rgba(255, 255, 255, 0.4); margin: 0.3rem 0 0;">Authorized medical supplies delivered to your door.</p>
+                </div>
+                <div class="search-box fade-in">
+                    <span>🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search for medications, health kits..." oninput="filterMeds()">
                 </div>
             </div>
 
-            <div class="cart-panel" id="cartPanel" style="display: none;">
-                <div>
-                    <h3 style="color: var(--text-main);">Your Cart</h3>
-                    <p style="color: var(--text-muted);" id="cartDetails">0 items</p>
-                </div>
-                <div style="text-align: right;">
-                    <h2 style="color: var(--primary); margin-bottom: 0.5rem;" id="cartTotal">$0.00</h2>
-                    <button class="btn-primary" onclick="checkout()">Checkout & Bill to Invoice</button>
-                </div>
+            <div class="categories fade-in" style="animation-delay: 0.1s;">
+                <button class="cat-btn active" onclick="setCategory('All', this)">All Items</button>
+                <button class="cat-btn" onclick="setCategory('OTC', this)">OTC Drugs</button>
+                <button class="cat-btn" onclick="setCategory('Prescription', this)">Prescription Only</button>
+                <button class="cat-btn" onclick="setCategory('Wellness', this)">Wellness &amp; Kits</button>
+                <button class="cat-btn" onclick="setCategory('Vitamins', this)">Vitamins</button>
             </div>
 
-            <div class="pharmacy-grid">
-                <!-- Paracetamol -->
-                <div class="med-card">
-                    <div class="med-icon">💊</div>
-                    <div class="med-name">Paracetamol 500mg</div>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Fever & Pain Relief</p>
-                    <div class="med-price">$12.00</div>
-                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Paracetamol 500mg', 12)">Add to Cart</button>
-                </div>
-
-                <!-- Amoxicillin -->
-                <div class="med-card">
-                    <div class="med-icon">💊</div>
-                    <div class="med-name">Amoxicillin 250mg</div>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Bacterial Infections</p>
-                    <div class="med-price">$25.00</div>
-                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Amoxicillin 250mg', 25)">Add to Cart</button>
-                </div>
-
-                <!-- Cough Syrup -->
-                <div class="med-card">
-                    <div class="med-icon">🧪</div>
-                    <div class="med-name">Tussex Cough Syrup</div>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Dry Cough Relief</p>
-                    <div class="med-price">$18.50</div>
-                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Tussex Cough Syrup', 18.5)">Add to Cart</button>
-                </div>
-
-                <!-- First Aid Kit -->
-                <div class="med-card">
-                    <div class="med-icon">🚑</div>
-                    <div class="med-name">Premium First Aid Kit</div>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Bandages, Antiseptic, Tape</p>
-                    <div class="med-price">$45.00</div>
-                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Premium First Aid Kit', 45)">Add to Cart</button>
-                </div>
-                
-                <!-- Vitamin C -->
-                <div class="med-card">
-                    <div class="med-icon">🍋</div>
-                    <div class="med-name">Vitamin C 1000mg</div>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Immunity Booster</p>
-                    <div class="med-price">$15.00</div>
-                    <button class="btn-outline" style="width: 100%;" onclick="addToCart('Vitamin C 1000mg', 15)">Add to Cart</button>
-                </div>
+            <div class="pharmacy-grid" id="medGrid">
+                <!-- Loaded via JS -->
             </div>
         </main>
+    </div>
+
+    <!-- Floating Cart Trigger -->
+    <div class="cart-trigger" onclick="toggleCart(true)">
+        🛒
+        <div class="cart-count" id="cartCount">0</div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <div class="close-cart" onclick="toggleCart(false)">✕</div>
+        </div>
+
+        <div class="cart-items" id="cartItems">
+            <!-- Items here -->
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-row">
+                <span>Subtotal</span>
+                <span id="subtotal">₹0.00</span>
+            </div>
+            <div class="cart-row">
+                <span>Delivery Fee</span>
+                <span>₹50.00</span>
+            </div>
+            <div class="cart-row cart-total">
+                <span>Total</span>
+                <span id="total">₹0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Checkout Order</button>
+        </div>
     </div>
 
     <script>
         const userData = JSON.parse(localStorage.getItem('user'));
         if (!userData || !userData.id) {
-            alert('Please login.');
             window.location.href = 'login.html';
         }
 
@@ -168,30 +502,116 @@
             window.location.href = 'index.html';
         }
 
-        let cart = [];
-        let total = 0;
+        const medications = [
+            { id: 1, name: 'Paracetamol 500mg', type: 'OTC', price: 120, icon: '💊', desc: 'Fever & pain relief tablets.', stock: 'In Stock' },
+            { id: 2, name: 'Amoxicillin 250mg', type: 'Prescription', price: 450, icon: '💊', desc: 'Antibiotic for bacterial infections.', stock: 'In Stock' },
+            { id: 3, name: 'Tussex Cough Syrup', type: 'OTC', price: 185, icon: '🧪', desc: 'Fast acting relief for dry cough.', stock: 'In Stock' },
+            { id: 4, name: 'Premium First Aid Kit', type: 'Wellness', price: 1250, icon: '🚑', desc: 'Emergency trauma response kit.', stock: 'In Stock' },
+            { id: 5, name: 'Vitamin C 1000mg', type: 'Vitamins', price: 290, icon: '🍋', desc: 'Immunity booster effervescent.', stock: 'In Stock' },
+            { id: 6, name: 'Metformin 500mg', type: 'Prescription', price: 150, icon: '💊', desc: 'Management of type 2 diabetes.', stock: 'In Stock' },
+            { id: 7, name: 'Atorvastatin 20mg', type: 'Prescription', price: 320, icon: '💊', desc: 'Cholesterol management.', stock: 'In Stock' },
+            { id: 8, name: 'Digital Thermometer', type: 'Wellness', price: 850, icon: '🌡️', desc: 'High accuracy instant reading.', stock: 'In Stock' }
+        ];
 
-        function addToCart(name, price) {
-            cart.push({name, price});
-            total += price;
+        let cart = [];
+        let currentCategory = 'All';
+
+        function renderMeds() {
+            const grid = document.getElementById('medGrid');
+            grid.innerHTML = '';
+            
+            const filtered = medications.filter(m => {
+                const matchesCat = currentCategory === 'All' || m.type === currentCategory;
+                const matchesSearch = m.name.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase());
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.forEach((m, index) => {
+                const card = document.createElement('div');
+                card.className = 'med-card fade-in';
+                card.style.animationDelay = `${index * 0.05}s`;
+                card.innerHTML = `
+                    <div class="med-badge">${m.stock}</div>
+                    <div class="med-icon-wrap">${m.icon}</div>
+                    <div class="med-info">
+                        <h3>${m.name}</h3>
+                        <p>${m.desc}</p>
+                    </div>
+                    <div class="med-footer">
+                        <div class="med-price">₹${m.price.toFixed(2)}</div>
+                        <div class="add-btn" onclick="addToCart(${m.id})">+</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function setCategory(cat, el) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            renderMeds();
+        }
+
+        function filterMeds() {
+            renderMeds();
+        }
+
+        function toggleCart(show) {
+            document.getElementById('cartSidebar').classList.toggle('open', show);
+        }
+
+        function addToCart(id) {
+            const med = medications.find(m => m.id === id);
+            cart.push(med);
+            updateCartUI();
+            
+            // Visual feedback
+            const trigger = document.querySelector('.cart-trigger');
+            trigger.style.transform = 'scale(1.2)';
+            setTimeout(() => trigger.style.transform = 'scale(1)', 200);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
             updateCartUI();
         }
 
         function updateCartUI() {
-            const panel = document.getElementById('cartPanel');
-            if (cart.length > 0) {
-                panel.style.display = 'flex';
-                document.getElementById('cartDetails').innerText = cart.length + ' items selected';
-                document.getElementById('cartTotal').innerText = '$' + total.toFixed(2);
-            } else {
-                panel.style.display = 'none';
-            }
+            const container = document.getElementById('cartItems');
+            container.innerHTML = '';
+            
+            let subtotal = 0;
+            cart.forEach((item, index) => {
+                subtotal += item.price;
+                const div = document.createElement('div');
+                div.className = 'cart-item fade-in';
+                div.innerHTML = `
+                    <div class="cart-item-icon">${item.icon}</div>
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p>₹${item.price.toFixed(2)}</p>
+                    </div>
+                    <div class="remove-item" onclick="removeFromCart(${index})">Remove</div>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('cartCount').innerText = cart.length;
+            document.getElementById('subtotal').innerText = `₹${subtotal.toFixed(2)}`;
+            const total = cart.length > 0 ? subtotal + 50 : 0;
+            document.getElementById('total').innerText = `₹${total.toFixed(2)}`;
         }
 
         async function checkout() {
             if (cart.length === 0) return;
             
+            const btn = document.querySelector('.checkout-btn');
+            btn.innerText = 'Processing Order...';
+            btn.disabled = true;
+
             const itemsList = cart.map(i => i.name).join(', ');
+            const totalAmt = cart.reduce((acc, i) => acc + i.price, 0) + 50;
             
             try {
                 const res = await fetch('/api/pharmacy/order', {
@@ -200,24 +620,31 @@
                     body: JSON.stringify({
                         userId: userData.id,
                         items: itemsList,
-                        amount: total
+                        amount: totalAmt
                     })
                 });
 
                 if (res.ok) {
-                    alert('Order placed successfully! A bill has been added to your Invoices tab for payment.');
+                    alert('Order #PH-' + Math.floor(10000 + Math.random() * 90000) + ' has been placed. An invoice has been generated for your payment.');
                     cart = [];
-                    total = 0;
                     updateCartUI();
+                    toggleCart(false);
                     window.location.href = 'patient-invoices.html';
                 } else {
                     alert('Failed to place order.');
+                    btn.innerText = 'Checkout Order';
+                    btn.disabled = false;
                 }
             } catch(e) {
                 console.error(e);
-                alert('Server connection error.');
+                alert('Server error.');
+                btn.innerText = 'Checkout Order';
+                btn.disabled = false;
             }
         }
+
+        // Init
+        renderMeds();
     </script>
     <script src="js/bg-slider.js"></script>
 </body>
